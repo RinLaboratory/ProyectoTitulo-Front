@@ -1,4 +1,3 @@
-import { regular18 } from "@/styles/fonts";
 import 
     { 
         Flex,
@@ -9,29 +8,17 @@ import
         ModalHeader,
         ModalCloseButton,
         ModalBody,
-        TableContainer,
-        Table,
-        Thead,
-        Tr,
-        Th,
-        Tbody,
-        Td,
-        Box,
         ModalFooter,
         Button,
         useToast,
         FormControl
     } from "@chakra-ui/react";
-
-import Link from 'next/link'
 import { HiDocumentAdd } from "react-icons/hi";
 import React, { useState } from 'react'
 import { styles } from "./ChangePassword.module";
 import CustomInput from "../CustomInputs/CustomInput";
 import { white } from "@/utils/colors";
-import Swal from "sweetalert2";
 import { URL } from '@/utils/consts'
-import { fetcher } from '@/utils/fetcher'
 import post from '@/utils/post'
 
 export default function ChangePassword({ isOpen, onClose, user = {} }) {
