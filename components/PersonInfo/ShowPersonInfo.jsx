@@ -66,7 +66,7 @@ export default function ShowPersonInfo() {
         <Flex sx={styles.MainContainer}>
             <Flex flexDirection='column' ml='5' mr='5'>
                 <Text sx={regular18}>Información paciente</Text>
-                <Flex flexDirection='row' mt='8' >
+                <Flex sx={styles.ChangePos}>
                     <Flex flexDirection='column' mr='5' alignItems='center' alignContent='center'>
                         <Flex bgColor='#D9D9D9'>
                             <Icon sx={styles.LogoutIcon} viewBox='-1 -1 17 17'>

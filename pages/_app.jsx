@@ -1,6 +1,7 @@
 import NavBar from '@/components/NavBar/NavBar'
 import '@/styles/globals.scss'
 import jwt from 'jsonwebtoken'
+import Head from 'next/head'
 
 import { ChakraProvider } from '@chakra-ui/react'
 import { useRouter } from 'next/router'
@@ -19,14 +20,19 @@ function App({ Component, pageProps }) {
   const router = useRouter()
 
   return (
-  <ChakraProvider>
-    {!blockedPages.includes(router.pathname) && <NavBar />}
-    <div className="super">
-      <div className="main">
-        <Component {...pageProps} />
+  <>
+    <Head>
+      <meta name="viewport" content="width=device-width, initial-scale=0.6" />
+    </Head>
+    <ChakraProvider>
+      {!blockedPages.includes(router.pathname) && <NavBar />}
+      <div className="super">
+        <div className="main">
+          <Component {...pageProps} />
+        </div>
       </div>
-    </div>
-  </ChakraProvider>
+    </ChakraProvider>
+  </>
   )
 }
 

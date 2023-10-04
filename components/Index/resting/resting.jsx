@@ -64,7 +64,7 @@ export default function Resting({ isOpen, onClose, mode, data, isLoading = false
 
     return(
         <Modal isOpen={isOpen} onClose={onClose} size="6xl">
-        <ModalOverlay />
+        <ModalOverlay/>
         <ModalContent>
           <ModalHeader>{viewMode[mode].header}</ModalHeader>
           <ModalCloseButton />

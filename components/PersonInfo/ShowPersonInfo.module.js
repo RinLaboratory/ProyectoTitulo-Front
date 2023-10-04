@@ -43,5 +43,16 @@ export const styles = {
         '@media (min-width: 1138px)': {
             w: '866px',
         },
+    },
+    ChangePos: {
+        flexDirection: 'row',
+        mt: '8',
+        gap: '6',
+        '@media (max-width: 1138px)': {
+            flexDirection: 'column'
+        },
+        '@media (min-width: 1138px)': {
+            flexDirection: 'row'
+        },
     }
 }

@@ -14,7 +14,7 @@ export const styles = {
         ml: '10',
         mr: '10',
         maxW: '992px',
-        w: '86vw',
+        w: '74vw',
         h: '168px',
         pl: '3',
         alignItems: 'center',
