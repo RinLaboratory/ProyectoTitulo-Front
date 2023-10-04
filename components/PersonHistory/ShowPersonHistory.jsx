@@ -54,7 +54,7 @@ export default function ShowPersonHistory({ isOpen, onClose, person }) {
           </ModalBody>
             <Flex p='3' m='3' mt='0'>
                 <TableContainer w="100%">
-                    <Table variant='unstyled' w="100%" h="30vh">
+                    <Table variant='unstyled' w="100%">
                         <Thead>
                         <Tr>
                             {Tabs.map((data, key) => (

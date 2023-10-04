@@ -71,7 +71,7 @@ export default function Resting({ isOpen, onClose, mode, data, isLoading = false
                 <Flex w='100%' flexDirection='column' ml='5' mr='5'>
                     <Flex bgColor="#D9D9D9" p='3' borderRadius='12px'>
                         <TableContainer w="100%">
-                            <Table variant='striped' w="100%" h="30vh">
+                            <Table variant='striped' w="100%">
                                 <Thead>
                                 <Tr>
                                     {Tabs.map((data, key) => (
