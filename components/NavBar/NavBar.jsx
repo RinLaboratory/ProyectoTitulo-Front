@@ -16,7 +16,7 @@ import { light10, light18 } from '@/styles/fonts.js'
 import { IoSearch, IoPerson, IoLogOutOutline, IoHomeOutline } from "react-icons/io5";
 
 import { styles } from './NavBar.module.js'
-import { lightBlue, softBlue, white, yellow } from '@/utils/colors'
+import { softBlue, white, yellow } from '@/utils/colors'
 import { URL } from '@/utils/consts'
 import { fetcher } from '@/utils/fetcher'
 import useSWR from 'swr'
