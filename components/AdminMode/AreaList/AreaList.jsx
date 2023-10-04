@@ -18,7 +18,7 @@ export default function AreaList({ isOpen, onClose }) {
         name: ''
     })
 
-    const { data: areas, isLoading: isProjectLoading } = useSWR(
+    const { data: areas, isLoading: isProjectLoading, mutate } = useSWR(
         `${URL}/getAreas?name=${data.name}`,
         fetcher,
       )
@@ -57,7 +57,9 @@ export default function AreaList({ isOpen, onClose }) {
                         'El area / curso se ha eliminado correctamente.',
                         'success'
                       )
-                      onClose()
+                    const backup = areas.filter(element => element._id !== e._id)
+                    mutate(backup,false)
+                    onClose()
                 } else {
                     Swal.fire(
                         'Error',

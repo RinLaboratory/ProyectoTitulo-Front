@@ -10,8 +10,9 @@ import ImportPerson from "../ImportPerson/ImportPerson";
 import { URL } from '@/utils/consts'
 import post from '@/utils/post'
 import { EmailRegex } from "@/utils/regex";
+import { mutate as userMutate } from 'swr'
 
-export default function ShowUserInfo({ isOpen, onClose, modalMode = "add", document = {} }) {
+export default function ShowUserInfo({ isOpen, onClose, modalMode = "add", document = {}, user, mutate }) {
     const toast = useToast()
 
     const defaultData = {
@@ -67,6 +68,7 @@ export default function ShowUserInfo({ isOpen, onClose, modalMode = "add", docum
                         duration: 9000,
                         isClosable: true,
                       })
+                    userMutate(`${URL}/getusers?username=${''}`)
                     setData(defaultData)
                     onClose()
                 } else {
@@ -90,6 +92,16 @@ export default function ShowUserInfo({ isOpen, onClose, modalMode = "add", docum
                         duration: 9000,
                         isClosable: true,
                       })
+                    const backup = []
+                    user.forEach((element) => {
+                        if(element._id === data._id)
+                        {
+                            backup.push(response.data)
+                        } else {
+                            backup.push(element)
+                        }
+                    })
+                    mutate(backup,false)
                     setData(defaultData)
                     onClose()
                 } else {

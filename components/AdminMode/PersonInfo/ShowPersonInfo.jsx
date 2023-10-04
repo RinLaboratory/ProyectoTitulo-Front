@@ -12,9 +12,9 @@ import post from '@/utils/post'
 import { fetcher } from '@/utils/fetcher'
 import useSWR from 'swr'
 import CustomSelect from "@/components/CustomInputs/CustomSelect";
+import { mutate as personMutate } from 'swr'
 
-
-export default function ShowPersonInfo({ isOpen, onClose, modalMode = "add", document = {} }) {
+export default function ShowPersonInfo({ isOpen, onClose, modalMode = "add", document = {}, mutate, persons }) {
     const toast = useToast()
 
     const defaultData = {
@@ -82,6 +82,7 @@ export default function ShowPersonInfo({ isOpen, onClose, modalMode = "add", doc
                     duration: 9000,
                     isClosable: true,
                   })
+                personMutate(`${URL}/getPersons?name=${''}&area=${''}`,)
                 setData(defaultData)
                 onClose()
             } else {
@@ -104,6 +105,17 @@ export default function ShowPersonInfo({ isOpen, onClose, modalMode = "add", doc
                     duration: 9000,
                     isClosable: true,
                   })
+                const backup = []
+                persons.forEach((element) => {
+                    if(element._id === data._id)
+                    {
+                        backup.push(data)
+                    } else {
+                        backup.push(element)
+                    }
+                })
+                console.log(backup)
+                mutate(backup,false)
                 setData(defaultData)
                 onClose()
             } else {

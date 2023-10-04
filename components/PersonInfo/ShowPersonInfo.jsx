@@ -58,13 +58,6 @@ export default function ShowPersonInfo() {
         }
     // eslint-disable-next-line react-hooks/exhaustive-deps
     },[isAreasLoading])
-    
-    // useEffect(()=> {
-    //     if(!isProjectLoading) {
-    //         setAreaValue()
-    //     }
-    // // eslint-disable-next-line react-hooks/exhaustive-deps
-    // },[areasOptions])
 
     if (isProjectLoading) {
         return <></>

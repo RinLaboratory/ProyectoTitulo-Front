@@ -54,7 +54,7 @@ export default function PersonList({ isOpen, onClose, listMode }) {
         area: 'default',
     })
 
-    const { data: persons, isLoading: isProjectLoading } = useSWR(
+    const { data: persons, isLoading: isProjectLoading, mutate } = useSWR(
         `${URL}/getPersons?name=${data.name}&area=${data.area}`,
         fetcher,
       )
@@ -97,7 +97,9 @@ export default function PersonList({ isOpen, onClose, listMode }) {
                         'La persona ha sido eliminada correctamente.',
                         'success'
                       )
-                      onClose()
+                    const backup = persons.filter(element => element._id !== e._id)
+                    mutate(backup,false)
+                    onClose()
                 } else {
                     Swal.fire(
                         'Error',
@@ -225,11 +227,14 @@ export default function PersonList({ isOpen, onClose, listMode }) {
                 onClose={handleShowPersonInfo}
                 document={document}
                 modalMode={'edit'}
+                persons={persons}
+                mutate={mutate}
             />
             <ImportPerson
                 isOpen={showImportPerson}
                 onClose={handleShowImportPerson}
                 listMode={listModeImport}
+                mutate={mutate}
             />
           </ModalBody>
         <ModalFooter>

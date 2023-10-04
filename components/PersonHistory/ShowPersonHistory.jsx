@@ -18,8 +18,6 @@ import
         Td,
         Box
     } from "@chakra-ui/react";
-
-import Link from 'next/link'
 import { IoEyeSharp } from "react-icons/io5";
 import React, { useState } from 'react'
 import { styles } from "./ShowPersonHistory.module";
@@ -39,7 +37,7 @@ export default function ShowPersonHistory({ isOpen, onClose, person }) {
         setDocument(e)
     }
 
-    const { data: documents, isLoading: isProjectLoading } = useSWR(
+    const { data: documents, isLoading: isProjectLoading, mutate } = useSWR(
         `${URL}/getPersonHistoryInfo?personId=${person._id}`,
         fetcher,
       )
@@ -88,6 +86,8 @@ export default function ShowPersonHistory({ isOpen, onClose, person }) {
                 document={document}
                 isOpen={showPersonVisit}
                 onClose={handleShowPersonVisit}
+                documents={documents}
+                mutate={mutate}
             />
         </ModalContent>
       </Modal>

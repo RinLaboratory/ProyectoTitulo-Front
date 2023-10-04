@@ -17,7 +17,7 @@ export default function UserList({ isOpen, onClose, userListMode }) {
         username: ''
     })
 
-    const { data: user, isLoading: isProjectLoading } = useSWR(
+    const { data: user, isLoading: isProjectLoading, mutate } = useSWR(
         `${URL}/getusers?username=${data.username}`,
         fetcher,
       )
@@ -59,14 +59,15 @@ export default function UserList({ isOpen, onClose, userListMode }) {
           }).then( async (result) => {
             if (result.isConfirmed) {
                 const response = await post(`${URL}/deleteUser`, e)
-                
                 if(response.status === "success") {
                     Swal.fire(
                         '¡Eliminado!',
                         'El usuario ha sido eliminado correctamente.',
                         'success'
                       )
-                      onClose()
+                    const backup = user.filter(element => element._id !== e._id)
+                    mutate(backup,false)
+                    onClose()
                 } else {
                     Swal.fire(
                         'Error',
@@ -152,6 +153,8 @@ export default function UserList({ isOpen, onClose, userListMode }) {
                 onClose={handleShowPersonInfo}
                 document={document}
                 modalMode={'edit'}
+                user={user}
+                mutate={mutate}
             />
           </ModalBody>
         <ModalFooter>

@@ -5,7 +5,6 @@ import { HiOutlineDocumentAdd } from "react-icons/hi";
 import { styles } from "./ShowAreaInfo.module";
 import CustomInput from "../../CustomInputs/CustomInput";
 import { softBlue, white } from "@/utils/colors";
-import ImportPerson from "../ImportPerson/ImportPerson";
 import { URL } from '@/utils/consts'
 import post from '@/utils/post'
 import { fetcher } from '@/utils/fetcher'
@@ -24,7 +23,7 @@ export default function ShowAreaInfo({ isOpen, onClose, modalMode, document = {}
         isClass: false,
     }
 
-    const { data: areas, isLoading: isProjectLoading } = useSWR(
+    const { data: areas, isLoading: isProjectLoading, mutate } = useSWR(
         `${URL}/getAreas?name=${''}`,
         fetcher,
     )
@@ -68,6 +67,9 @@ export default function ShowAreaInfo({ isOpen, onClose, modalMode, document = {}
                     duration: 9000,
                     isClosable: true,
                     })
+                const backup = [...areas]
+                backup.unshift(response.data)
+                mutate(backup, false)
                 setData(defaultData)
                 onClose()
             } else {
@@ -90,6 +92,16 @@ export default function ShowAreaInfo({ isOpen, onClose, modalMode, document = {}
                     duration: 9000,
                     isClosable: true,
                     })
+                const backup = []
+                areas.forEach((element) => {
+                    if(element._id === data._id)
+                    {
+                        backup.push(response.data)
+                    } else {
+                        backup.push(element)
+                    }
+                })
+                mutate(backup,false)
                 setData(defaultData)
                 onClose()
             } else {

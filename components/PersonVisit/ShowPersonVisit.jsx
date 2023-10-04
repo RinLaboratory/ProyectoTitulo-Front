@@ -16,9 +16,6 @@ import
         Button,
         useToast
     } from "@chakra-ui/react";
-
-import Link from 'next/link'
-import { IoEyeSharp } from "react-icons/io5";
 import { HiOutlineDocumentMagnifyingGlass, HiOutlineDocumentMinus } from "react-icons/hi2";
 import React, { useEffect, useState } from 'react'
 import { styles } from "./ShowPersonVisit.module";
@@ -28,8 +25,9 @@ import Swal from "sweetalert2";
 import { URL } from '@/utils/consts'
 import { fetcher } from '@/utils/fetcher'
 import post from '@/utils/post'
+import { mutate as historyMutate } from 'swr'
 
-export default function ShowPersonVisit({ isOpen, onClose, modalMode = "view", person = {}, document = {} }) {
+export default function ShowPersonVisit({ isOpen, onClose, modalMode = "view", person = {}, document = {}, documents, mutate }) {
     const defaultData = {
         personId: person?._id,
         sintomas: "",
@@ -86,6 +84,16 @@ export default function ShowPersonVisit({ isOpen, onClose, modalMode = "view", p
     const handleApplyButton = async () => {
         setMode("view")
         const response = await post(`${URL}/editPersonHistoryInfo`, data)
+        const backup = []
+        documents.forEach((element) => {
+            if(element._id === data._id)
+            {
+                backup.push(data)
+            } else {
+                backup.push(element)
+            }
+        })
+        mutate(backup,false)
         toast({
             title: 'Visita editada.',
             description: "La visita se ha editado exitosamente en el sistema.",
@@ -103,6 +111,7 @@ export default function ShowPersonVisit({ isOpen, onClose, modalMode = "view", p
         }
         const response = await post(`${URL}/setPersonHistoryInfo`, constructedData)
         setData(constructedData)
+        historyMutate(`${URL}/getPersonHistoryInfo?personId=${person._id}`)
         toast({
             title: 'Visita agregada.',
             description: "La visita se ha añadido exitosamente en el sistema.",
@@ -131,6 +140,8 @@ export default function ShowPersonVisit({ isOpen, onClose, modalMode = "view", p
                         'La visita ha sido eliminada correctamente.',
                         'success'
                     )
+                    const backup = documents.filter(element => element._id !== data._id)
+                    mutate(backup,false)
                     onClose()
                 } else {
                     Swal.fire(
