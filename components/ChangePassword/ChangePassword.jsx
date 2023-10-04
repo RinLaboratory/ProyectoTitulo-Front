@@ -1,0 +1,138 @@
+import { regular18 } from "@/styles/fonts";
+import 
+    { 
+        Flex,
+        Icon,
+        Modal,
+        ModalOverlay,
+        ModalContent,
+        ModalHeader,
+        ModalCloseButton,
+        ModalBody,
+        TableContainer,
+        Table,
+        Thead,
+        Tr,
+        Th,
+        Tbody,
+        Td,
+        Box,
+        ModalFooter,
+        Button,
+        useToast,
+        FormControl
+    } from "@chakra-ui/react";
+
+import Link from 'next/link'
+import { HiDocumentAdd } from "react-icons/hi";
+import React, { useState } from 'react'
+import { styles } from "./ChangePassword.module";
+import CustomInput from "../CustomInputs/CustomInput";
+import { white } from "@/utils/colors";
+import Swal from "sweetalert2";
+import { URL } from '@/utils/consts'
+import { fetcher } from '@/utils/fetcher'
+import post from '@/utils/post'
+
+export default function ChangePassword({ isOpen, onClose, user = {} }) {
+    const defaultData = {
+        password: '',
+        confirmPassword: '',
+    }
+
+    const toast = useToast()
+    const [data, setData] = useState(defaultData)
+
+    const handleInputChange = (e) => {
+        setData({
+            ...data,
+            [e.target.name]: e.target.value,
+        })
+    }
+
+    const handleChangePassword = async (e) => {
+        e.preventDefault()
+        
+        if(data.password !== data.confirmPassword) {
+            toast({
+                title: 'Las contraseñas no coinciden.',
+                description: "Las contraseñas ingresadas no coinciden.",
+                status: 'error',
+                duration: 9000,
+                isClosable: true,
+              })
+        } else {
+            const constructedData = {
+                ...data,
+                passwordId: user.password_id
+            }
+            const response = await post(`${URL}/changePassword`, constructedData)
+            if(response.status === 'success') {
+                toast({
+                    title: 'Contraseña actualizada.',
+                    description: "Has actualizado tu contraseña correctamente.",
+                    status: 'success',
+                    duration: 9000,
+                    isClosable: true,
+                  })
+                onClose()
+            } else {
+                toast({
+                    title: 'Error.',
+                    description: "Algo salió mal.",
+                    status: 'warning',
+                    duration: 9000,
+                    isClosable: true,
+                  })
+            }
+        }
+    }
+
+    return(
+        <Modal isOpen={isOpen} onClose={onClose} size="xl" >
+        <ModalOverlay />
+        <ModalContent>
+          <ModalHeader>CAMBIAR CONTRASEÑA</ModalHeader>
+          <ModalCloseButton />
+          <ModalBody>
+          </ModalBody>
+          <form onSubmit={handleChangePassword}>
+            <Flex p='3' m='3' mt='0' flexDirection='column'>
+                <Flex flexDirection='row' mb='30'>
+                    <Flex flexDirection='column' w='417px'>
+                        <FormControl isRequired>
+                            <CustomInput label='CONTRASEÑA' height='47' type="password" value={data.password} name="password" onChange={handleInputChange}/>
+                        </FormControl>
+                    </Flex>
+                </Flex>
+                <Flex flexDirection='row'>
+                    <Flex flexDirection='column' w='417px'>
+                        <FormControl isRequired>
+                            <CustomInput label='CONFIRMAR CONTRASEÑA' height='47' type="password" value={data.confirmPassword} name="confirmPassword" onChange={handleInputChange}/>
+                        </FormControl>
+                    </Flex>
+                </Flex>
+            </Flex>
+            <ModalFooter>
+                <Button
+                    bg='#FF2B91'
+                    color={white}
+                    iconSpacing='16px'
+                    sx={styles.Button}
+                    leftIcon={
+                        <Icon fontSize="24px" mb="1px" ml="1px">
+                        <HiDocumentAdd />
+                        </Icon>
+                    }
+                    mr="1"
+                    type="submit"
+                    >
+                    APLICAR
+                
+                </Button>
+            </ModalFooter>
+          </form>
+        </ModalContent>
+      </Modal>
+    )
+}
