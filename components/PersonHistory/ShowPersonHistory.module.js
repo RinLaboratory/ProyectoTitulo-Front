@@ -1,45 +1,36 @@
 import { softBlue, white, yellow } from "@/utils/colors";
+import { regular12, regular18 } from "@/styles/fonts";
 
 export const styles = {
-    MainContainer: {
-        bgColor: white,
-        mt: '10',
-        pb: '10',
-        borderRadius: '12px',
-        flexDirection: 'column',
+    TableText: {
+        ...regular18,
+        '@media (max-width: 850px)': {
+            maxW: '1px',
+        },
     },
-    OptionContainer: {
-        bgColor: '#3468A5',
-        mt: '10',
-        ml: '10',
-        mr: '10',
-        w: '992px',
-        h: '168px',
-        pl: '3',
-        alignItems: 'center',
-        borderRadius: '12px',
+    TableTextURL: {
+        ...regular18,
+        '@media (max-width: 850px)': {
+            maxW: '1px',
+            color: softBlue,
+        },
     },
-    BigIconContainer: {
-        bgColor: white,
-        mr: '5',
-        borderRadius: '12px',
+    HideOn850px: {
+        ...regular18,
+        '@media (max-width: 850px)': {
+            display: 'none'
+        },
+        '@media (min-width: 851px)': {
+            display: 'show'
+        },
     },
-    BigIcon: {
-        w: '150px',
-        h: '150px',
-        color: '#3468A5',
-    },
-    LeftOptionContainer: {
-        flexDirection: 'column',
-    },
-    Button: {
-        bg: yellow,
-        color: softBlue,
-        variant: 'solid',
-        size: 'md',
-        maxW: '150',
-        justifyContent: 'flex-start',
-        mt: '5',
+    ShowOn850px: {
+        '@media (min-width: 851px)': {
+            display: 'none'
+        },
+        '@media (max-width: 850px)': {
+            display: 'show'
+        },
     },
     LogoutIcon: {
         h: "25px",

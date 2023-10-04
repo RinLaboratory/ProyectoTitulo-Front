@@ -8,30 +8,6 @@ export const styles = {
         borderRadius: '12px',
         flexDirection: 'column',
     },
-    OptionContainer: {
-        bgColor: '#3468A5',
-        mt: '10',
-        ml: '10',
-        mr: '10',
-        w: '992px',
-        h: '168px',
-        pl: '3',
-        alignItems: 'center',
-        borderRadius: '12px',
-    },
-    BigIconContainer: {
-        bgColor: white,
-        mr: '5',
-        borderRadius: '12px',
-    },
-    BigIcon: {
-        w: '150px',
-        h: '150px',
-        color: '#3468A5',
-    },
-    LeftOptionContainer: {
-        flexDirection: 'column',
-    },
     Button: {
         variant: 'solid',
         size: 'md',
@@ -43,5 +19,29 @@ export const styles = {
         w: "230px",
         mr: '2',
         color: '#3468A5'
-      },
+    },
+    InputContainer: {
+        flexDirection: 'column',
+        w: '417px',
+    },
+    InputSection: {
+        mb: '30',
+        gap: '8',
+        flexWrap: 'wrap',
+        '@media (max-width: 1138px)': {
+            flexDirection: 'column',
+        },
+        '@media (min-width: 1138px)': {
+            flexDirection: 'row',
+        },
+    },
+    InputLarge: {
+        flexDirection: 'column',
+        '@media (max-width: 1138px)': {
+            w: '417px',
+        },
+        '@media (min-width: 1138px)': {
+            w: '866px',
+        },
+    }
 }

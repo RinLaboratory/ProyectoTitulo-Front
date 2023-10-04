@@ -1,5 +1,5 @@
-import { regular12, regular18 } from "@/styles/fonts";
-import { Flex, Icon, Text, Button, Table, TableContainer, Tbody, Td, Th, Thead, Tr } from "@chakra-ui/react";
+
+import { Flex, Icon, Text, Table, TableContainer, Tbody, Td, Th, Thead, Tr } from "@chakra-ui/react";
 import React, { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { IoEyeSharp } from "react-icons/io5";
@@ -39,6 +39,8 @@ export default function SearchPerson() {
 
     const Tabs = ["NOMBRE Y APELLIDO", "CURSO / AREA", "RUT", ""]
 
+    const Tabs850px = ["NOMBRES", "CURSO"]
+
     const handleInputChange = (e) => {
         setData({
             ...data,
@@ -55,65 +57,86 @@ export default function SearchPerson() {
 
     return(
         <Flex sx={styles.MainContainer}>
-            <Flex w='1254px' flexDirection='column' ml='5' mr='5'>
-                <Text sx={regular18}>Buscar paciente</Text>
-                <Flex flexDirection='row' mb='30'>
-                    <Flex flexDirection='column'>
-                        <CustomInput label='NOMBRE / APELLIDO' height='47' name="name" value={data.name} onChange={handleInputChange}/>
-                    </Flex>
-                    <Flex flexDirection='column' ml='50'>
-                        <CustomSelect
-                        label='CURSO / AREA'
-                        name="area"
-                        value={areasOptions[data.area]}
-                        options={isAreasLoading ? ([{label: 'default', value: 'Ninguno', _id: ''}]) : (areas)}
-                        onChange={(value, name) =>
-                        handleInputChange({
-                        target: {
-                            name: name,
-                            value: value,
-                        },
-                        })
-                        }
-                    />
-                    </Flex>
+            <Text sx={styles.HeaderText}>Buscar paciente</Text>
+            <Flex sx={styles.HeaderTextContainer}>
+                <Flex sx={styles.NameContainer}>
+                    <CustomInput label='NOMBRE / APELLIDO' height='47' name="name" value={data.name} onChange={handleInputChange}/>
                 </Flex>
-                <Text sx={regular12}>RESULTADOS</Text>
-                    <Flex bgColor="#D9D9D9" p='3' borderRadius='12px'>
-                        <TableContainer w="100%">
-                            <Table variant='striped' w="100%">
-                                <Thead>
-                                <Tr>
-                                    {Tabs.map((data, key) => (
-                                        <Th key={key} textAlign="center" sx={regular18} color="#000000" fontWeight='400'>{data}</Th>
-                                    ))}
+                <Flex sx={styles.AreaContainer}>
+                    <CustomSelect
+                    label='CURSO / AREA'
+                    name="area"
+                    value={areasOptions[data.area]}
+                    options={isAreasLoading ? ([{label: 'default', value: 'Ninguno', _id: ''}]) : (areas)}
+                    onChange={(value, name) =>
+                    handleInputChange({
+                    target: {
+                        name: name,
+                        value: value,
+                    },
+                    })
+                    }
+                />
+                </Flex>
+            </Flex>
+            <Text sx={styles.ResultText}>RESULTADOS</Text>
+            <Flex sx={styles.TableContainer}>
+                <TableContainer w="100%">
+                    <Table variant='striped'>
+                        <Thead>
+                        <Tr sx={styles.HideOn850px}>
+                            {Tabs.map((data, key) => (
+                                <Th key={key} textAlign="center" sx={styles.TableText} color="#000000" fontWeight='400'>{data}</Th>
+                            ))}
+                        </Tr>
+                        <Tr sx={styles.ShowOn850px}>
+                            {Tabs850px.map((data, key) => (
+                                <Th key={key} textAlign="center" sx={styles.TableText} color="#000000" fontWeight='400'>{data}</Th>
+                            ))}
+                        </Tr>
+                        </Thead>
+                        <Tbody sx={styles.ShowOn850px}>
+                            {!isProjectLoading ? (persons && persons.map((data, key) => (
+                                <Tr key={key} textAlign="center">
+                                    <Td textAlign="center" sx={styles.TableTextURL} color="#000000">
+                                        <Link href={{
+                                                pathname: "/personInfo",
+                                                query: {
+                                                    person: data._id,
+                                                },
+                                            }} 
+                                            passHref>
+                                            {data.name} {data.lastname}
+                                        </Link>
+                                    </Td>
+                                    <Td textAlign="center" sx={styles.TableText} color="#000000">{areasOptions[data.areaId]}</Td>
                                 </Tr>
-                                </Thead>
-                                <Tbody>
-                                    {!isProjectLoading ? (persons && persons.map((data, key) => (
-                                        <Tr key={key} textAlign="center">
-                                            <Td textAlign="center" sx={regular18} color="#000000">{data.name} {data.lastname}</Td>
-                                            <Td textAlign="center" sx={regular18} color="#000000">{areasOptions[data.areaId]}</Td>
-                                            <Td textAlign="center" sx={regular18} color="#000000">{data.rut}</Td>
-                                            <Td textAlign="center" sx={regular18} color="#000000">
-                                                <Link href={{
-                                                        pathname: "/personInfo",
-                                                        query: {
-                                                            person: data._id,
-                                                        },
-                                                    }} 
-                                                    passHref>
-                                                    <Icon sx={styles.LogoutIcon} viewBox='3 3 17 17'>
-                                                        <IoEyeSharp />
-                                                    </Icon>
-                                                </Link>
-                                            </Td>
-                                        </Tr>
-                                    ))) : <></>}
-                                </Tbody>
-                            </Table>
-                        </TableContainer>
-                    </Flex>
+                            ))) : <></>}
+                        </Tbody>
+                        <Tbody sx={styles.HideOn850px}>
+                            {!isProjectLoading ? (persons && persons.map((data, key) => (
+                                <Tr key={key} textAlign="center">
+                                    <Td textAlign="center" sx={styles.TableText} color="#000000">{data.name} {data.lastname}</Td>
+                                    <Td textAlign="center" sx={styles.TableText} color="#000000">{areasOptions[data.areaId]}</Td>
+                                    <Td textAlign="center" sx={styles.TableText} color="#000000">{data.rut}</Td>
+                                    <Td textAlign="center" sx={styles.TableText} color="#000000">
+                                        <Link href={{
+                                                pathname: "/personInfo",
+                                                query: {
+                                                    person: data._id,
+                                                },
+                                            }} 
+                                            passHref>
+                                            <Icon sx={styles.LogoutIcon} viewBox='3 3 17 17'>
+                                                <IoEyeSharp />
+                                            </Icon>
+                                        </Link>
+                                    </Td>
+                                </Tr>
+                            ))) : <></>}
+                        </Tbody>
+                    </Table>
+                </TableContainer>
             </Flex>
         </Flex>
     )

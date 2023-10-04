@@ -64,9 +64,9 @@ export default function ShowPersonInfo() {
 
     return(
         <Flex sx={styles.MainContainer}>
-            <Flex w='1254px' flexDirection='column' ml='5' mr='5'>
+            <Flex flexDirection='column' ml='5' mr='5'>
                 <Text sx={regular18}>Información paciente</Text>
-                <Flex flexDirection='row' mt='8'>
+                <Flex flexDirection='row' mt='8' >
                     <Flex flexDirection='column' mr='5' alignItems='center' alignContent='center'>
                         <Flex bgColor='#D9D9D9'>
                             <Icon sx={styles.LogoutIcon} viewBox='-1 -1 17 17'>
@@ -108,32 +108,32 @@ export default function ShowPersonInfo() {
                         </Flex>
                     </Flex>
                     <Flex flexDirection='column'>
-                        <Flex flexDirection='row' mb='30'>
-                            <Flex flexDirection='column' w='417px'>
+                        <Flex sx={styles.InputSection}>
+                            <Flex sx={styles.InputContainer}>
                                 <CustomInput label='NOMBRES' height='47' defaultValue={persons.name}/>
                             </Flex>
-                            <Flex flexDirection='column' ml='50' w='417px'>
+                            <Flex sx={styles.InputContainer}>
                                 <CustomInput label='APELLIDOS' height='47' defaultValue={persons.lastname}/>
                             </Flex>
                         </Flex>
-                        <Flex flexDirection='row' mb='30'>
-                            <Flex flexDirection='column' w='417px'>
+                        <Flex sx={styles.InputSection}>
+                            <Flex sx={styles.InputContainer}>
                                 <CustomInput label='TELEFONO CASA' height='47' defaultValue={persons.phone}/>
                             </Flex>
-                            <Flex flexDirection='column' ml='50' w='417px'>
+                            <Flex sx={styles.InputContainer}>
                                 <CustomInput label='SEGURO MÉDICO' height='47' defaultValue={persons.insurance}/>
                             </Flex>
                         </Flex>
-                        <Flex flexDirection='row' mb='30'>
-                            <Flex flexDirection='column' w='884px'>
+                        <Flex sx={styles.InputSection}>
+                            <Flex sx={styles.InputLarge}>
                                 <CustomInput label='DIRECCIÓN CASA' height='47' defaultValue={persons.address}/>
                             </Flex>
                         </Flex>
-                        <Flex flexDirection='row' mb='30'>
-                            <Flex flexDirection='column' w='417px'>
+                        <Flex sx={styles.InputSection}>
+                            <Flex sx={styles.InputContainer}>
                                 <CustomInput label='GRUPO SANGUÍNEO' height='47' defaultValue={persons.bloodType}/>
                             </Flex>
-                            <Flex flexDirection='column' ml='50' w='417px'>
+                            <Flex sx={styles.InputContainer}>
                                 {!isAreasLoading &&
                                 <CustomSelect
                                     label='CURSO / AREA'
@@ -143,19 +143,19 @@ export default function ShowPersonInfo() {
                                 />}
                             </Flex>
                         </Flex>
-                        <Flex flexDirection='row' mb='30'>
-                            <Flex flexDirection='column' w='417px'>
+                        <Flex sx={styles.InputSection}>
+                            <Flex sx={styles.InputContainer}>
                                 <CustomInput label='NOMBRE APODERADO' height='47' defaultValue={persons.Rname}/>
                             </Flex>
-                            <Flex flexDirection='column' ml='50' w='417px'>
+                            <Flex sx={styles.InputContainer}>
                                 <CustomInput label='APELLIDO APODERADO' height='47' defaultValue={persons.Rlastname}/>
                             </Flex>
                         </Flex>
-                        <Flex flexDirection='row' mb='30'>
-                            <Flex flexDirection='column' w='417px'>
+                        <Flex sx={styles.InputSection}>
+                            <Flex sx={styles.InputContainer}>
                                 <CustomInput label='TELEFONO APODERADO' height='47' defaultValue={persons.Rphone}/>
                             </Flex>
-                            <Flex flexDirection='column' ml='50' w='417px'>
+                            <Flex sx={styles.InputContainer}>
                                 <CustomInput label='CONTACTO EMERGENCIA' height='47' defaultValue={persons.EmergencyContact}/>
                             </Flex>
                         </Flex>

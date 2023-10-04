@@ -1,4 +1,5 @@
 import { softBlue, white, yellow } from "@/utils/colors";
+import { regular12, regular18 } from "@/styles/fonts";
 
 export const styles = {
     MainContainer: {
@@ -7,44 +8,64 @@ export const styles = {
         pb: '10',
         borderRadius: '12px',
         flexDirection: 'column',
-    },
-    OptionContainer: {
-        bgColor: '#3468A5',
-        mt: '10',
-        ml: '10',
-        mr: '10',
-        w: '992px',
-        h: '168px',
-        pl: '3',
-        alignItems: 'center',
-        borderRadius: '12px',
-    },
-    BigIconContainer: {
-        bgColor: white,
-        mr: '5',
-        borderRadius: '12px',
-    },
-    BigIcon: {
-        w: '150px',
-        h: '150px',
-        color: '#3468A5',
-    },
-    LeftOptionContainer: {
-        flexDirection: 'column',
-    },
-    Button: {
-        bg: yellow,
-        color: softBlue,
-        variant: 'solid',
-        size: 'md',
-        maxW: '150',
-        justifyContent: 'flex-start',
-        mt: '5',
+        w: '80%'
     },
     LogoutIcon: {
         h: "25px",
         w: "35px",
         mr: '2',
         color: '#3468A5'
-      },
+    },
+    HeaderTextContainer: {
+        flexDirection: 'row',
+        mb: '30',
+    },
+    NameContainer: {
+        flexDirection: 'column',
+    },
+    AreaContainer: {
+        flexDirection: 'column',
+        ml: '50',
+    },
+    HeaderText: {
+        ...regular18,
+    },
+    ResultText: {
+        ...regular12,
+    },
+    TableContainer: {
+        bgColor: "#D9D9D9",
+        p: '3',
+        borderRadius: '12px',
+    },
+    TableText: {
+        ...regular18,
+        '@media (max-width: 1138px)': {
+            maxW: '1px',
+        },
+    },
+    TableTextURL: {
+        ...regular18,
+        '@media (max-width: 1138px)': {
+            maxW: '1px',
+            color: softBlue,
+        },
+    },
+    HideOn850px: {
+        ...regular18,
+        '@media (max-width: 1138px)': {
+            display: 'none'
+        },
+        '@media (min-width: 1139px)': {
+            display: 'show'
+        },
+    },
+    ShowOn850px: {
+        '@media (min-width: 1139px)': {
+            display: 'none'
+        },
+        '@media (max-width: 1138px)': {
+            display: 'show'
+        },
+    },
 }

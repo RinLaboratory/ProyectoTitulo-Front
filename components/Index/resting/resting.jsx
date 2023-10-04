@@ -42,6 +42,8 @@ export default function Resting({ isOpen, onClose, mode, data, isLoading = false
 
     const Tabs = ["NOMBRE Y APELLIDO", "NOMBRE AREA / CURSO", "RUT", ""]
 
+    const Tabs850px = ["NOMBRES", "CURSO"]
+
     useEffect(()=>{
         if(data){
             updateAreasOptions()
@@ -73,19 +75,42 @@ export default function Resting({ isOpen, onClose, mode, data, isLoading = false
                         <TableContainer w="100%">
                             <Table variant='striped' w="100%">
                                 <Thead>
-                                <Tr>
+                                <Tr sx={styles.HideOn850px}>
                                     {Tabs.map((data, key) => (
                                         <Th key={key} textAlign="center" sx={regular18} color="#000000" fontWeight='400'>{data}</Th>
                                     ))}
                                 </Tr>
+                                <Tr sx={styles.ShowOn850px}>
+                                    {Tabs850px.map((data, key) => (
+                                        <Th key={key} textAlign="center" sx={regular18} color="#000000" fontWeight='400'>{data}</Th>
+                                    ))}
+                                </Tr>
                                 </Thead>
-                                <Tbody>
+                                <Tbody sx={styles.ShowOn850px}>
                                     {!isLoading ? displayData.map((data, key) => (
                                         <Tr key={key} textAlign="center">
-                                            <Td textAlign="center" sx={regular18} color="#000000">{data.name} {data.lastname}</Td>
-                                            <Td textAlign="center" sx={regular18} color="#000000">{areasOptions[data.areaId]}</Td>
-                                            <Td textAlign="center" sx={regular18} color="#000000">{data.rut}</Td>
-                                            <Td textAlign="center" sx={regular18} color="#000000">
+                                            <Td textAlign="center" sx={styles.TableTextURL} color="#000000">
+                                                <Link href={{
+                                                            pathname: "/personInfo",
+                                                            query: {
+                                                                person: data._id,
+                                                            },
+                                                        }} 
+                                                        passHref>
+                                                {data.name} {data.lastname}
+                                                </Link>
+                                            </Td>
+                                            <Td textAlign="center" sx={styles.TableText} color="#000000">{areasOptions[data.areaId]}</Td>
+                                        </Tr>
+                                    )) : <></>}
+                                </Tbody>
+                                <Tbody sx={styles.HideOn850px}>
+                                    {!isLoading ? displayData.map((data, key) => (
+                                        <Tr key={key} textAlign="center">
+                                            <Td textAlign="center" sx={styles.TableText} color="#000000">{data.name} {data.lastname}</Td>
+                                            <Td textAlign="center" sx={styles.TableText} color="#000000">{areasOptions[data.areaId]}</Td>
+                                            <Td textAlign="center" sx={styles.TableText} color="#000000">{data.rut}</Td>
+                                            <Td textAlign="center" sx={styles.TableText} color="#000000">
                                                 <Link href={{
                                                             pathname: "/personInfo",
                                                             query: {

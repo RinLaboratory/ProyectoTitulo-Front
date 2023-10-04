@@ -44,6 +44,8 @@ export default function ShowPersonHistory({ isOpen, onClose, person }) {
 
     const Tabs = ["FECHA", "SINTOMAS / LESIONES", "", "ENVIADO A"]
 
+    const Tabs850px = ["FECHA", "SINTOMAS / LESIONES", ""]
+
     return(
         <Modal isOpen={isOpen} onClose={onClose} size="4xl" >
         <ModalOverlay />
@@ -56,8 +58,13 @@ export default function ShowPersonHistory({ isOpen, onClose, person }) {
                 <TableContainer w="100%">
                     <Table variant='unstyled' w="100%">
                         <Thead>
-                        <Tr>
+                        <Tr sx={styles.HideOn850px}>
                             {Tabs.map((data, key) => (
+                                <Th key={key} textAlign="center" sx={regular18} fontWeight='400' color="#000000">{data}</Th>
+                            ))}
+                        </Tr>
+                        <Tr sx={styles.ShowOn850px}>
+                            {Tabs850px.map((data, key) => (
                                 <Th key={key} textAlign="center" sx={regular18} fontWeight='400' color="#000000">{data}</Th>
                             ))}
                         </Tr>
@@ -74,7 +81,7 @@ export default function ShowPersonHistory({ isOpen, onClose, person }) {
                                             </Icon>
                                         </Box>
                                     </Td>
-                                    <Td textAlign="center" sx={regular18} color="#000000" borderWidth='1px' borderColor='black' borderRightWidth='0'>{data.enviado}</Td>
+                                    <Td textAlign="center" sx={styles.HideOn850px} color="#000000" borderWidth='1px' borderColor='black' borderRightWidth='0'>{data.enviado}</Td>
                                 </Tr>
                             )) : <></>}
                         </Tbody>
