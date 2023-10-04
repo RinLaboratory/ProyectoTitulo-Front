@@ -114,7 +114,6 @@ export default function ShowPersonInfo({ isOpen, onClose, modalMode = "add", doc
                         backup.push(element)
                     }
                 })
-                console.log(backup)
                 mutate(backup,false)
                 setData(defaultData)
                 onClose()

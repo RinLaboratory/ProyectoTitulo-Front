@@ -36,7 +36,6 @@ export default function ShowPersonInfo() {
         obj[item._id] = item.label;
         }
 
-        console.log(obj)
         setAreasOptions(obj)
         
     }
