@@ -1,4 +1,5 @@
 import { softBlue, white, yellow } from "@/utils/colors";
+import { regular12, regular18 } from "@/styles/fonts";
 
 export const styles = {
     MainContainer: {
@@ -7,42 +8,47 @@ export const styles = {
         flexDirection: 'column',
         mr: '10',
     },
-    OptionContainer: {
-        bgColor: '#3468A5',
-        mt: '10',
-        ml: '10',
-        mr: '10',
-        w: '992px',
-        h: '168px',
-        pl: '3',
-        alignItems: 'center',
-        borderRadius: '12px',
-    },
-    BigIconContainer: {
-        bgColor: white,
-        mr: '5',
-        borderRadius: '12px',
-    },
-    BigIcon: {
-        w: '150px',
-        h: '150px',
-        color: '#3468A5',
-    },
-    LeftOptionContainer: {
-        flexDirection: 'column',
-    },
-    Button: {
-        variant: 'solid',
-        size: 'md',
-        maxW: '350',
-        justifyContent: 'flex-start',
-        mt: '8',
-        ml: '5',
-    },
     LogoutIcon: {
         h: "25px",
         w: "35px",
         mr: '2',
         color: '#3468A5'
       },
+    HideOn850px: {
+        ...regular18,
+        '@media (max-width: 1138px)': {
+            display: 'none'
+        },
+        '@media (min-width: 1139px)': {
+            display: 'show'
+        },
+    },
+    ShowOn850px: {
+        '@media (min-width: 1139px)': {
+            display: 'none'
+        },
+        '@media (max-width: 1138px)': {
+            display: 'show'
+        },
+    },
+    TableTextURL: {
+        ...regular18,
+        '@media (max-width: 1138px)': {
+            maxW: '1px',
+            color: softBlue,
+        },
+    },
+    Button: {
+        variant: 'solid',
+        size: 'md',
+        maxW: '350',
+        justifyContent: 'flex-start',
+        mt: '5',
+        ml: '5',
+    },
+    Import: {
+        '@media (max-width: 1138px)': {
+            display: 'none'
+        },
+    }
 }

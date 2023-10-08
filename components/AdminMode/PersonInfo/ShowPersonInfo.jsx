@@ -180,9 +180,9 @@ export default function ShowPersonInfo({ isOpen, onClose, modalMode = "add", doc
           <ModalBody>
             <Flex sx={styles.MainContainer}>
                 <Flex w='1254px' flexDirection='column' ml='5' mr='5'>
-                    <Flex flexDirection='row' mt='3'>
-                        <Flex flexDirection='column' mr='5' alignItems='center' alignContent='center'>
-                            <Flex bgColor='#D9D9D9'>
+                    <Flex sx={styles.asd}>
+                        <Flex sx={styles.rutProfile}>
+                            <Flex sx={styles.ProfilePic}>
                                 <Icon sx={styles.LogoutIcon} viewBox='-1 -1 17 17'>
                                     <IoPersonSharp />
                                 </Icon>
@@ -198,8 +198,8 @@ export default function ShowPersonInfo({ isOpen, onClose, modalMode = "add", doc
                             </FormControl>
                         </Flex>
                             <Flex flexDirection='column'>
-                                <Flex flexDirection='row' mb='30'>
-                                    <Flex flexDirection='column' w='350px'>
+                                <Flex sx={styles.BothInputs}>
+                                    <Flex sx={styles.InputContainer}>
                                         <FormControl isRequired>
                                             <CustomInput
                                                 label='NOMBRES'
@@ -210,7 +210,7 @@ export default function ShowPersonInfo({ isOpen, onClose, modalMode = "add", doc
                                             />
                                         </FormControl>
                                     </Flex>
-                                    <Flex flexDirection='column' ml='50' w='350px'>
+                                    <Flex sx={styles.InputContainerLeft}>
                                         <FormControl isRequired>
                                             <CustomInput
                                                 label='APELLIDOS'
@@ -222,8 +222,8 @@ export default function ShowPersonInfo({ isOpen, onClose, modalMode = "add", doc
                                         </FormControl>
                                     </Flex>
                                 </Flex>
-                                <Flex flexDirection='row' mb='30'>
-                                    <Flex flexDirection='column' w='350px'>
+                                <Flex sx={styles.BothInputs}>
+                                    <Flex sx={styles.InputContainer}>
                                         <FormControl isRequired>
                                             <CustomInput
                                                 label='TELEFONO CASA'
@@ -234,7 +234,7 @@ export default function ShowPersonInfo({ isOpen, onClose, modalMode = "add", doc
                                             />
                                         </FormControl>
                                     </Flex>
-                                    <Flex flexDirection='column' ml='50' w='350px'>
+                                    <Flex sx={styles.InputContainerLeft}>
                                         <FormControl isRequired>
                                             <CustomInput
                                                 label='SEGURO MÉDICO'
@@ -246,8 +246,8 @@ export default function ShowPersonInfo({ isOpen, onClose, modalMode = "add", doc
                                         </FormControl>
                                     </Flex>
                                 </Flex>
-                                <Flex flexDirection='row' mb='30'>
-                                    <Flex flexDirection='column' w='750px'>
+                                <Flex sx={styles.BothInputs}>
+                                    <Flex sx={styles.InputHouse}>
                                         <FormControl isRequired>
                                             <CustomInput
                                                 label='DIRECCIÓN CASA'
@@ -259,8 +259,8 @@ export default function ShowPersonInfo({ isOpen, onClose, modalMode = "add", doc
                                         </FormControl>
                                     </Flex>
                                 </Flex>
-                                <Flex flexDirection='row' mb='30'>
-                                    <Flex flexDirection='column' w='350px'>
+                                <Flex sx={styles.BothInputs}>
+                                    <Flex sx={styles.InputContainer}>
                                         <FormControl isRequired>
                                             <CustomInput
                                                 label='GRUPO SANGUÍNEO'
@@ -271,7 +271,7 @@ export default function ShowPersonInfo({ isOpen, onClose, modalMode = "add", doc
                                             />
                                         </FormControl>
                                     </Flex>
-                                    <Flex flexDirection='column' ml='50' w='350px'>
+                                    <Flex sx={styles.InputContainerLeft}>
                                         {!isProjectLoading && 
                                         <FormControl isRequired>
                                             <CustomSelect
@@ -292,8 +292,8 @@ export default function ShowPersonInfo({ isOpen, onClose, modalMode = "add", doc
                                         }
                                     </Flex>
                                 </Flex>
-                                <Flex flexDirection='row' mb='30'>
-                                    <Flex flexDirection='column' w='350px'>
+                                <Flex sx={styles.BothInputs}>
+                                    <Flex sx={styles.InputContainer}>
                                         <FormControl isRequired>
                                             <CustomInput
                                                 label='NOMBRE APODERADO'
@@ -304,7 +304,7 @@ export default function ShowPersonInfo({ isOpen, onClose, modalMode = "add", doc
                                             />
                                         </FormControl>
                                     </Flex>
-                                    <Flex flexDirection='column' ml='50' w='350px'>
+                                    <Flex sx={styles.InputContainerLeft}>
                                         <FormControl isRequired>
                                             <CustomInput
                                                 label='APELLIDO APODERADO'
@@ -316,8 +316,8 @@ export default function ShowPersonInfo({ isOpen, onClose, modalMode = "add", doc
                                         </FormControl>
                                     </Flex>
                                 </Flex>
-                                <Flex flexDirection='row' mb='30'>
-                                    <Flex flexDirection='column' w='350px'>
+                                <Flex sx={styles.BothInputs}>
+                                    <Flex sx={styles.InputContainer}>
                                         <FormControl isRequired>
                                             <CustomInput
                                                 label='TELEFONO APODERADO'
@@ -328,7 +328,7 @@ export default function ShowPersonInfo({ isOpen, onClose, modalMode = "add", doc
                                             />
                                         </FormControl>
                                     </Flex>
-                                    <Flex flexDirection='column' ml='50' w='350px'>
+                                    <Flex sx={styles.InputContainerLeft}>
                                         <FormControl isRequired>
                                             <CustomInput
                                                 label='CONTACTO EMERGENCIA'

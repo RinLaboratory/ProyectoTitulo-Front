@@ -60,6 +60,7 @@ export default function PersonList({ isOpen, onClose, listMode }) {
       )
 
     const Tabs = ["NOMBRES", "APELLIDO", "RUT", ""]
+    const TabsOn850 = ["NOMBRES", "RUT"]
 
     const [document, setDocument] = useState()
 
@@ -177,7 +178,7 @@ export default function PersonList({ isOpen, onClose, listMode }) {
                             }
                             onClick={handleImportButton}
                         >
-                            IMPORTAR
+                            <Text sx={styles.Import}>IMPORTAR</Text>
                         </Button>
                         }
                     </Flex>
@@ -186,13 +187,37 @@ export default function PersonList({ isOpen, onClose, listMode }) {
                         <TableContainer w="100%">
                             <Table variant='striped' w="100%">
                                 <Thead>
-                                <Tr>
+                                <Tr sx={styles.HideOn850px}>
                                     {Tabs.map((data, key) => (
                                         <Th key={key} textAlign="center" sx={regular18} color="#000000" fontWeight='400'>{data}</Th>
                                     ))}
                                 </Tr>
+                                <Tr sx={styles.ShowOn850px}>
+                                    {TabsOn850.map((data, key) => (
+                                        <Th key={key} textAlign="center" sx={regular18} color="#000000" fontWeight='400'>{data}</Th>
+                                    ))}
+                                </Tr>
                                 </Thead>
-                                <Tbody>
+                                <Tbody sx={styles.ShowOn850px}>
+                                    {!isProjectLoading ? (persons && persons.map((data, key) => (
+                                        <Tr key={key} textAlign="center">
+                                            <Td textAlign="center" sx={styles.TableTextURL} color="#000000">
+                                                {listMode === 'edit' && 
+                                                <Box onClick={() => handleEditButton(data)}>
+                                                    {data.name} {data.lastname}
+                                                </Box>
+                                                }
+                                                {listMode === 'delete' && 
+                                                <Box onClick={() => handleDeleteButton(data)}>
+                                                    {data.name} {data.lastname}
+                                                </Box>
+                                                }
+                                            </Td>
+                                            <Td textAlign="center" sx={regular18} color="#000000">{data.rut}</Td>
+                                        </Tr>
+                                    ))) : <></>}
+                                </Tbody>
+                                <Tbody sx={styles.HideOn850px}>
                                     {!isProjectLoading ? (persons && persons.map((data, key) => (
                                         <Tr key={key} textAlign="center">
                                             <Td textAlign="center" sx={regular18} color="#000000">{data.name}</Td>

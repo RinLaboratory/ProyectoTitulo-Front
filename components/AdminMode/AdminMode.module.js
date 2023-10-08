@@ -7,27 +7,27 @@ export const styles = {
         pb: '10',
         borderRadius: '12px',
         flexDirection: 'column',
+        '@media (max-width: 1012px)': {
+            w: '417px',
+        },
     },
     OptionContainer: {
+        flexWrap: 'wrap',
         bgColor: '#3468A5',
         mt: '5',
         ml: '10',
         mr: '10',
-        w: '892px',
-        h: '148px',
         pl: '3',
         alignItems: 'center',
         borderRadius: '12px',
-    },
-    BigIconContainer: {
-        bgColor: white,
-        mr: '5',
-        borderRadius: '12px',
-    },
-    BigIcon: {
-        w: '150px',
-        h: '150px',
-        color: '#3468A5',
+        '@media (max-width: 1012px)': {
+            w: '337px',
+            h: '288px',
+        },
+        '@media (min-width: 1013px)': {
+            w: '892px',
+            h: '148px',
+        },
     },
     LeftOptionContainer: {
         flexDirection: 'column',
@@ -48,5 +48,10 @@ export const styles = {
         ml: '2',
         mr: '2',
         maxW: '250px',
+        minW: '250px',
     },
+    Buttons: {
+        justifyContent: 'space-around',
+        flexWrap: 'wrap',
+    }
 }

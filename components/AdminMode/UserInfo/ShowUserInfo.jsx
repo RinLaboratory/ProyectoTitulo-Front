@@ -159,7 +159,7 @@ export default function ShowUserInfo({ isOpen, onClose, modalMode = "add", docum
             <Flex sx={styles.MainContainer}>
                 <Flex w='1254px' flexDirection='column' ml='5' mr='5'>
                     <Flex flexDirection='row' mt='3'>
-                        <Flex flexDirection='column' mr='5' alignItems='center' alignContent='center'>
+                        <Flex sx={styles.ProfilePicture}>
                             <Flex bgColor='#D9D9D9'>
                                 <Icon sx={styles.LogoutIcon} viewBox='-1 -1 17 17'>
                                     <IoPersonSharp />
@@ -167,10 +167,7 @@ export default function ShowUserInfo({ isOpen, onClose, modalMode = "add", docum
                             </Flex>
                         </Flex>
                             <Flex flexDirection='column'>
-                                <Flex flexDirection='row' mb='30'>
-                                </Flex>
-                                <Flex flexDirection='row' mb='30'>
-                                    <Flex flexDirection='column' w='400px'>
+                                    <Flex sx={styles.CustomInput}>
                                         <FormControl isRequired>
                                             <CustomInput
                                                 label='NOMBRE DE USUARIO'
@@ -181,9 +178,7 @@ export default function ShowUserInfo({ isOpen, onClose, modalMode = "add", docum
                                             />
                                         </FormControl>
                                     </Flex>
-                                </Flex>
-                                <Flex flexDirection='row' mb='30'>
-                                    <Flex flexDirection='column' w='400px'>
+                                    <Flex sx={styles.CustomInput}>
                                         <FormControl isRequired>
                                             <CustomInput
                                                 label='CORREO ELECTRÓNICO'
@@ -194,9 +189,7 @@ export default function ShowUserInfo({ isOpen, onClose, modalMode = "add", docum
                                             />
                                         </FormControl>
                                     </Flex>
-                                </Flex>
-                                <Flex flexDirection='row' mb='30'>
-                                    <Flex flexDirection='column' w='400px'>
+                                    <Flex sx={styles.CustomInput}>
                                             <CustomInput
                                                 label='CONTRASEÑA'
                                                 value={data.password}
@@ -206,9 +199,7 @@ export default function ShowUserInfo({ isOpen, onClose, modalMode = "add", docum
                                                 onChange={handleInputChange}
                                             />
                                     </Flex>
-                                </Flex>
-                                <Flex flexDirection='row' mb='30'>
-                                    <Flex flexDirection='column' w='400px'>
+                                    <Flex sx={styles.CustomInput}>
                                             <CustomInput
                                                 label='CONFIRMAR CONTRASEÑA'
                                                 value={data.confirmPassword}
@@ -218,7 +209,6 @@ export default function ShowUserInfo({ isOpen, onClose, modalMode = "add", docum
                                                 onChange={handleInputChange}
                                             />
                                     </Flex>
-                                </Flex>
                             </Flex>
                     </Flex>
                 </Flex>

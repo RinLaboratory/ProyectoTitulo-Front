@@ -38,6 +38,7 @@ export default function UserList({ isOpen, onClose, userListMode }) {
     const handleShowPersonInfo = () => setShowPersonInfo(!showPersonInfo)
 
     const Tabs = ["NOMBRE DE USUARIO", "CORREO ELECTRÓNICO", ""]
+    const TabsOn850 = ["USUARIO", "CORREO"]
 
     const [document, setDocument] = useState()
 
@@ -113,13 +114,36 @@ export default function UserList({ isOpen, onClose, userListMode }) {
                         <TableContainer w="100%">
                             <Table variant='striped' w="100%">
                                 <Thead>
-                                <Tr>
+                                <Tr sx={styles.HideOn850px}>
                                     {Tabs.map((data, key) => (
                                         <Th key={key} textAlign="center" sx={regular18} color="#000000" fontWeight='400'>{data}</Th>
                                     ))}
                                 </Tr>
+                                <Tr sx={styles.ShowOn850px}>
+                                    {TabsOn850.map((data, key) => (
+                                        <Th key={key} textAlign="center" sx={regular18} color="#000000" fontWeight='400'>{data}</Th>
+                                    ))}
+                                </Tr>
                                 </Thead>
-                                <Tbody>
+                                <Tbody sx={styles.ShowOn850px}>
+                                    {!isProjectLoading ? user.map((data, key) => (
+                                        <Tr key={key} textAlign="center">
+                                            <Td textAlign="center" sx={styles.TableTextURL} color="#000000" >
+                                                {userListMode === 'edit' && 
+                                                <Box onClick={() => handleEditButton(data)}>
+                                                    {data.username}
+                                                </Box>
+                                                }
+                                                {userListMode === 'delete' && 
+                                                <Box onClick={() => handleDeleteButton(data)}>
+                                                    {data.username}
+                                                </Box>
+                                                }</Td>
+                                            <Td textAlign="center" sx={regular18} color="#000000">{data.email}</Td>
+                                        </Tr>
+                                    )) : <></>}
+                                </Tbody>
+                                <Tbody sx={styles.HideOn850px}>
                                     {!isProjectLoading ? user.map((data, key) => (
                                         <Tr key={key} textAlign="center">
                                             <Td textAlign="center" sx={regular18} color="#000000">{data.username}</Td>

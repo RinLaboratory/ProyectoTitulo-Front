@@ -17,16 +17,6 @@ export const styles = {
         alignItems: 'center',
         borderRadius: '12px',
     },
-    BigIconContainer: {
-        bgColor: white,
-        mr: '5',
-        borderRadius: '12px',
-    },
-    BigIcon: {
-        w: '150px',
-        h: '150px',
-        color: '#3468A5',
-    },
     LeftOptionContainer: {
         flexDirection: 'column',
     },
@@ -42,4 +32,51 @@ export const styles = {
         mr: '2',
         color: '#3468A5'
       },
+    InputContainer: {
+        flexDirection: 'column',
+        w: '350px',
+    },
+    InputContainerLeft: {
+        flexDirection: 'column',
+        w: '350px',
+        '@media (min-width: 1168px)': {
+            ml: '50',
+        },
+    },
+    BothInputs: {
+        flexDirection: 'row',
+        flexWrap: 'wrap',
+        mb: '30',
+        '@media (max-width: 1169px)': {
+            w: '358px',
+        },
+    },
+    InputHouse: {
+        flexDirection: 'column',
+        w: '750px',
+    },
+    ProfilePic: {
+        '@media (max-width: 1169px)': {
+            display: 'none',
+        },
+        bgColor: '#D9D9D9'
+    },
+    rutProfile: {
+        flexDirection: 'column',
+        mr: '5',
+        alignItems: 'center',
+        alignContent: 'center',
+        '@media (max-width: 1168px)': {
+            w: '350px',
+        },
+    },
+    asd: {
+        mt: '3',
+        '@media (min-width: 1168px)': {
+            flexDirection: 'row',
+        },
+        '@media (max-width: 1169px)': {
+            flexDirection: 'column',
+        },
+    }
 }

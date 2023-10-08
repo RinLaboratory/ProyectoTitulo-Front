@@ -137,7 +137,7 @@ export default function AdminMode() {
                 <Flex key={key} sx={styles.OptionContainer}>
                     <Flex sx={styles.LeftOptionContainer}>
                         <Text sx={regular18}>{data.text}</Text>
-                        <Flex justifyContent='space-around'>
+                        <Flex sx={styles.Buttons}>
                             <Button
                             sx={styles.Button}
                             bg='#FF2B91'
