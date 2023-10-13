@@ -41,6 +41,13 @@ yarn start
 Then, open [http://localhost:3000](http://localhost:3000) with your browser to see the production server.
 Keep in mind that everytime you update a file here, you must re-compile the production server to apply changes.
 
+## .env.example
+
+- `JWT_SECRET` is the JWT seed that is used to generate the user token. Must be the same as the Backend.
+- `URL` is the URL this app is going to be located.
+- `BACKEND_URL` is the URL where the Backend is located.
+- `DOMAIN` is the domain's page where is going to be.
+
 ## Learn More
 
 This project uses:
