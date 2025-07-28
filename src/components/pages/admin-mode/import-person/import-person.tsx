@@ -24,7 +24,7 @@ import { HiOutlineDocumentAdd, HiOutlineDownload } from "react-icons/hi";
 import Swal from "sweetalert2";
 import { white } from "~/utils/colors";
 import { URL } from "~/utils/consts";
-import postFile from "~/utils/postFile";
+import postFile from "~/utils/post-file";
 import Link from "next/link";
 
 interface ImportPersonProps {
