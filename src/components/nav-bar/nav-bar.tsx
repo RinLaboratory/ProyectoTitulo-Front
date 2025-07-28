@@ -21,7 +21,7 @@ import {
   IoHomeOutline,
 } from "react-icons/io5";
 
-import { styles } from "./navbar.module";
+import { styles } from "./nav-bar.module";
 import { softBlue, white, yellow } from "~/utils/colors";
 import { URL } from "~/utils/consts";
 import { fetcher } from "~/utils/fetcher";
