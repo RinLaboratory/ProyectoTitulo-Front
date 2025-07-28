@@ -10,7 +10,7 @@ import { IoKeySharp } from "react-icons/io5";
 import { styles } from "./UserLogin.module";
 import CustomInput from "../CustomInputs/CustomInput";
 import { white } from "~/utils/colors";
-import post from "~/utils/post";
+import login from "~/app/(auth)/actions";
 
 export default function UserLogin() {
   const router = useRouter();
@@ -34,7 +34,7 @@ export default function UserLogin() {
       });
     } else {
       try {
-        const response = await post("/api/auth/login", data);
+        const response = await login(data);
         if (response.status === "success") {
           localStorage.setItem("userdata", JSON.stringify(response.data));
           router.push("/");

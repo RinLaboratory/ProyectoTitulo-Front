@@ -12,11 +12,14 @@ export async function fetcher<T>(url: string) {
     referrerPolicy: "no-referrer",
   });
 
-  const json = (await response.json()) as T;
+  const json = (await response.json()) as {
+    status: "success";
+    data: { data: T };
+  };
 
   if (!response.ok) {
     throw new Error("An error occurred while fetching the data.");
   }
 
-  return json;
+  return json.data.data;
 }
