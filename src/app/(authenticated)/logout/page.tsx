@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import logout from "../../../components/Actions/actions";
+import logout from "./actions";
 import { useEffect } from "react";
 
 export default function LogoutPage() {
