@@ -1,4 +1,4 @@
-import NavBar from "~/components/nav-bar/nav-bar";
+import NavBar from "~/components/navbar/navbar";
 
 export default function AuthenticatedLayout(props: {
   children: React.ReactNode;
