@@ -21,7 +21,7 @@ import {
   IoHomeOutline,
 } from "react-icons/io5";
 
-import { styles } from "./NavBar.module";
+import { styles } from "./navbar.module";
 import { softBlue, white, yellow } from "~/utils/colors";
 import { URL } from "~/utils/consts";
 import { fetcher } from "~/utils/fetcher";
@@ -78,7 +78,7 @@ export default function NavBar() {
         {!isProjectLoading && (
           <>
             <Box sx={styles.UserInfoContainer}>
-              <Link href={"/userInfo"} passHref>
+              <Link href={"/user-info"} passHref>
                 <Icon sx={styles.UserIcon} viewBox="-1 -1 17 17">
                   <IoPerson />
                 </Icon>
