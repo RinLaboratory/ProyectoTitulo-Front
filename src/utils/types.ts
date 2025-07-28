@@ -58,6 +58,14 @@ export const HistorySchema = z.object({
 
 export type THistory = z.infer<typeof HistorySchema>;
 
+export const InsertHistorySchema = HistorySchema.pick({
+  enviado: true,
+  sintomas: true,
+  tratamiento: true,
+});
+
+export type TInsertHistory = z.infer<typeof InsertHistorySchema>;
+
 export type TPersonState = "reposo" | "retirado" | "atendido";
 
 export interface TIndexData {
