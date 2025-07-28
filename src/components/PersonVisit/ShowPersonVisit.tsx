@@ -31,7 +31,7 @@ import { URL } from "~/utils/consts";
 import post from "~/utils/post";
 import type { KeyedMutator } from "swr";
 import { mutate as historyMutate } from "swr";
-import type { THistory, TPerson } from "~/utils/types";
+import type { THistory, TInsertHistory, TPerson } from "~/utils/types";
 
 interface ShowPersonVisitProps {
   isOpen: boolean;
@@ -52,10 +52,7 @@ export default function ShowPersonVisit({
   documents,
   mutate,
 }: ShowPersonVisitProps) {
-  const defaultData: THistory = {
-    _id: "",
-    timestamp: new Date(),
-    personId: person?._id ?? "",
+  const defaultData: TInsertHistory = {
     sintomas: "",
     tratamiento: "",
     enviado: "",
@@ -75,14 +72,14 @@ export default function ShowPersonVisit({
 
   const toast = useToast();
   const [mode, setMode] = useState(modalMode);
-  const [data, setData] = useState<THistory>(defaultData);
+  const [history, setHistory] = useState<TInsertHistory>(defaultData);
 
   const handleInputChange: ChangeEventHandler<HTMLTextAreaElement> = (
     event
   ) => {
     if (mode !== "view") {
-      setData({
-        ...data,
+      setHistory({
+        ...history,
         [event.target.name]: event.target.value,
       });
     }
@@ -91,17 +88,17 @@ export default function ShowPersonVisit({
   const handleCheckBoxChange = (place: "Clase" | "Casa" | "Urgencias") => {
     if (mode !== "view") {
       if (
-        (place === "Clase" && data.enviado === "Clase") ||
-        (place === "Casa" && data.enviado === "Casa") ||
-        (place === "Urgencias" && data.enviado === "Urgencias")
+        (place === "Clase" && history.enviado === "Clase") ||
+        (place === "Casa" && history.enviado === "Casa") ||
+        (place === "Urgencias" && history.enviado === "Urgencias")
       ) {
-        setData({
-          ...data,
+        setHistory({
+          ...history,
           enviado: "",
         });
       } else {
-        setData({
-          ...data,
+        setHistory({
+          ...history,
           enviado: place,
         });
       }
@@ -113,20 +110,27 @@ export default function ShowPersonVisit({
     else setMode("view");
   };
 
+  // Edit
   const handleApplyButton = async () => {
+    if (!document?._id || !document.personId || !mutate) return;
+
     setMode("view");
-    await post(`${URL}/editPersonHistoryInfo`, data);
+    const constructedData: THistory = {
+      ...history,
+      _id: document._id,
+      personId: document.personId,
+      timestamp: new Date(),
+    };
+    await post(`${URL}/editPersonHistoryInfo`, constructedData);
     const backup: THistory[] = [];
     documents?.forEach((element) => {
-      if (element._id === data._id) {
-        backup.push(data);
+      if (element._id === constructedData._id) {
+        backup.push(constructedData);
       } else {
         backup.push(element);
       }
     });
-    if (mutate) {
-      await mutate(backup, false);
-    }
+    await mutate(backup, false);
     toast({
       title: "Visita editada.",
       description: "La visita se ha editado exitosamente en el sistema.",
@@ -136,14 +140,15 @@ export default function ShowPersonVisit({
     });
   };
 
+  // Add
   const handleAddButton = async () => {
     setMode("view");
-    const constructedData = {
-      ...data,
+    const constructedData: Partial<THistory> = {
+      ...history,
+      personId: person?._id,
       timestamp: new Date(),
     };
     await post(`${URL}/setPersonHistoryInfo`, constructedData);
-    setData(constructedData);
     await historyMutate(`${URL}/getPersonHistoryInfo?personId=${person?._id}`);
     toast({
       title: "Visita agregada.",
@@ -154,7 +159,10 @@ export default function ShowPersonVisit({
     });
   };
 
+  // delete
   const handleDeleteButton = async () => {
+    if (!document?._id || !mutate) return;
+
     await Swal.fire({
       title: "¿Estás seguro que quieres hacer esto?",
       text: "Esta acción no se puede revertir",
@@ -167,7 +175,7 @@ export default function ShowPersonVisit({
     }).then(async (result) => {
       if (result.isConfirmed) {
         const response = await post(`${URL}/deletePersonHistoryInfo`, {
-          _id: data._id,
+          _id: document._id,
         });
         if (response.status === "success") {
           await Swal.fire(
@@ -176,11 +184,9 @@ export default function ShowPersonVisit({
             "success"
           );
           const backup = documents?.filter(
-            (element) => element._id !== data._id
+            (element) => element._id !== document._id
           );
-          if (mutate) {
-            await mutate(backup, false);
-          }
+          await mutate(backup, false);
           onClose();
         } else {
           await Swal.fire("Error", "Algo salió mal.", "error");
@@ -192,10 +198,10 @@ export default function ShowPersonVisit({
   useEffect(() => {
     if (!isOpen) {
       setMode(modalMode);
-      setData(defaultData);
+      setHistory(defaultData);
     } else {
       if (document?.personId) {
-        setData(document);
+        setHistory(document);
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -214,14 +220,14 @@ export default function ShowPersonVisit({
         <Flex flexDirection="column" pl="6" pr="6">
           <CustomTextArea
             label="SINTOMAS / LESIONES"
-            value={data.sintomas}
+            value={history.sintomas}
             name="sintomas"
             onChange={handleInputChange}
           />
           <Box h="5" />
           <CustomTextArea
             label="TRATAMIENTO"
-            value={data.tratamiento}
+            value={history.tratamiento}
             name="tratamiento"
             onChange={handleInputChange}
           />
@@ -234,7 +240,7 @@ export default function ShowPersonVisit({
                 borderWidth="1px"
                 borderColor={softBlue}
                 mr="4"
-                bgColor={data.enviado === "Clase" ? softBlue : ""}
+                bgColor={history.enviado === "Clase" ? softBlue : ""}
               />
               <Text sx={regular12}>ENVIADO A CLASE</Text>
             </Flex>
@@ -246,7 +252,7 @@ export default function ShowPersonVisit({
                 borderWidth="1px"
                 borderColor={softBlue}
                 mr="4"
-                bgColor={data.enviado === "Casa" ? softBlue : ""}
+                bgColor={history.enviado === "Casa" ? softBlue : ""}
               />
               <Text sx={regular12}>ENVIADO A CASA</Text>
             </Flex>
@@ -258,7 +264,7 @@ export default function ShowPersonVisit({
                 borderWidth="1px"
                 borderColor={softBlue}
                 mr="4"
-                bgColor={data.enviado === "Urgencias" ? softBlue : ""}
+                bgColor={history.enviado === "Urgencias" ? softBlue : ""}
               />
               <Text sx={regular12}>ENVIADO A URGENCIAS</Text>
             </Flex>
