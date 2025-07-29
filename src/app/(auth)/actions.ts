@@ -19,12 +19,14 @@ export default async function login({
   });
   if (response.status === "success") {
     const jwt = response.token ?? "";
-    (await cookies()).set("jwt", jwt, {
+    const cookieStore = await cookies();
+
+    cookieStore.set("jwt", jwt, {
       httpOnly: true,
-      secure: false,
-      sameSite: "lax",
       maxAge: 86400,
-      domain: DOMAIN,
+      ...(env.NODE_ENV === "development"
+        ? { secure: false, sameSite: "lax", domain: DOMAIN }
+        : { secure: true, sameSite: "strict", domain: DOMAIN }),
       path: "/",
     });
   }
