@@ -6,7 +6,7 @@ import { URL } from "~/utils/consts";
 import { fetcher } from "~/utils/fetcher";
 import useSWR from "swr";
 import ShowAdminInfo from "~/components/pages/admin-info/show-admin-info";
-import type { TSafeUser } from "~/utils/types";
+import type { TSafeUser } from "~/utils/validators";
 
 export default function UserInfo() {
   const { data: user, isLoading: isProjectLoading } = useSWR<TSafeUser>(

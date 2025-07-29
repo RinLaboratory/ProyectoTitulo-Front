@@ -8,7 +8,7 @@ import React, { useState } from "react";
 import { IoPersonSharp, IoDocumentTextOutline } from "react-icons/io5";
 import { styles } from "./show-user-info.module";
 import ChangePassword from "../change-password/change-password";
-import type { TSafeUser } from "~/utils/types";
+import type { TSafeUser } from "~/utils/validators";
 import CustomInput from "~/components/ui/input/input";
 
 interface ShowUserInfoProps {

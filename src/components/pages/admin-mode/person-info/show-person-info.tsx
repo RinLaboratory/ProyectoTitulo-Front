@@ -31,7 +31,7 @@ import type { KeyedMutator } from "swr";
 import useSWR from "swr";
 import CustomSelect from "~/components/ui/select/select";
 import { mutate as personMutate } from "swr";
-import type { TArea, TPerson } from "~/utils/types";
+import type { TArea, TPerson } from "~/utils/validators";
 
 interface ShowPersonInfoProps {
   isOpen: boolean;

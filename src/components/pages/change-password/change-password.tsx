@@ -22,7 +22,7 @@ import CustomInput from "../../ui/input/input";
 import { white } from "~/utils/colors";
 import { URL } from "~/utils/consts";
 import post from "~/utils/post";
-import type { TSafeUser } from "~/utils/types";
+import type { TSafeUser } from "~/utils/validators";
 
 interface ChangePasswordProps {
   isOpen: boolean;

@@ -30,7 +30,7 @@ import { URL } from "~/utils/consts";
 import post from "~/utils/post";
 import type { KeyedMutator } from "swr";
 import { mutate as historyMutate } from "swr";
-import type { THistory, TInsertHistory, TPerson } from "~/utils/types";
+import type { THistory, TInsertHistory, TPerson } from "~/utils/validators";
 import CustomTextArea from "~/components/ui/text-area/text-area";
 
 interface ShowPersonVisitProps {

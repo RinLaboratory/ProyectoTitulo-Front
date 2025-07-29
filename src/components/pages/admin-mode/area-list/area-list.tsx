@@ -35,7 +35,7 @@ import { URL } from "~/utils/consts";
 import post from "~/utils/post";
 import { fetcher } from "~/utils/fetcher";
 import useSWR from "swr";
-import type { TArea } from "~/utils/types";
+import type { TArea } from "~/utils/validators";
 
 interface AreaListProps {
   isOpen: boolean;

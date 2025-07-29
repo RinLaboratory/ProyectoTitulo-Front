@@ -32,7 +32,7 @@ import { URL } from "~/utils/consts";
 import { fetcher } from "~/utils/fetcher";
 import useSWR from "swr";
 import post from "~/utils/post";
-import type { TSafeUser } from "~/utils/types";
+import type { TSafeUser } from "~/utils/validators";
 
 interface UserListProps {
   isOpen: boolean;

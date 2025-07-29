@@ -23,7 +23,7 @@ import { IoEyeSharp } from "react-icons/io5";
 import Link from "next/link";
 import { regular18 } from "~/styles/fonts";
 import { styles } from "./resting.module";
-import type { TArea, TIndexData, TPerson, TPersonState } from "~/utils/types";
+import type { TArea, TIndexData, TPerson, TPersonState } from "~/utils/validators";
 
 interface RestingProps {
   isOpen: boolean;

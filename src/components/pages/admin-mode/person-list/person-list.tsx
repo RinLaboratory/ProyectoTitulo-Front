@@ -37,7 +37,7 @@ import { fetcher } from "~/utils/fetcher";
 import useSWR from "swr";
 import ImportPerson from "../import-person/import-person";
 import { white } from "~/utils/colors";
-import type { TArea, TPerson } from "~/utils/types";
+import type { TArea, TPerson } from "~/utils/validators";
 
 interface PersonListProps {
   isOpen: boolean;

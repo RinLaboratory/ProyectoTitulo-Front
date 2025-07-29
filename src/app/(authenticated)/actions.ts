@@ -3,7 +3,7 @@
 import { cookies } from "next/headers";
 import { env } from "~/env/env";
 import { fetcher } from "~/utils/fetcher";
-import type { TSafeUser } from "~/utils/types";
+import type { TSafeUser } from "~/utils/validators";
 
 export async function getAccountInfo(): Promise<TSafeUser | undefined> {
   const cookieStore = await cookies();

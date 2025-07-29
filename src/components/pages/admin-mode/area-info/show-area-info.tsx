@@ -29,7 +29,7 @@ import { fetcher } from "~/utils/fetcher";
 import useSWR from "swr";
 import CustomSelect from "~/components/ui/select/select";
 import { regular12 } from "~/styles/fonts";
-import type { TArea } from "~/utils/types";
+import type { TArea } from "~/utils/validators";
 
 interface ShowAreaInfoProps {
   isOpen: boolean;

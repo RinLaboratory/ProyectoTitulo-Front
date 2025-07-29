@@ -26,7 +26,7 @@ import ShowPersonVisit from "../person-visit/show-person-visit";
 import { URL } from "~/utils/consts";
 import { fetcher } from "~/utils/fetcher";
 import useSWR from "swr";
-import type { THistory, TPerson } from "~/utils/types";
+import type { THistory, TPerson } from "~/utils/validators";
 
 interface ShowPersonHistoryProps {
   isOpen: boolean;

@@ -12,7 +12,7 @@ import Resting from "./resting/resting";
 import { fetcher } from "~/utils/fetcher";
 import useSWR from "swr";
 import { URL } from "~/utils/consts";
-import type { TIndexData, TPersonState } from "~/utils/types";
+import type { TIndexData, TPersonState } from "~/utils/validators";
 
 export default function Index() {
   const { data: indexData, isLoading: isProjectLoading } = useSWR<TIndexData>(

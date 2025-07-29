@@ -28,7 +28,7 @@ import post from "~/utils/post";
 import { EmailRegex } from "~/utils/regex";
 import type { KeyedMutator } from "swr";
 import { mutate as userMutate } from "swr";
-import type { TSafeUser } from "~/utils/types";
+import type { TSafeUser } from "~/utils/validators";
 
 interface ShowUserInfoProps {
   isOpen: boolean;

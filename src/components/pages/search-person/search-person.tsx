@@ -20,7 +20,7 @@ import { styles } from "./search-person.module";
 import { URL } from "~/utils/consts";
 import { fetcher } from "~/utils/fetcher";
 import useSWR from "swr";
-import type { TArea, TPerson } from "~/utils/types";
+import type { TArea, TPerson } from "~/utils/validators";
 import CustomSelect from "~/components/ui/select/select";
 import CustomInput from "~/components/ui/input/input";
 

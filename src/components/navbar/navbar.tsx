@@ -26,7 +26,7 @@ import { softBlue, white, yellow } from "~/utils/colors";
 import { URL } from "~/utils/consts";
 import { fetcher } from "~/utils/fetcher";
 import useSWR from "swr";
-import type { TSafeUser } from "~/utils/types";
+import type { TSafeUser } from "~/utils/validators";
 
 export default function NavBar() {
   const [isLargerThan1300] = useMediaQuery("(min-width: 1300px)");

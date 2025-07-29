@@ -11,7 +11,7 @@ import { HiDocumentAdd } from "react-icons/hi";
 import { styles } from "./show-admin-info.module";
 import CustomInput from "../../ui/input/input";
 import ChangePassword from "../change-password/change-password";
-import type { TSafeUser } from "~/utils/types";
+import type { TSafeUser } from "~/utils/validators";
 
 interface ShowAdminInfoProps {
   user: TSafeUser | undefined;

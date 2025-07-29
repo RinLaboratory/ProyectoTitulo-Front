@@ -14,7 +14,7 @@ import { URL } from "~/utils/consts";
 import { fetcher } from "~/utils/fetcher";
 import useSWR from "swr";
 import ShowPersonVisit from "../person-visit/show-person-visit";
-import type { TArea, TPerson } from "~/utils/types";
+import type { TArea, TPerson } from "~/utils/validators";
 import CustomInput from "~/components/ui/input/input";
 import CustomSelect from "~/components/ui/select/select";
 
