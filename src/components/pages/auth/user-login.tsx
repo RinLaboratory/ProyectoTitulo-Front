@@ -1,29 +1,38 @@
 "use client";
 
 import { regular18 } from "~/styles/fonts";
-import { Flex, Icon, Text, Button, FormControl } from "@chakra-ui/react";
+import { Flex, Icon, Text, Button } from "@chakra-ui/react";
 import { useRouter } from "next/navigation";
-import type { ChangeEvent } from "react";
-import React, { useState } from "react";
+import React from "react";
 import Swal from "sweetalert2";
 import { IoKeySharp } from "react-icons/io5";
 import { styles } from "./user-login.module";
 import CustomInput from "../../ui/input/input";
 import { white } from "~/utils/colors";
 import login from "~/app/(auth)/actions";
+import {
+  FormControl,
+  FormField,
+  FormFieldMessage,
+  FormItem,
+  FormProvider,
+  useForm,
+} from "~/components/ui/form/form";
+import type { TLogin } from "~/utils/validators";
+import { LoginSchema } from "~/utils/validators";
 
 export default function UserLogin() {
   const router = useRouter();
-  const [data, setData] = useState({
-    email: "",
-    password: "",
+  const form = useForm({
+    schema: LoginSchema,
+    defaultValues: {
+      email: "",
+      password: "",
+    },
   });
 
-  const handleLoginFunction = async (
-    event: React.BaseSyntheticEvent<object, unknown, unknown>
-  ) => {
-    event.preventDefault();
-    if (!data.email && !data.password) {
+  const handleLoginFunction = async (values: TLogin) => {
+    if (!values.email && !values.password) {
       await Swal.fire({
         title: "Credenciales Incompletas",
         text: "Complete las casillas de inicio de sesión e inténtelo nuevamente.",
@@ -34,7 +43,7 @@ export default function UserLogin() {
       });
     } else {
       try {
-        const response = await login(data);
+        const response = await login(values);
         if (response.status === "success") {
           localStorage.setItem("userdata", JSON.stringify(response.data));
           router.push("/");
@@ -63,54 +72,59 @@ export default function UserLogin() {
     }
   };
 
-  const handleInput = (e: ChangeEvent<HTMLInputElement>) => {
-    setData({
-      ...data,
-      [e.target.name]: e.target.value,
-    });
-  };
-
   return (
-    <Flex sx={styles.MainContainer}>
-      <Text sx={regular18} pb="5">
-        INICIO DE SESIÓN
-      </Text>
-      <form onSubmit={handleLoginFunction}>
-        <Flex flexDirection="column" pb="5">
-          <FormControl isRequired>
-            <CustomInput
-              label="CORREO ELECTRÓNICO"
-              value={data.email}
+    <FormProvider {...form}>
+      <Flex sx={styles.MainContainer}>
+        <Text sx={regular18} pb="5">
+          INICIO DE SESIÓN
+        </Text>
+        <>
+          <Flex flexDirection="column" pb="5">
+            <FormField
+              control={form.control}
               name="email"
-              onChange={handleInput}
+              render={({ field }) => (
+                <FormItem>
+                  <FormControl>
+                    <CustomInput label="CORREO ELECTRÓNICO" {...field} />
+                  </FormControl>
+                  <FormFieldMessage />
+                </FormItem>
+              )}
             />
-          </FormControl>
-        </Flex>
-        <Flex flexDirection="column" pb="5">
-          <FormControl isRequired>
-            <CustomInput
-              label="CONTRASEÑA"
-              type="password"
-              value={data.password}
+            <FormField
+              control={form.control}
               name="password"
-              onChange={handleInput}
+              render={({ field }) => (
+                <FormItem>
+                  <FormControl>
+                    <CustomInput
+                      label="CONTRASEÑA"
+                      type="password"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormFieldMessage />
+                </FormItem>
+              )}
             />
-          </FormControl>
-        </Flex>
-        <Button
-          sx={styles.Button}
-          bg="#FF2B91"
-          color={white}
-          leftIcon={
-            <Icon fontSize="24px" mb="1px" ml="1px">
-              <IoKeySharp />
-            </Icon>
-          }
-          type="submit"
-        >
-          INICIAR SESIÓN
-        </Button>
-      </form>
-    </Flex>
+          </Flex>
+          <Button
+            sx={styles.Button}
+            bg="#FF2B91"
+            color={white}
+            leftIcon={
+              <Icon fontSize="24px" mb="1px" ml="1px">
+                <IoKeySharp />
+              </Icon>
+            }
+            type="submit"
+            onClick={form.handleSubmit(handleLoginFunction)}
+          >
+            INICIAR SESIÓN
+          </Button>
+        </>
+      </Flex>
+    </FormProvider>
   );
 }
