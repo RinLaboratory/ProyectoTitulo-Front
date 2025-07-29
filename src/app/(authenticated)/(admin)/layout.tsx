@@ -10,7 +10,7 @@ export default async function AdminLayout(props: {
     redirect("/login");
   }
 
-  if (currentUser.rol !== "admin") {
+  if (currentUser.rol !== "*") {
     notFound();
   }
 
