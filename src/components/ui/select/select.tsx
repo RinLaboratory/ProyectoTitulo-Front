@@ -1,6 +1,7 @@
 import React from "react";
 
 import { FormControl, FormLabel, InputGroup, Text } from "@chakra-ui/react";
+import type { AutoCompleteProps } from "@choc-ui/chakra-autocomplete";
 import {
   AutoComplete,
   AutoCompleteInput,
@@ -10,7 +11,7 @@ import {
 
 import { styles } from "./select.module";
 
-interface CustomSelectProps {
+interface CustomSelectProps extends Omit<AutoCompleteProps, "onChange"> {
   name: string;
   label: string;
   placeholder?: string;
@@ -33,6 +34,7 @@ export default function CustomSelect({
   value,
   onChange,
   error = false,
+  ...props
 }: CustomSelectProps) {
   return (
     <FormControl isInvalid={error}>
@@ -48,6 +50,7 @@ export default function CustomSelect({
             onChange(selectedOption.item.value, name);
           }
         }}
+        {...props}
       >
         {() => (
           <>

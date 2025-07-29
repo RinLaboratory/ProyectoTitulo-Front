@@ -1,10 +1,11 @@
 import React from "react";
 
+import type { InputProps } from "@chakra-ui/react";
 import { Text, Box, Input, Flex, Image } from "@chakra-ui/react";
 
 import { styles } from "./input.module";
 
-interface CustomInputProps {
+interface CustomInputProps extends InputProps {
   label?: string;
   name?: string;
   value?: string | number | undefined;
@@ -30,6 +31,7 @@ export default function CustomInput({
   readOnly,
   defaultValue,
   type = "text",
+  ...props
 }: CustomInputProps) {
   return (
     <>
@@ -45,6 +47,7 @@ export default function CustomInput({
             readOnly={readOnly}
             isInvalid={isInvalid}
             defaultValue={defaultValue}
+            {...props}
           />
           {isEditable && (
             <Flex sx={styles.TextRightContainer}>
