@@ -1,4 +1,11 @@
+"use server";
+
+import { cookies } from "next/headers";
+
 export async function fetcher<T>(url: string) {
+  const cookieStore = await cookies();
+  const token = cookieStore.get("jwt")?.value;
+
   const response = await fetch(url, {
     method: "GET",
     mode: "cors",
@@ -7,6 +14,7 @@ export async function fetcher<T>(url: string) {
     headers: {
       Accept: "application/json",
       "Content-Type": "application/json",
+      Cookie: `jwt=${token}`,
     },
     redirect: "follow",
     referrerPolicy: "no-referrer",
