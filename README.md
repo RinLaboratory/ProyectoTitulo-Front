@@ -6,8 +6,8 @@ Mi proyecto de titulo para optar a titulo de Ingeniero Civil en Informática.
 
 You will require the next dependencies to run this project:
 
-- Node Js v18.15.x
-- Yarn v1.22.19
+- Node Js v22.15.x
+- Yarn v1.22.22
 
 for installing the rest of dependencies located in the `package.json` file, you will use the following command:
 
