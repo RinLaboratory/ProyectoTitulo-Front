@@ -57,7 +57,7 @@ export default function AreaListDialog({
 
   const {
     data: areas,
-    isLoading: isProjectLoading,
+    isLoading: isAreasLoading,
     mutate,
   } = useSWR<TArea[]>(`${URL}/getAreas?name=${query}`, fetcher);
 
@@ -160,7 +160,7 @@ export default function AreaListDialog({
                       </Tr>
                     </Thead>
                     <Tbody>
-                      {!isProjectLoading ? (
+                      {!isAreasLoading ? (
                         areas?.map((data, key) => (
                           <Tr key={key} textAlign="center">
                             <Td

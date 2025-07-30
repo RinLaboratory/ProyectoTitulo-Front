@@ -43,7 +43,7 @@ export default function SearchPerson() {
   });
   const searchQuery = form.watch();
 
-  const { data: persons, isLoading: isProjectLoading } = useSWR<TPerson[]>(
+  const { data: persons, isLoading: isPersonsLoading } = useSWR<TPerson[]>(
     `${URL}/getPersons?name=${searchQuery.name}&area=${searchQuery.area}`,
     fetcher
   );
@@ -142,7 +142,7 @@ export default function SearchPerson() {
               </Tr>
             </Thead>
             <Tbody sx={styles.ShowOn850px}>
-              {!isProjectLoading ? (
+              {!isPersonsLoading ? (
                 persons?.map((data, key) => (
                   <Tr key={key} textAlign="center">
                     <Td
@@ -176,7 +176,7 @@ export default function SearchPerson() {
               )}
             </Tbody>
             <Tbody sx={styles.HideOn850px}>
-              {!isProjectLoading ? (
+              {!isPersonsLoading ? (
                 persons?.map((data, key) => (
                   <Tr key={key} textAlign="center">
                     <Td

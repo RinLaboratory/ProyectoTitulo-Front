@@ -13,12 +13,12 @@ import CustomInput from "~/components/ui/input/input";
 
 interface ShowUserInfoProps {
   user: TSafeUser | undefined;
-  isProjectLoading: boolean;
+  isUserLoading: boolean;
 }
 
 export default function ShowUserInfo({
   user,
-  isProjectLoading,
+  isUserLoading,
 }: ShowUserInfoProps) {
   const [showPersonHistory, setShowPersonHistory] = useState(false);
   const handleShowPersonHistory = () =>
@@ -59,7 +59,7 @@ export default function ShowUserInfo({
             </Flex>
           </Flex>
           <Flex flexDirection="column">
-            {!isProjectLoading && (
+            {!isUserLoading && (
               <>
                 <Flex flexDirection="row" mb="30">
                   <Flex flexDirection="column" w="417px">

@@ -67,7 +67,7 @@ export default function UserListDialog({
 
   const {
     data: users,
-    isLoading: isProjectLoading,
+    isLoading: isUsersLoading,
     mutate,
   } = useSWR<TSafeUser[]>(`${URL}/getusers?username=${searchQuery}`, fetcher);
 
@@ -172,7 +172,7 @@ export default function UserListDialog({
                       </Tr>
                     </Thead>
                     <Tbody sx={styles.ShowOn850px}>
-                      {!isProjectLoading ? (
+                      {!isUsersLoading ? (
                         users?.map((data, key) => (
                           <Tr key={key} textAlign="center">
                             <Td
@@ -205,7 +205,7 @@ export default function UserListDialog({
                       )}
                     </Tbody>
                     <Tbody sx={styles.HideOn850px}>
-                      {!isProjectLoading ? (
+                      {!isUsersLoading ? (
                         users?.map((data, key) => (
                           <Tr key={key} textAlign="center">
                             <Td

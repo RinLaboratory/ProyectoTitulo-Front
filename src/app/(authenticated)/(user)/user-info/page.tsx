@@ -9,19 +9,19 @@ import ShowAdminInfo from "~/components/pages/admin-info/show-admin-info";
 import type { TSafeUser } from "~/utils/validators";
 
 export default function UserInfo() {
-  const { data: user, isLoading: isProjectLoading } = useSWR<TSafeUser>(
+  const { data: user, isLoading: isUserLoading } = useSWR<TSafeUser>(
     `${URL}/getCurrentUser`,
     fetcher
   );
 
   return (
-    !isProjectLoading && (
+    !isUserLoading && (
       <>
         {user?.rol !== "*" && (
-          <ShowUserInfo user={user} isProjectLoading={isProjectLoading} />
+          <ShowUserInfo user={user} isUserLoading={isUserLoading} />
         )}
         {user?.rol === "*" && (
-          <ShowAdminInfo user={user} isProjectLoading={isProjectLoading} />
+          <ShowAdminInfo user={user} isUserLoading={isUserLoading} />
         )}
       </>
     )

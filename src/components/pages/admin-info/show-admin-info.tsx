@@ -15,12 +15,12 @@ import type { TSafeUser } from "~/utils/validators";
 
 interface ShowAdminInfoProps {
   user: TSafeUser | undefined;
-  isProjectLoading: boolean;
+  isUserLoading: boolean;
 }
 
 export default function ShowAdminInfo({
   user,
-  isProjectLoading,
+  isUserLoading,
 }: ShowAdminInfoProps) {
   const [showPersonHistory, setShowPersonHistory] = useState(false);
   const handleShowPersonHistory = () =>
@@ -78,7 +78,7 @@ export default function ShowAdminInfo({
             </Flex>
           </Flex>
           <Flex flexDirection="column">
-            {!isProjectLoading && (
+            {!isUserLoading && (
               <>
                 <Flex flexDirection="row" mb="30">
                   <Flex flexDirection="column" w="417px">

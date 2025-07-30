@@ -32,7 +32,7 @@ export default function NavBar() {
   const [isLargerThan1300] = useMediaQuery("(min-width: 1300px)");
   const [isLargerThan950] = useMediaQuery("(min-width: 950px)");
 
-  const { data: user, isLoading: isProjectLoading } = useSWR<TSafeUser>(
+  const { data: user, isLoading: isUserLoading } = useSWR<TSafeUser>(
     `${URL}/getCurrentUser`,
     fetcher
   );
@@ -75,7 +75,7 @@ export default function NavBar() {
           </Link>
         </Box>
         <Spacer />
-        {!isProjectLoading && (
+        {!isUserLoading && (
           <>
             <Box sx={styles.UserInfoContainer}>
               <Link href={"/user-info"} passHref>
