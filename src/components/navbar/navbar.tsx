@@ -1,16 +1,6 @@
-"use client";
-
 import React from "react";
 
-import {
-  Box,
-  Text,
-  Button,
-  Spacer,
-  Flex,
-  useMediaQuery,
-  Icon,
-} from "@chakra-ui/react";
+import { Box, Text, Button, Spacer, Flex, Icon } from "@chakra-ui/react";
 import Link from "next/link";
 import { light10, light18 } from "~/styles/fonts";
 
@@ -23,19 +13,13 @@ import {
 
 import { styles } from "./navbar.module";
 import { softBlue, white, yellow } from "~/utils/colors";
-import { fetcher } from "~/utils/fetcher";
-import useSWR from "swr";
 import type { TSafeUser } from "~/utils/validators";
 
-export default function NavBar() {
-  const [isLargerThan1300] = useMediaQuery("(min-width: 1300px)");
-  const [isLargerThan950] = useMediaQuery("(min-width: 950px)");
+interface NavBarProps {
+  user: TSafeUser;
+}
 
-  const { data: user, isLoading: isUserLoading } = useSWR<TSafeUser>(
-    `/getCurrentUser`,
-    fetcher,
-  );
-
+export default function NavBar({ user }: NavBarProps) {
   return (
     <Flex sx={styles.NavBarContainer}>
       <Flex sx={styles.NavBarPosition}>
@@ -44,7 +28,7 @@ export default function NavBar() {
             <Button
               bg={yellow}
               color={softBlue}
-              iconSpacing={isLargerThan1300 ? "16px" : "0px"}
+              iconSpacing={{ base: "0px", xl: "16px" }}
               sx={styles.Button}
               leftIcon={
                 <Icon fontSize="24px" mb="1px" ml="1px">
@@ -53,14 +37,14 @@ export default function NavBar() {
               }
               mr="1"
             >
-              {isLargerThan1300 ? "EXPLORAR" : ""}
+              <Text display={{ base: "none", xl: "block" }}>EXPLORAR</Text>
             </Button>
           </Link>
           <Link href="/" passHref>
             <Button
               bg={yellow}
               color={softBlue}
-              iconSpacing={isLargerThan1300 ? "16px" : "0px"}
+              iconSpacing={{ base: "0px", xl: "16px" }}
               sx={styles.Button}
               leftIcon={
                 <Icon fontSize="24px" mb="1px" ml="1px">
@@ -69,47 +53,41 @@ export default function NavBar() {
               }
               mr="1"
             >
-              {isLargerThan1300 ? "INICIO" : ""}
+              <Text display={{ base: "none", xl: "block" }}>INICIO</Text>
             </Button>
           </Link>
         </Box>
         <Spacer />
-        {!isUserLoading && (
-          <>
-            <Box sx={styles.UserInfoContainer}>
-              <Link href={"/user-info"} passHref>
-                <Icon sx={styles.UserIcon} viewBox="-1 -1 17 17">
-                  <IoPerson />
+        <Box sx={styles.UserInfoContainer}>
+          <Link href={"/user-info"} passHref>
+            <Icon sx={styles.UserIcon} viewBox="-1 -1 17 17">
+              <IoPerson />
+            </Icon>
+          </Link>
+          <Box color={white}>
+            <Text sx={light18}>{user.username}</Text>
+            <Text sx={light10} display={{ base: "none", lg: "block" }}>
+              {user.email}
+            </Text>
+          </Box>
+        </Box>
+        <Box sx={styles.LogoutContainer}>
+          <Link href="/logout" passHref>
+            <Button
+              variant="link"
+              pl="4"
+              color={white}
+              rightIcon={
+                <Icon sx={styles.LogoutIcon} viewBox="-1 -1 17 17">
+                  <IoLogOutOutline />
                 </Icon>
-              </Link>
-              <Box color={white}>
-                <Text sx={light18}>{user?.username}</Text>
-                {isLargerThan950 ? (
-                  <Text sx={light10}>{user?.email}</Text>
-                ) : (
-                  <></>
-                )}
-              </Box>
-            </Box>
-            <Box sx={styles.LogoutContainer}>
-              <Link href="/logout" passHref>
-                <Button
-                  variant="link"
-                  pl="4"
-                  color={white}
-                  rightIcon={
-                    <Icon sx={styles.LogoutIcon} viewBox="-1 -1 17 17">
-                      <IoLogOutOutline />
-                    </Icon>
-                  }
-                  size="md"
-                >
-                  {isLargerThan950 ? "Cerrar sesión" : ""}
-                </Button>
-              </Link>
-            </Box>
-          </>
-        )}
+              }
+              size="md"
+            >
+              <Text display={{ base: "none", lg: "block" }}>Cerrar sesión</Text>
+            </Button>
+          </Link>
+        </Box>
       </Flex>
     </Flex>
   );

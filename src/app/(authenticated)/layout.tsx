@@ -1,3 +1,5 @@
+"use server";
+
 import { AccountContextProvider } from "~/components/account-context/account-context";
 import NavBar from "~/components/navbar/navbar";
 import { getAccountInfo } from "./actions";
@@ -14,7 +16,7 @@ export default async function AuthenticatedLayout(props: {
 
   return (
     <AccountContextProvider user={currentUser}>
-      <NavBar />
+      <NavBar user={currentUser} />
       <div className="super">
         <div className="main">{props.children}</div>
       </div>
