@@ -362,6 +362,20 @@ export default function PersonListDialog({
             modalMode={"edit"}
             persons={persons}
             mutate={mutate}
+            defaultValues={{
+              rut: person?.rut ?? "",
+              areaId: person?.areaId ?? "",
+              bloodType: person?.bloodType ?? "",
+              EmergencyContact: person?.EmergencyContact ?? "",
+              insurance: person?.insurance ?? "",
+              lastname: person?.lastname ?? "",
+              name: person?.name ?? "",
+              phone: person?.phone ?? "",
+              address: person?.address ?? "",
+              Rlastname: person?.Rlastname ?? "",
+              Rname: person?.Rname ?? "",
+              Rphone: person?.Rphone ?? "",
+            }}
           />
           <ImportPersonDialog
             isOpen={showImportPerson}

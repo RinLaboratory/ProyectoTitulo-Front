@@ -19,3 +19,20 @@ export const PersonSchema = z.object({
 });
 
 export type TPerson = z.infer<typeof PersonSchema>;
+
+export const InsertPersonSchema = PersonSchema.pick({
+  rut: true,
+  name: true,
+  lastname: true,
+  phone: true,
+  insurance: true,
+  address: true,
+  bloodType: true,
+  areaId: true,
+  Rname: true,
+  Rlastname: true,
+  Rphone: true,
+  EmergencyContact: true,
+});
+
+export type TInsertPerson = z.infer<typeof InsertPersonSchema>;

@@ -12,12 +12,18 @@ import {
   ModalBody,
   Button,
   Spacer,
-  FormControl,
   useToast,
 } from "@chakra-ui/react";
+import {
+  FormControl,
+  FormField,
+  FormFieldMessage,
+  FormItem,
+  FormProvider,
+  useForm,
+} from "~/components/ui/form/form";
 
-import type { ChangeEvent, FormEvent } from "react";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { IoPersonSharp } from "react-icons/io5";
 import { HiOutlineDocumentAdd } from "react-icons/hi";
 import { styles } from "./show-person-info-dialog.module";
@@ -31,7 +37,8 @@ import type { KeyedMutator } from "swr";
 import useSWR from "swr";
 import CustomSelect from "~/components/ui/select/select";
 import { mutate as personMutate } from "swr";
-import type { TArea, TPerson } from "~/utils/validators";
+import { InsertPersonSchema } from "~/utils/validators";
+import type { TArea, TPerson, TInsertPerson } from "~/utils/validators";
 
 interface ShowPersonInfoDialogProps {
   isOpen: boolean;
@@ -40,7 +47,22 @@ interface ShowPersonInfoDialogProps {
   mutate?: KeyedMutator<TPerson[]>;
   persons?: TPerson[] | undefined;
   person?: TPerson | undefined;
+  defaultValues?: TInsertPerson | undefined;
 }
+
+const viewMode = {
+  edit: {
+    header: "EDITAR",
+  },
+  view: {
+    header: "VER",
+  },
+  add: {
+    header: "AÑADIR",
+  },
+};
+
+type TActiveDialog = "none" | "import-excel";
 
 export default function ShowPersonInfoDialog({
   isOpen,
@@ -49,53 +71,37 @@ export default function ShowPersonInfoDialog({
   mutate,
   persons,
   person,
+  defaultValues,
 }: ShowPersonInfoDialogProps) {
   const toast = useToast();
+  const [listMode, setListMode] = useState<"add" | "edit">("add");
+  const [activeDialog, setActiveDialog] = useState<TActiveDialog>("none");
 
-  const viewMode = {
-    edit: {
-      header: "EDITAR",
-    },
-    view: {
-      header: "VER",
-    },
-    add: {
-      header: "AÑADIR",
-    },
-  };
+  const form = useForm({
+    schema: InsertPersonSchema,
+    defaultValues,
+  });
 
-  const { data: areas, isLoading: isProjectLoading } = useSWR<TArea[]>(
+  const { data: areas, isLoading: isAreasLoading } = useSWR<TArea[]>(
     `${URL}/getAreas?name=${""}`,
     fetcher
   );
 
-  const [areasOptions, setAreasOptions] = useState<Record<string, string>>({});
+  const areasOptions: Record<string, string> = useMemo(() => {
+    if (!areas) return {};
+    const obj: Record<string, string> = {};
 
-  const updateAreasOptions = () => {
-    if (areas) {
-      const obj: Record<string, string> = {};
-
-      for (const item of areas) {
-        obj[item._id] = item.label;
-      }
-
-      setAreasOptions(obj);
+    for (const item of areas) {
+      obj[item._id] = item.label;
     }
-  };
 
-  const [mode, setMode] = useState(modalMode);
+    return obj;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [areas, isAreasLoading]);
 
-  const [listMode, setListMode] = useState<"add" | "edit">("add");
-
-  const [data, setData] = useState<TPerson | undefined>(undefined);
-
-  const [showImportPerson, setShowImportPerson] = useState(false);
-  const handleShowImportPerson = () => setShowImportPerson(!showImportPerson);
-
-  const handleSubmit = async (event: FormEvent) => {
-    event.preventDefault();
-    if (mode === "add") {
-      const response = await post(`${URL}/addPersons`, data);
+  const handleSubmit = async (value: TInsertPerson) => {
+    if (modalMode === "add") {
+      const response = await post(`${URL}/addPersons`, value);
       if (response.status === "success") {
         toast({
           title: "Persona agregada.",
@@ -105,7 +111,6 @@ export default function ShowPersonInfoDialog({
           isClosable: true,
         });
         await personMutate(`${URL}/getPersons?name=${""}&area=${""}`);
-        setData(undefined);
         onClose();
       } else {
         toast({
@@ -117,8 +122,15 @@ export default function ShowPersonInfoDialog({
         });
       }
     }
-    if (mode === "edit") {
-      const response = await post(`${URL}/editPersons`, data);
+    if (modalMode === "edit") {
+      const constructedData: TPerson = {
+        ...value,
+        _id: person?._id ?? "",
+        nameE: person?.nameE ?? "",
+        lastnameE: person?.lastnameE ?? "",
+      };
+
+      const response = await post(`${URL}/editPersons`, constructedData);
       if (response.status === "success") {
         toast({
           title: "Persona editada.",
@@ -129,8 +141,8 @@ export default function ShowPersonInfoDialog({
         });
         const backup: TPerson[] = [];
         persons?.forEach((element) => {
-          if (element._id === data?._id) {
-            backup.push(data);
+          if (element._id === constructedData._id) {
+            backup.push(constructedData);
           } else {
             backup.push(element);
           }
@@ -138,7 +150,6 @@ export default function ShowPersonInfoDialog({
         if (mutate) {
           await mutate(backup, false);
         }
-        setData(undefined);
         onClose();
       } else {
         toast({
@@ -152,58 +163,30 @@ export default function ShowPersonInfoDialog({
     }
   };
 
-  const handleInputChange = (
-    event:
-      | ChangeEvent<HTMLInputElement>
-      | { target: { value: string; name: string } }
-  ) => {
-    if (mode !== "view" && data) {
-      setData({
-        ...data,
-        [event.target.name]: event.target.value,
-      });
-    }
-  };
-
   const handleImportButton = () => {
     if (modalMode === "add") {
       setListMode("add");
-      handleShowImportPerson();
+      setActiveDialog("import-excel");
     }
     if (modalMode === "edit") {
       setListMode("edit");
-      handleShowImportPerson();
+      setActiveDialog("import-excel");
     }
   };
 
   useEffect(() => {
-    if (!isOpen) {
-      setMode(modalMode);
-      setData(undefined);
-    } else {
-      if (person?._id) {
-        setData({
-          ...person,
-        });
-      }
-    }
+    // Reset the form when modal closes or opens
+    form.reset(defaultValues);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isOpen]);
-
-  useEffect(() => {
-    if (!isProjectLoading) {
-      updateAreasOptions();
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [areas]);
 
   return (
     <Modal isOpen={isOpen} onClose={onClose} size="6xl">
       <ModalOverlay />
       <ModalContent>
-        <ModalHeader>{viewMode[mode].header} PERSONA</ModalHeader>
+        <ModalHeader>{viewMode[modalMode].header} PERSONA</ModalHeader>
         <ModalCloseButton />
-        <form onSubmit={handleSubmit}>
+        <FormProvider {...form}>
           <ModalBody>
             <Flex sx={styles.MainContainer}>
               <Flex w="1254px" flexDirection="column" ml="5" mr="5">
@@ -214,159 +197,239 @@ export default function ShowPersonInfoDialog({
                         <IoPersonSharp />
                       </Icon>
                     </Flex>
-                    <FormControl isRequired>
-                      <CustomInput
-                        label="RUT"
-                        value={data?.rut}
-                        name="rut"
-                        height="47"
-                        onChange={handleInputChange}
-                      />
-                    </FormControl>
+                    <FormField
+                      control={form.control}
+                      name="rut"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormControl>
+                            <CustomInput label="RUT" height="47" {...field} />
+                          </FormControl>
+                          <FormFieldMessage />
+                        </FormItem>
+                      )}
+                    />
                   </Flex>
                   <Flex flexDirection="column">
                     <Flex sx={styles.BothInputs}>
                       <Flex sx={styles.InputContainer}>
-                        <FormControl isRequired>
-                          <CustomInput
-                            label="NOMBRES"
-                            value={data?.name}
-                            name="name"
-                            height="47"
-                            onChange={handleInputChange}
-                          />
-                        </FormControl>
+                        <FormField
+                          control={form.control}
+                          name="name"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormControl>
+                                <CustomInput
+                                  label="NOMBRES"
+                                  height="47"
+                                  {...field}
+                                />
+                              </FormControl>
+                              <FormFieldMessage />
+                            </FormItem>
+                          )}
+                        />
                       </Flex>
                       <Flex sx={styles.InputContainerLeft}>
-                        <FormControl isRequired>
-                          <CustomInput
-                            label="APELLIDOS"
-                            value={data?.lastname}
-                            name="lastname"
-                            height="47"
-                            onChange={handleInputChange}
-                          />
-                        </FormControl>
+                        <FormField
+                          control={form.control}
+                          name="lastname"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormControl>
+                                <CustomInput
+                                  label="APELLIDOS"
+                                  height="47"
+                                  {...field}
+                                />
+                              </FormControl>
+                              <FormFieldMessage />
+                            </FormItem>
+                          )}
+                        />
                       </Flex>
                     </Flex>
                     <Flex sx={styles.BothInputs}>
                       <Flex sx={styles.InputContainer}>
-                        <FormControl isRequired>
-                          <CustomInput
-                            label="TELEFONO CASA"
-                            value={data?.phone}
-                            name="phone"
-                            height="47"
-                            onChange={handleInputChange}
-                          />
-                        </FormControl>
+                        <FormField
+                          control={form.control}
+                          name="phone"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormControl>
+                                <CustomInput
+                                  label="TELEFONO CASA"
+                                  height="47"
+                                  {...field}
+                                />
+                              </FormControl>
+                              <FormFieldMessage />
+                            </FormItem>
+                          )}
+                        />
                       </Flex>
                       <Flex sx={styles.InputContainerLeft}>
-                        <FormControl isRequired>
-                          <CustomInput
-                            label="SEGURO MÉDICO"
-                            value={data?.insurance}
-                            name="insurance"
-                            height="47"
-                            onChange={handleInputChange}
-                          />
-                        </FormControl>
+                        <FormField
+                          control={form.control}
+                          name="insurance"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormControl>
+                                <CustomInput
+                                  label="SEGURO MÉDICO"
+                                  height="47"
+                                  {...field}
+                                />
+                              </FormControl>
+                              <FormFieldMessage />
+                            </FormItem>
+                          )}
+                        />
                       </Flex>
                     </Flex>
                     <Flex sx={styles.BothInputs}>
                       <Flex sx={styles.InputHouse}>
-                        <FormControl isRequired>
-                          <CustomInput
-                            label="DIRECCIÓN CASA"
-                            value={data?.address}
-                            name="address"
-                            height="47"
-                            onChange={handleInputChange}
-                          />
-                        </FormControl>
+                        <FormField
+                          control={form.control}
+                          name="address"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormControl>
+                                <CustomInput
+                                  label="DIRECCIÓN CASA"
+                                  height="47"
+                                  {...field}
+                                />
+                              </FormControl>
+                              <FormFieldMessage />
+                            </FormItem>
+                          )}
+                        />
                       </Flex>
                     </Flex>
                     <Flex sx={styles.BothInputs}>
                       <Flex sx={styles.InputContainer}>
-                        <FormControl isRequired>
-                          <CustomInput
-                            label="GRUPO SANGUÍNEO"
-                            value={data?.bloodType}
-                            name="bloodType"
-                            height="47"
-                            onChange={handleInputChange}
-                          />
-                        </FormControl>
+                        <FormField
+                          control={form.control}
+                          name="bloodType"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormControl>
+                                <CustomInput
+                                  label="GRUPO SANGUÍNEO"
+                                  height="47"
+                                  {...field}
+                                />
+                              </FormControl>
+                              <FormFieldMessage />
+                            </FormItem>
+                          )}
+                        />
                       </Flex>
                       <Flex sx={styles.InputContainerLeft}>
-                        {!isProjectLoading && (
-                          <FormControl isRequired>
-                            <CustomSelect
-                              label="CURSO / AREA"
-                              name="areaId"
-                              value={
-                                data ? areasOptions[data.areaId] : undefined
-                              }
-                              options={areas}
-                              onChange={(value, name) =>
-                                handleInputChange({
-                                  target: {
-                                    name: name,
-                                    value: value,
-                                  },
-                                })
-                              }
-                            />
-                          </FormControl>
-                        )}
+                        <FormField
+                          control={form.control}
+                          name="areaId"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormControl>
+                                <CustomSelect
+                                  {...field}
+                                  label="CURSO / AREA"
+                                  options={
+                                    isAreasLoading
+                                      ? [
+                                          {
+                                            label: "default",
+                                            value: "Ninguno",
+                                            _id: "",
+                                          },
+                                        ]
+                                      : areas
+                                  }
+                                  value={areasOptions[field.value]}
+                                />
+                              </FormControl>
+                              <FormFieldMessage />
+                            </FormItem>
+                          )}
+                        />
                       </Flex>
                     </Flex>
                     <Flex sx={styles.BothInputs}>
                       <Flex sx={styles.InputContainer}>
-                        <FormControl isRequired>
-                          <CustomInput
-                            label="NOMBRE APODERADO"
-                            value={data?.Rname}
-                            name="Rname"
-                            height="47"
-                            onChange={handleInputChange}
-                          />
-                        </FormControl>
+                        <FormField
+                          control={form.control}
+                          name="Rname"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormControl>
+                                <CustomInput
+                                  label="NOMBRE APODERADO"
+                                  height="47"
+                                  {...field}
+                                />
+                              </FormControl>
+                              <FormFieldMessage />
+                            </FormItem>
+                          )}
+                        />
                       </Flex>
                       <Flex sx={styles.InputContainerLeft}>
-                        <FormControl isRequired>
-                          <CustomInput
-                            label="APELLIDO APODERADO"
-                            value={data?.Rlastname}
-                            name="Rlastname"
-                            height="47"
-                            onChange={handleInputChange}
-                          />
-                        </FormControl>
+                        <FormField
+                          control={form.control}
+                          name="Rlastname"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormControl>
+                                <CustomInput
+                                  label="APELLIDO APODERADO"
+                                  height="47"
+                                  {...field}
+                                />
+                              </FormControl>
+                              <FormFieldMessage />
+                            </FormItem>
+                          )}
+                        />
                       </Flex>
                     </Flex>
                     <Flex sx={styles.BothInputs}>
                       <Flex sx={styles.InputContainer}>
-                        <FormControl isRequired>
-                          <CustomInput
-                            label="TELEFONO APODERADO"
-                            value={data?.Rphone}
-                            name="Rphone"
-                            height="47"
-                            onChange={handleInputChange}
-                          />
-                        </FormControl>
+                        <FormField
+                          control={form.control}
+                          name="Rphone"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormControl>
+                                <CustomInput
+                                  label="TELEFONO APODERADO"
+                                  height="47"
+                                  {...field}
+                                />
+                              </FormControl>
+                              <FormFieldMessage />
+                            </FormItem>
+                          )}
+                        />
                       </Flex>
                       <Flex sx={styles.InputContainerLeft}>
-                        <FormControl isRequired>
-                          <CustomInput
-                            label="CONTACTO EMERGENCIA"
-                            value={data?.EmergencyContact}
-                            name="EmergencyContact"
-                            height="47"
-                            onChange={handleInputChange}
-                          />
-                        </FormControl>
+                        <FormField
+                          control={form.control}
+                          name="EmergencyContact"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormControl>
+                                <CustomInput
+                                  label="CONTACTO EMERGENCIA"
+                                  height="47"
+                                  {...field}
+                                />
+                              </FormControl>
+                              <FormFieldMessage />
+                            </FormItem>
+                          )}
+                        />
                       </Flex>
                     </Flex>
                   </Flex>
@@ -375,7 +438,7 @@ export default function ShowPersonInfoDialog({
             </Flex>
           </ModalBody>
           <ModalFooter>
-            {mode !== "edit" && (
+            {modalMode !== "edit" && (
               <>
                 <Button
                   sx={styles.Button}
@@ -393,7 +456,7 @@ export default function ShowPersonInfoDialog({
                 <Spacer />
               </>
             )}
-            {mode !== "view" && (
+            {modalMode !== "view" && (
               <Button
                 sx={styles.Button}
                 bg="#FF2B91"
@@ -404,16 +467,17 @@ export default function ShowPersonInfoDialog({
                   </Icon>
                 }
                 type="submit"
+                onClick={form.handleSubmit(handleSubmit)}
               >
-                {mode === "add" && "AÑADIR"}
-                {mode === "edit" && "APLICAR"}
+                {modalMode === "add" && "AÑADIR"}
+                {modalMode === "edit" && "APLICAR"}
               </Button>
             )}
           </ModalFooter>
-        </form>
+        </FormProvider>
         <ImportPersonDialog
-          isOpen={showImportPerson}
-          onClose={handleShowImportPerson}
+          isOpen={activeDialog === "import-excel"}
+          onClose={() => setActiveDialog("none")}
           listMode={listMode}
         />
       </ModalContent>
