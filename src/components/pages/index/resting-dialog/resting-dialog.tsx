@@ -18,79 +18,67 @@ import {
   ModalOverlay,
   Modal,
 } from "@chakra-ui/react";
-import React, { useEffect, useState } from "react";
+import React, { useMemo } from "react";
 import { IoEyeSharp } from "react-icons/io5";
 import Link from "next/link";
 import { regular18 } from "~/styles/fonts";
-import { styles } from "./resting.module";
-import type { TArea, TIndexData, TPerson, TPersonState } from "~/utils/validators";
+import { styles } from "./resting-dialog.module";
+import type { TIndexData, TPerson, TPersonState } from "~/utils/validators";
 
-interface RestingProps {
+interface RestingDialogProps {
   isOpen: boolean;
   onClose: () => void;
   mode: TPersonState;
-  data: TIndexData | undefined;
+  indexData: TIndexData | undefined;
   isLoading: boolean;
 }
 
-export default function Resting({
+const viewMode = {
+  reposo: {
+    header: "PERSONAS EN REPOSO",
+  },
+  retirado: {
+    header: "PERSONAS RETIRADAS",
+  },
+  atendido: {
+    header: "PERSONAS ATENDIDAS",
+  },
+};
+
+export default function RestingDialog({
   isOpen,
   onClose,
   mode,
-  data,
+  indexData,
   isLoading = false,
-}: RestingProps) {
-  const viewMode = {
-    reposo: {
-      header: "PERSONAS EN REPOSO",
-    },
-    retirado: {
-      header: "PERSONAS RETIRADAS",
-    },
-    atendido: {
-      header: "PERSONAS ATENDIDAS",
-    },
-  };
+}: RestingDialogProps) {
+  const displayData: TPerson[] | undefined = useMemo(() => {
+    if (!indexData) return;
 
-  const [displayData, setDisplayData] = useState<TPerson[] | undefined>(
-    undefined
-  );
-
-  const [areasOptions, setAreasOptions] = useState<
-    Record<string, string> | undefined
-  >();
-
-  const updateAreasOptions = (areas: TArea[]) => {
-    const obj: Record<string, string> = {};
-
-    for (const item of areas) {
-      obj[item._id] = item.label;
+    if (mode === "reposo") {
+      return indexData.reposo;
     }
-
-    setAreasOptions(obj);
-  };
-
-  const Tabs = ["NOMBRE Y APELLIDO", "NOMBRE AREA / CURSO", "RUT", ""];
-
-  const Tabs850px = ["NOMBRES", "CURSO"];
-
-  useEffect(() => {
-    if (data) {
-      updateAreasOptions(data.areas);
-      if (mode === "reposo") {
-        setDisplayData(data.reposo);
-      }
-      if (mode === "retirado") {
-        setDisplayData(data.retirado);
-      }
-      if (mode === "atendido") {
-        setDisplayData(data.atendido);
-      }
+    if (mode === "retirado") {
+      return indexData.retirado;
     } else {
-      setDisplayData(undefined);
+      return indexData.atendido;
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isOpen]);
+  }, [isOpen, indexData]);
+
+  const areasOptions: Record<string, string> | undefined = useMemo(() => {
+    if (!indexData) return;
+    const obj: Record<string, string> = {};
+
+    for (const item of indexData.areas) {
+      obj[item._id] = item.label;
+    }
+    return obj;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isOpen, indexData]);
+
+  const Tabs = ["NOMBRE Y APELLIDO", "NOMBRE AREA / CURSO", "RUT", ""];
+  const Tabs850px = ["NOMBRES", "CURSO"];
 
   return (
     <Modal isOpen={isOpen} onClose={onClose} size="6xl">

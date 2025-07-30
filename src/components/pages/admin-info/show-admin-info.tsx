@@ -10,7 +10,7 @@ import { IoPersonSharp, IoDocumentTextOutline } from "react-icons/io5";
 import { HiDocumentAdd } from "react-icons/hi";
 import { styles } from "./show-admin-info.module";
 import CustomInput from "../../ui/input/input";
-import ChangePassword from "../change-password/change-password";
+import ChangePasswordDialog from "../change-password-dialog/change-password-dialog";
 import type { TSafeUser } from "~/utils/validators";
 
 interface ShowAdminInfoProps {
@@ -86,6 +86,7 @@ export default function ShowAdminInfo({
                       label="NOMBRE DE USUARIO"
                       height="47"
                       defaultValue={user?.username}
+                      isReadOnly
                     />
                   </Flex>
                 </Flex>
@@ -95,6 +96,7 @@ export default function ShowAdminInfo({
                       label="CORREO ELECTRÓNICO"
                       height="47"
                       defaultValue={user?.email}
+                      isReadOnly
                     />
                   </Flex>
                 </Flex>
@@ -103,7 +105,7 @@ export default function ShowAdminInfo({
           </Flex>
         </Flex>
       </Flex>
-      <ChangePassword
+      <ChangePasswordDialog
         user={user}
         isOpen={showPersonHistory}
         onClose={handleShowPersonHistory}

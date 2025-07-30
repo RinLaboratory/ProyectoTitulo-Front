@@ -3,67 +3,50 @@
 import { regular18 } from "~/styles/fonts";
 import { Flex, Icon, Text, Button } from "@chakra-ui/react";
 
-import type { ReactElement } from "react";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { IoBed, IoSearch, IoMedical } from "react-icons/io5";
 import { FaPersonCircleCheck } from "react-icons/fa6";
 import { styles } from "./index.module";
-import Resting from "./resting/resting";
+import RestingDialog from "./resting-dialog/resting-dialog";
 import { fetcher } from "~/utils/fetcher";
 import useSWR from "swr";
 import { URL } from "~/utils/consts";
 import type { TIndexData, TPersonState } from "~/utils/validators";
 
 export default function Index() {
-  const { data: indexData, isLoading: isProjectLoading } = useSWR<TIndexData>(
+  const [activeDialog, setActiveDialog] = useState(false);
+  const [listMode, setListMode] = useState<TPersonState>("retirado");
+
+  const { data: indexData, isLoading: isIndexDataLoading } = useSWR<TIndexData>(
     `${URL}/getIndexData`,
     fetcher
   );
 
-  const [showAreaList, setShowAreaList] = useState(false);
-  const handleShowAreaList = () => setShowAreaList(!showAreaList);
-
-  const [listMode, setListMode] = useState<TPersonState>("retirado");
-
   const handleDialog = (mode: TPersonState) => {
     setListMode(mode);
-    handleShowAreaList();
+    setActiveDialog(!activeDialog);
   };
 
-  const [buttonSelector, setButtonSelector] = useState<
+  const buttonSelector = [
     {
-      id: number;
-      text: string;
-      action: () => void;
-      icon: ReactElement;
-    }[]
-  >([]);
-
-  useEffect(() => {
-    if (indexData) {
-      setButtonSelector([
-        {
-          id: 0,
-          text: `Tienes a ${indexData.reposo.length} personas en reposo`,
-          action: () => handleDialog("reposo"),
-          icon: <IoBed />,
-        },
-        {
-          id: 1,
-          text: `${indexData.retirado.length} personas se han retirado hoy`,
-          action: () => handleDialog("retirado"),
-          icon: <IoMedical />,
-        },
-        {
-          id: 2,
-          text: `Has atendido a ${indexData.atendido.length} personas hoy`,
-          action: () => handleDialog("atendido"),
-          icon: <FaPersonCircleCheck />,
-        },
-      ]);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [indexData]);
+      id: 0,
+      text: `Tienes a ${indexData?.reposo.length ?? 0} personas en reposo`,
+      action: () => handleDialog("reposo"),
+      icon: <IoBed />,
+    },
+    {
+      id: 1,
+      text: `${indexData?.retirado.length ?? 0} personas se han retirado hoy`,
+      action: () => handleDialog("retirado"),
+      icon: <IoMedical />,
+    },
+    {
+      id: 2,
+      text: `Has atendido a ${indexData?.atendido.length ?? 0} personas hoy`,
+      action: () => handleDialog("atendido"),
+      icon: <FaPersonCircleCheck />,
+    },
+  ];
 
   return (
     <Flex sx={styles.MainContainer}>
@@ -90,12 +73,12 @@ export default function Index() {
           </Flex>
         </Flex>
       ))}
-      <Resting
-        isOpen={showAreaList}
-        onClose={handleShowAreaList}
+      <RestingDialog
+        isOpen={activeDialog}
+        onClose={() => setActiveDialog(false)}
         mode={listMode}
-        data={indexData}
-        isLoading={isProjectLoading}
+        indexData={indexData}
+        isLoading={isIndexDataLoading}
       />
     </Flex>
   );

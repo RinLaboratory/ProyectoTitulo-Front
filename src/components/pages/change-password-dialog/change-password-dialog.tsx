@@ -15,47 +15,45 @@ import {
   FormControl,
 } from "@chakra-ui/react";
 import { HiDocumentAdd } from "react-icons/hi";
-import type { ChangeEvent } from "react";
-import React, { useState } from "react";
-import { styles } from "./change-password.module";
+import React from "react";
+import { styles } from "./change-password-dialog.module";
 import CustomInput from "../../ui/input/input";
 import { white } from "~/utils/colors";
 import { URL } from "~/utils/consts";
 import post from "~/utils/post";
+import type { TUpdatePassword } from "~/utils/validators";
+import { UpdatePasswordSchema } from "~/utils/validators";
 import type { TSafeUser } from "~/utils/validators";
+import {
+  FormField,
+  FormFieldMessage,
+  FormItem,
+  FormProvider,
+  useForm,
+} from "~/components/ui/form/form";
 
-interface ChangePasswordProps {
+interface ChangePasswordDialogProps {
   isOpen: boolean;
   onClose: () => void;
   user: TSafeUser | undefined;
 }
 
-export default function ChangePassword({
+export default function ChangePasswordDialog({
   isOpen,
   onClose,
   user,
-}: ChangePasswordProps) {
-  const defaultData = {
-    password: "",
-    confirmPassword: "",
-  };
-
+}: ChangePasswordDialogProps) {
   const toast = useToast();
-  const [data, setData] = useState(defaultData);
+  const form = useForm({
+    schema: UpdatePasswordSchema,
+    defaultValues: {
+      password: "",
+      confirmPassword: "",
+    },
+  });
 
-  const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
-    setData({
-      ...data,
-      [e.target.name]: e.target.value,
-    });
-  };
-
-  const handleChangePassword = async (
-    e: React.BaseSyntheticEvent<object, unknown, unknown>
-  ) => {
-    e.preventDefault();
-
-    if (data.password !== data.confirmPassword) {
+  const handleChangePassword = async (values: TUpdatePassword) => {
+    if (values.password !== values.confirmPassword) {
       toast({
         title: "Las contraseñas no coinciden.",
         description: "Las contraseñas ingresadas no coinciden.",
@@ -65,7 +63,7 @@ export default function ChangePassword({
       });
     } else {
       const constructedData = {
-        ...data,
+        ...values,
         passwordId: user?.password_id,
       };
       const response = await post(`${URL}/changePassword`, constructedData);
@@ -97,36 +95,42 @@ export default function ChangePassword({
         <ModalHeader>CAMBIAR CONTRASEÑA</ModalHeader>
         <ModalCloseButton />
         <ModalBody></ModalBody>
-        <form onSubmit={handleChangePassword}>
-          <Flex p="3" m="3" mt="0" flexDirection="column">
-            <Flex flexDirection="row" mb="30">
-              <Flex flexDirection="column" w="417px">
-                <FormControl isRequired>
-                  <CustomInput
-                    label="CONTRASEÑA"
-                    height="47"
-                    type="password"
-                    value={data.password}
-                    name="password"
-                    onChange={handleInputChange}
-                  />
-                </FormControl>
-              </Flex>
-            </Flex>
-            <Flex flexDirection="row">
-              <Flex flexDirection="column" w="417px">
-                <FormControl isRequired>
-                  <CustomInput
-                    label="CONFIRMAR CONTRASEÑA"
-                    height="47"
-                    type="password"
-                    value={data.confirmPassword}
-                    name="confirmPassword"
-                    onChange={handleInputChange}
-                  />
-                </FormControl>
-              </Flex>
-            </Flex>
+        <FormProvider {...form}>
+          <Flex p="3" m="3" mt="0" flexDirection="column" w="417px" gap="2">
+            <FormField
+              control={form.control}
+              name="password"
+              render={({ field }) => (
+                <FormItem>
+                  <FormControl>
+                    <CustomInput
+                      label="CONTRASEÑA"
+                      height="47"
+                      type="password"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormFieldMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="confirmPassword"
+              render={({ field }) => (
+                <FormItem>
+                  <FormControl>
+                    <CustomInput
+                      label="CONFIRMAR CONTRASEÑA"
+                      height="47"
+                      type="password"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormFieldMessage />
+                </FormItem>
+              )}
+            />
           </Flex>
           <ModalFooter>
             <Button
@@ -141,11 +145,12 @@ export default function ChangePassword({
               }
               mr="1"
               type="submit"
+              onClick={form.handleSubmit(handleChangePassword)}
             >
               APLICAR
             </Button>
           </ModalFooter>
-        </form>
+        </FormProvider>
       </ModalContent>
     </Modal>
   );

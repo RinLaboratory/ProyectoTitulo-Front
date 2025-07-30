@@ -4,63 +4,49 @@ import { regular18 } from "~/styles/fonts";
 import { white } from "~/utils/colors";
 import { Flex, Icon, Text, Button } from "@chakra-ui/react";
 
-import React, { useEffect, useState } from "react";
+import React, { useMemo, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { IoPersonSharp, IoDocumentTextOutline } from "react-icons/io5";
 import { HiDocumentAdd } from "react-icons/hi";
 import { styles } from "./show-person-info.module";
-import ShowPersonHistory from "../person-history/show-person-history";
+import ShowPersonHistoryDialog from "../person-history-dialog/show-person-history-dialog";
 import { URL } from "~/utils/consts";
 import { fetcher } from "~/utils/fetcher";
 import useSWR from "swr";
-import ShowPersonVisit from "../person-visit/show-person-visit";
+import ShowPersonVisitDialog from "../person-visit-dialog/show-person-visit-dialog";
 import type { TArea, TPerson } from "~/utils/validators";
 import CustomInput from "~/components/ui/input/input";
 import CustomSelect from "~/components/ui/select/select";
 
+type TActiveDialog = "history-table" | "insert-history" | "none";
+
 export default function ShowPersonInfo() {
   const searchParams = useSearchParams();
   const person = searchParams.get("person") as unknown as string;
+  const [activeDialog, setActiveDialog] = useState<TActiveDialog>("none");
 
   const { data: areas, isLoading: isAreasLoading } = useSWR<TArea[]>(
     `${URL}/getAreas?name=${""}`,
     fetcher
   );
 
-  const [areasOptions, setAreasOptions] = useState<Record<string, string>>({});
-
-  const updateAreasOptions = () => {
-    if (areas) {
-      const obj: Record<string, string> = {};
-
-      for (const item of areas) {
-        obj[item._id] = item.label;
-      }
-
-      setAreasOptions(obj);
-    }
-  };
-
-  const [showPersonHistory, setShowPersonHistory] = useState(false);
-  const handleShowPersonHistory = () =>
-    setShowPersonHistory(!showPersonHistory);
-
-  const [showPersonVisit, setShowPersonVisit] = useState(false);
-  const handleShowPersonVisit = () => setShowPersonVisit(!showPersonVisit);
-
-  const { data: persons, isLoading: isProjectLoading } = useSWR<TPerson>(
+  const { data: persons, isLoading: isPersonsLoading } = useSWR<TPerson>(
     `${URL}/getPersonInfo?person=${person}`,
     fetcher
   );
 
-  useEffect(() => {
-    if (areas) {
-      updateAreasOptions();
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isAreasLoading]);
+  const areasOptions: Record<string, string> | undefined = useMemo(() => {
+    if (!areas) return;
+    const obj: Record<string, string> = {};
 
-  if (isProjectLoading) {
+    for (const item of areas) {
+      obj[item._id] = item.label;
+    }
+    return obj;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isAreasLoading, areas]);
+
+  if (isPersonsLoading || isAreasLoading) {
     return <></>;
   }
 
@@ -95,7 +81,7 @@ export default function ShowPersonInfo() {
                   </Icon>
                 }
                 mr="1"
-                onClick={handleShowPersonHistory}
+                onClick={() => setActiveDialog("history-table")}
               >
                 VER HISTORIAL
               </Button>
@@ -110,7 +96,7 @@ export default function ShowPersonInfo() {
                   </Icon>
                 }
                 mr="1"
-                onClick={handleShowPersonVisit}
+                onClick={() => setActiveDialog("insert-history")}
               >
                 AÑADIR VISITA
               </Button>
@@ -123,6 +109,7 @@ export default function ShowPersonInfo() {
                   label="NOMBRES"
                   height="47"
                   defaultValue={persons?.name}
+                  readOnly
                 />
               </Flex>
               <Flex sx={styles.InputContainer}>
@@ -130,6 +117,7 @@ export default function ShowPersonInfo() {
                   label="APELLIDOS"
                   height="47"
                   defaultValue={persons?.lastname}
+                  readOnly
                 />
               </Flex>
             </Flex>
@@ -139,6 +127,7 @@ export default function ShowPersonInfo() {
                   label="TELEFONO CASA"
                   height="47"
                   defaultValue={persons?.phone}
+                  readOnly
                 />
               </Flex>
               <Flex sx={styles.InputContainer}>
@@ -146,6 +135,7 @@ export default function ShowPersonInfo() {
                   label="SEGURO MÉDICO"
                   height="47"
                   defaultValue={persons?.insurance}
+                  readOnly
                 />
               </Flex>
             </Flex>
@@ -155,6 +145,7 @@ export default function ShowPersonInfo() {
                   label="DIRECCIÓN CASA"
                   height="47"
                   defaultValue={persons?.address}
+                  readOnly
                 />
               </Flex>
             </Flex>
@@ -164,17 +155,21 @@ export default function ShowPersonInfo() {
                   label="GRUPO SANGUÍNEO"
                   height="47"
                   defaultValue={persons?.bloodType}
+                  readOnly
                 />
               </Flex>
               <Flex sx={styles.InputContainer}>
-                {!isAreasLoading && (
-                  <CustomSelect
-                    label="CURSO / AREA"
-                    name="areaId"
-                    value={persons ? areasOptions[persons.areaId] : undefined}
-                    options={areas}
-                  />
-                )}
+                <CustomSelect
+                  label="CURSO / AREA"
+                  name="areaId"
+                  value={
+                    persons && areasOptions
+                      ? areasOptions[persons.areaId]
+                      : undefined
+                  }
+                  options={areas}
+                  isReadOnly
+                />
               </Flex>
             </Flex>
             <Flex sx={styles.InputSection}>
@@ -183,6 +178,7 @@ export default function ShowPersonInfo() {
                   label="NOMBRE APODERADO"
                   height="47"
                   defaultValue={persons?.Rname}
+                  readOnly
                 />
               </Flex>
               <Flex sx={styles.InputContainer}>
@@ -190,6 +186,7 @@ export default function ShowPersonInfo() {
                   label="APELLIDO APODERADO"
                   height="47"
                   defaultValue={persons?.Rlastname}
+                  readOnly
                 />
               </Flex>
             </Flex>
@@ -199,6 +196,7 @@ export default function ShowPersonInfo() {
                   label="TELEFONO APODERADO"
                   height="47"
                   defaultValue={persons?.Rphone}
+                  readOnly
                 />
               </Flex>
               <Flex sx={styles.InputContainer}>
@@ -206,22 +204,23 @@ export default function ShowPersonInfo() {
                   label="CONTACTO EMERGENCIA"
                   height="47"
                   defaultValue={persons?.EmergencyContact}
+                  readOnly
                 />
               </Flex>
             </Flex>
           </Flex>
         </Flex>
       </Flex>
-      <ShowPersonHistory
+      <ShowPersonHistoryDialog
         person={persons}
-        isOpen={showPersonHistory}
-        onClose={handleShowPersonHistory}
+        isOpen={activeDialog === "history-table"}
+        onClose={() => setActiveDialog("none")}
       />
-      <ShowPersonVisit
+      <ShowPersonVisitDialog
         person={persons}
         modalMode="add"
-        isOpen={showPersonVisit}
-        onClose={handleShowPersonVisit}
+        isOpen={activeDialog === "insert-history"}
+        onClose={() => setActiveDialog("none")}
       />
     </Flex>
   );

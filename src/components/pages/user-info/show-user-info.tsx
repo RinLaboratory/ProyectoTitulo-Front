@@ -7,7 +7,7 @@ import { Flex, Icon, Text, Button } from "@chakra-ui/react";
 import React, { useState } from "react";
 import { IoPersonSharp, IoDocumentTextOutline } from "react-icons/io5";
 import { styles } from "./show-user-info.module";
-import ChangePassword from "../change-password/change-password";
+import ChangePasswordDialog from "../change-password-dialog/change-password-dialog";
 import type { TSafeUser } from "~/utils/validators";
 import CustomInput from "~/components/ui/input/input";
 
@@ -67,6 +67,7 @@ export default function ShowUserInfo({
                       label="NOMBRE DE USUARIO"
                       height="47"
                       defaultValue={user?.username}
+                      isReadOnly
                     />
                   </Flex>
                 </Flex>
@@ -76,6 +77,7 @@ export default function ShowUserInfo({
                       label="CORREO ELECTRÓNICO"
                       height="47"
                       defaultValue={user?.email}
+                      isReadOnly
                     />
                   </Flex>
                 </Flex>
@@ -84,7 +86,7 @@ export default function ShowUserInfo({
           </Flex>
         </Flex>
       </Flex>
-      <ChangePassword
+      <ChangePasswordDialog
         user={user}
         isOpen={showPersonHistory}
         onClose={handleShowPersonHistory}

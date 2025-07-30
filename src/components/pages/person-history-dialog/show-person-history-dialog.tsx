@@ -21,44 +21,44 @@ import {
 } from "@chakra-ui/react";
 import { IoEyeSharp } from "react-icons/io5";
 import React, { useState } from "react";
-import { styles } from "./show-person-history.module";
-import ShowPersonVisit from "../person-visit/show-person-visit";
+import { styles } from "./show-person-history-dialog.module";
+import ShowPersonVisitDialog from "../person-visit-dialog/show-person-visit-dialog";
 import { URL } from "~/utils/consts";
 import { fetcher } from "~/utils/fetcher";
 import useSWR from "swr";
 import type { THistory, TPerson } from "~/utils/validators";
 
-interface ShowPersonHistoryProps {
+interface ShowPersonHistoryDialogProps {
   isOpen: boolean;
   onClose: () => void;
   person: TPerson | undefined;
 }
 
-export default function ShowPersonHistory({
+export default function ShowPersonHistoryDialog({
   isOpen,
   onClose,
   person,
-}: ShowPersonHistoryProps) {
-  const [showPersonVisit, setShowPersonVisit] = useState(false);
-  const handleShowPersonVisit = () => setShowPersonVisit(!showPersonVisit);
-  const [document, setDocument] = useState<THistory | undefined>(undefined);
-
-  const handleViewClick = (e: THistory) => {
-    handleShowPersonVisit();
-    setDocument(e);
-  };
+}: ShowPersonHistoryDialogProps) {
+  const [activeDialog, setActiveDialog] = useState(false);
+  const [historyDocument, setHistoryDocument] = useState<THistory | undefined>(
+    undefined
+  );
 
   const {
-    data: documents,
-    isLoading: isProjectLoading,
+    data: historyDocuments,
+    isLoading: isHistoryDocumentsLoading,
     mutate,
   } = useSWR<THistory[]>(
     `${URL}/getPersonHistoryInfo?personId=${person?._id}`,
     fetcher
   );
 
-  const Tabs = ["FECHA", "SINTOMAS / LESIONES", "", "ENVIADO A"];
+  const handleViewClick = (e: THistory) => {
+    setHistoryDocument(e);
+    setActiveDialog(!activeDialog);
+  };
 
+  const Tabs = ["FECHA", "SINTOMAS / LESIONES", "", "ENVIADO A"];
   const Tabs850px = ["FECHA", "SINTOMAS / LESIONES", ""];
 
   return (
@@ -103,8 +103,8 @@ export default function ShowPersonHistory({
                 </Tr>
               </Thead>
               <Tbody>
-                {!isProjectLoading ? (
-                  documents?.map((data, key) => (
+                {!isHistoryDocumentsLoading ? (
+                  historyDocuments?.map((data, key) => (
                     <Tr key={key} textAlign="center">
                       <Td
                         textAlign="center"
@@ -165,13 +165,18 @@ export default function ShowPersonHistory({
             </Table>
           </TableContainer>
         </Flex>
-        <ShowPersonVisit
+        <ShowPersonVisitDialog
           person={person}
-          document={document}
-          isOpen={showPersonVisit}
-          onClose={handleShowPersonVisit}
-          documents={documents}
+          history={historyDocument}
+          isOpen={activeDialog}
+          onClose={() => setActiveDialog(false)}
+          historiesData={historyDocuments}
           mutate={mutate}
+          defaultValues={{
+            enviado: historyDocument?.enviado ?? "",
+            sintomas: historyDocument?.sintomas ?? "",
+            tratamiento: historyDocument?.tratamiento ?? "",
+          }}
         />
       </ModalContent>
     </Modal>

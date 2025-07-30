@@ -12,25 +12,38 @@ import {
   Thead,
   Tr,
 } from "@chakra-ui/react";
-import type { ChangeEvent } from "react";
-import React, { useEffect, useState } from "react";
+import React, { useMemo } from "react";
 import Link from "next/link";
 import { IoEyeSharp } from "react-icons/io5";
 import { styles } from "./search-person.module";
 import { URL } from "~/utils/consts";
 import { fetcher } from "~/utils/fetcher";
 import useSWR from "swr";
+import { SearchPersonSchema } from "~/utils/validators";
 import type { TArea, TPerson } from "~/utils/validators";
 import CustomSelect from "~/components/ui/select/select";
 import CustomInput from "~/components/ui/input/input";
+import {
+  FormControl,
+  FormField,
+  FormFieldMessage,
+  FormItem,
+  FormProvider,
+  useForm,
+} from "~/components/ui/form/form";
 
 export default function SearchPerson() {
-  const [data, setData] = useState({
-    name: "",
-    area: "default",
+  const form = useForm({
+    schema: SearchPersonSchema,
+    defaultValues: {
+      name: "",
+      area: "default",
+    },
   });
+  const searchQuery = form.watch();
+
   const { data: persons, isLoading: isProjectLoading } = useSWR<TPerson[]>(
-    `${URL}/getPersons?name=${data.name}&area=${data.area}`,
+    `${URL}/getPersons?name=${searchQuery.name}&area=${searchQuery.area}`,
     fetcher
   );
 
@@ -39,75 +52,69 @@ export default function SearchPerson() {
     fetcher
   );
 
-  const [areasOptions, setAreasOptions] = useState<Record<string, string>>({});
+  const areasOptions: Record<string, string> = useMemo(() => {
+    if (!areas) return {};
 
-  const updateAreasOptions = () => {
-    if (areas) {
-      const obj: Record<string, string> = {};
+    const obj: Record<string, string> = {};
 
-      for (const item of areas) {
-        obj[item._id] = item.label;
-      }
-
-      setAreasOptions(obj);
+    for (const item of areas) {
+      obj[item._id] = item.label;
     }
-  };
+
+    return obj;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [areas, isAreasLoading]);
 
   const Tabs = ["NOMBRE Y APELLIDO", "CURSO / AREA", "RUT", ""];
-
   const Tabs850px = ["NOMBRES", "CURSO"];
-
-  const handleInputChange = (
-    e:
-      | ChangeEvent<HTMLInputElement>
-      | { target: { value: string; name: string } }
-  ) => {
-    setData({
-      ...data,
-      [e.target.name]: e.target.value,
-    });
-  };
-
-  useEffect(() => {
-    if (!isAreasLoading) {
-      updateAreasOptions();
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [areas]);
 
   return (
     <Flex sx={styles.MainContainer}>
       <Text sx={styles.HeaderText}>Buscar paciente</Text>
       <Flex sx={styles.HeaderTextContainer}>
-        <Flex sx={styles.NameContainer}>
-          <CustomInput
-            label="NOMBRE / APELLIDO"
-            height="47"
-            name="name"
-            value={data.name}
-            onChange={handleInputChange}
-          />
-        </Flex>
-        <Flex sx={styles.AreaContainer}>
-          <CustomSelect
-            label="CURSO / AREA"
-            name="area"
-            value={areasOptions[data.area]}
-            options={
-              isAreasLoading
-                ? [{ label: "default", value: "Ninguno", _id: "" }]
-                : areas
-            }
-            onChange={(value, name) =>
-              handleInputChange({
-                target: {
-                  name: name,
-                  value: value,
-                },
-              })
-            }
-          />
-        </Flex>
+        <FormProvider {...form}>
+          <Flex sx={styles.NameContainer}>
+            <FormField
+              control={form.control}
+              name="name"
+              render={({ field }) => (
+                <FormItem>
+                  <FormControl>
+                    <CustomInput
+                      label="NOMBRE / APELLIDO"
+                      height="47"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormFieldMessage />
+                </FormItem>
+              )}
+            />
+          </Flex>
+          <Flex sx={styles.AreaContainer}>
+            <FormField
+              control={form.control}
+              name="area"
+              render={({ field }) => (
+                <FormItem>
+                  <FormControl>
+                    <CustomSelect
+                      {...field}
+                      label="CURSO / AREA"
+                      options={
+                        isAreasLoading
+                          ? [{ label: "default", value: "Ninguno", _id: "" }]
+                          : areas
+                      }
+                      value={areasOptions[searchQuery.area]}
+                    />
+                  </FormControl>
+                  <FormFieldMessage />
+                </FormItem>
+              )}
+            />
+          </Flex>
+        </FormProvider>
       </Flex>
       <Text sx={styles.ResultText}>RESULTADOS</Text>
       <Flex sx={styles.TableContainer}>
