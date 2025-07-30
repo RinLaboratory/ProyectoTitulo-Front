@@ -2,8 +2,6 @@
 
 import { regular18 } from "~/styles/fonts";
 import { Flex, Icon, Text, Button } from "@chakra-ui/react";
-
-import type { MouseEventHandler } from "react";
 import React, { useState } from "react";
 import { IoSearch } from "react-icons/io5";
 import { styles } from "./admin-mode.module";
@@ -17,43 +15,36 @@ import AreaListDialog from "./area-list-dialog/area-list-dialog";
 import { URL } from "~/utils/consts";
 import post from "~/utils/post";
 
+export type TActiveDialog =
+  | "none"
+  | "show-person-info"
+  | "show-person-list"
+  | "show-user-info"
+  | "show-user-list"
+  | "show-area-list";
+
 export default function AdminMode() {
-  const [showPersonInfo, setShowPersonInfo] = useState(false);
-  const handleShowPersonInfo = () => setShowPersonInfo(!showPersonInfo);
-
-  const [showPersonList, setShowPersonList] = useState(false);
-  const handleShowPersonList = () => setShowPersonList(!showPersonList);
-
-  const [showUserInfo, setShowUserInfo] = useState(false);
-  const handleShowUserInfo = () => setShowUserInfo(!showUserInfo);
-
-  const [showUserList, setShowUserList] = useState(false);
-  const handleShowUserList = () => setShowUserList(!showUserList);
-
-  const [showAreaList, setShowAreaList] = useState(false);
-  const handleShowAreaList = () => setShowAreaList(!showAreaList);
-
-  const [listMode, setListMode] = useState<"edit" | "delete">("edit");
-  const [userListMode, setUserListMode] = useState<"delete" | "edit">("edit");
+  const [activeDialog, setActiveDialog] = useState<TActiveDialog>("none");
+  const [action, setAction] = useState<"edit" | "delete">("edit");
 
   const handleDeletePerson = () => {
-    setListMode("delete");
-    handleShowPersonList();
+    setAction("delete");
+    setActiveDialog("show-person-list");
   };
 
   const handleEditPerson = () => {
-    setListMode("edit");
-    handleShowPersonList();
+    setAction("edit");
+    setActiveDialog("show-person-list");
   };
 
   const handleDeleteUser = () => {
-    setUserListMode("delete");
-    handleShowUserList();
+    setAction("delete");
+    setActiveDialog("show-user-list");
   };
 
   const handleEditUser = () => {
-    setUserListMode("edit");
-    handleShowUserList();
+    setAction("edit");
+    setActiveDialog("show-user-list");
   };
 
   const handleNewYearButton = async () => {
@@ -95,21 +86,12 @@ export default function AdminMode() {
     });
   };
 
-  const buttonSelector: {
-    id: number;
-    text: string;
-    button1: string;
-    button1action: MouseEventHandler<HTMLButtonElement> | (() => Promise<void>);
-    button2: string;
-    button2action: MouseEventHandler<HTMLButtonElement>;
-    button3: string;
-    button3action: MouseEventHandler<HTMLButtonElement>;
-  }[] = [
+  const buttonSelector = [
     {
       id: 0,
       text: "Administración Usuarios",
       button1: "AÑADIR USUARIO",
-      button1action: handleShowUserInfo,
+      button1action: () => setActiveDialog("show-user-info"),
       button2: "EDITAR USUARIO",
       button2action: handleEditUser,
       button3: "ELIMINAR USUARIO",
@@ -119,7 +101,7 @@ export default function AdminMode() {
       id: 1,
       text: "Administración de Personas de la insitución",
       button1: "AÑADIR PERSONA",
-      button1action: handleShowPersonInfo,
+      button1action: () => setActiveDialog("show-person-info"),
       button2: "EDITAR PERSONA",
       button2action: handleEditPerson,
       button3: "ELIMINAR PERSONA",
@@ -131,7 +113,7 @@ export default function AdminMode() {
       button1: "INICIO DE AÑO NUEVO",
       button1action: handleNewYearButton,
       button2: "ADMINISTRACION\nAREA / CURSO",
-      button2action: handleShowAreaList,
+      button2action: () => setActiveDialog("show-area-list"),
       button3: "",
       button3action: () => {
         return undefined;
@@ -191,19 +173,28 @@ export default function AdminMode() {
           </Flex>
         </Flex>
       ))}
-      <ShowPersonInfoDialog isOpen={showPersonInfo} onClose={handleShowPersonInfo} />
+      <ShowPersonInfoDialog
+        isOpen={activeDialog === "show-person-info"}
+        onClose={() => setActiveDialog("none")}
+      />
       <PersonListDialog
-        isOpen={showPersonList}
-        onClose={handleShowPersonList}
-        listMode={listMode}
+        isOpen={activeDialog === "show-person-list"}
+        onClose={() => setActiveDialog("none")}
+        listMode={action}
       />
-      <ShowUserInfoDialog isOpen={showUserInfo} onClose={handleShowUserInfo} />
+      <ShowUserInfoDialog
+        isOpen={activeDialog === "show-user-info"}
+        onClose={() => setActiveDialog("none")}
+      />
       <UserListDialog
-        isOpen={showUserList}
-        onClose={handleShowUserList}
-        userListMode={userListMode}
+        isOpen={activeDialog === "show-user-list"}
+        onClose={() => setActiveDialog("none")}
+        userListMode={action}
       />
-      <AreaListDialog isOpen={showAreaList} onClose={handleShowAreaList} />
+      <AreaListDialog
+        isOpen={activeDialog === "show-area-list"}
+        onClose={() => setActiveDialog("none")}
+      />
     </Flex>
   );
 }
