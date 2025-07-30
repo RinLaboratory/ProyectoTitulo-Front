@@ -9,3 +9,12 @@ export const AreaSchema = z.object({
 });
 
 export type TArea = z.infer<typeof AreaSchema>;
+
+export const InsertAreaSchema = AreaSchema.pick({
+  label: true,
+  value: true,
+  isClass: true,
+  nextId: true,
+});
+
+export type TInsertArea = z.infer<typeof InsertAreaSchema>;
