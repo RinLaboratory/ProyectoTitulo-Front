@@ -31,6 +31,7 @@ import {
   FormProvider,
   useForm,
 } from "~/components/ui/form/form";
+import { areasOptionsParser } from "~/utils/areas-options-parser";
 
 export default function SearchPerson() {
   const form = useForm({
@@ -53,15 +54,7 @@ export default function SearchPerson() {
   );
 
   const areasOptions: Record<string, string> = useMemo(() => {
-    if (!areas) return {};
-
-    const obj: Record<string, string> = {};
-
-    for (const item of areas) {
-      obj[item._id] = item.label;
-    }
-
-    return obj;
+    return areasOptionsParser(areas);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [areas, isAreasLoading]);
 

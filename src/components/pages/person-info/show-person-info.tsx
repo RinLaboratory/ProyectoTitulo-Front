@@ -17,6 +17,7 @@ import ShowPersonVisitDialog from "../person-visit-dialog/show-person-visit-dial
 import type { TArea, TPerson } from "~/utils/validators";
 import CustomInput from "~/components/ui/input/input";
 import CustomSelect from "~/components/ui/select/select";
+import { areasOptionsParser } from "~/utils/areas-options-parser";
 
 type TActiveDialog = "history-table" | "insert-history" | "none";
 
@@ -36,13 +37,7 @@ export default function ShowPersonInfo() {
   );
 
   const areasOptions: Record<string, string> | undefined = useMemo(() => {
-    if (!areas) return;
-    const obj: Record<string, string> = {};
-
-    for (const item of areas) {
-      obj[item._id] = item.label;
-    }
-    return obj;
+    return areasOptionsParser(areas);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isAreasLoading, areas]);
 
@@ -162,11 +157,7 @@ export default function ShowPersonInfo() {
                 <CustomSelect
                   label="CURSO / AREA"
                   name="areaId"
-                  value={
-                    persons && areasOptions
-                      ? areasOptions[persons.areaId]
-                      : undefined
-                  }
+                  value={persons ? areasOptions[persons.areaId] : undefined}
                   options={areas}
                   isReadOnly
                 />

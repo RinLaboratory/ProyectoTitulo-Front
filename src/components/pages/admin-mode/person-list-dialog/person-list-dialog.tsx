@@ -46,6 +46,7 @@ import {
   FormProvider,
   useForm,
 } from "~/components/ui/form/form";
+import { areasOptionsParser } from "~/utils/areas-options-parser";
 
 interface PersonListDialogProps {
   isOpen: boolean;
@@ -85,14 +86,14 @@ export default function PersonListDialog({
   const [listModeImport, setListModeImport] = useState<"edit" | "add">("add");
   const [activeDialog, setActiveDialog] = useState<TActiveDialog>("none");
 
-  const { data: areas, isLoading: isAreaLoading } = useSWR<TArea[]>(
+  const { data: areas, isLoading: isAreasLoading } = useSWR<TArea[]>(
     `${URL}/getAreas?name=${""}`,
     fetcher
   );
 
   const {
     data: persons,
-    isLoading: isProjectLoading,
+    isLoading: isPersonsLoading,
     mutate,
   } = useSWR<TPerson[]>(
     `${URL}/getPersons?name=${formValues.name}&area=${formValues.area}`,
@@ -100,16 +101,9 @@ export default function PersonListDialog({
   );
 
   const areasOptions: Record<string, string> = useMemo(() => {
-    if (!areas) return {};
-    const obj: Record<string, string> = {};
-
-    for (const item of areas) {
-      obj[item._id] = item.label;
-    }
-
-    return obj;
+    return areasOptionsParser(areas);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [areas, isAreaLoading]);
+  }, [areas, isAreasLoading]);
 
   const handleEditButton = (e: TPerson) => {
     setSelectedPerson(e);
@@ -203,7 +197,7 @@ export default function PersonListDialog({
                               {...field}
                               label="CURSO / AREA"
                               options={
-                                isAreaLoading
+                                isAreasLoading
                                   ? [
                                       {
                                         label: "default",
@@ -271,7 +265,7 @@ export default function PersonListDialog({
                       </Tr>
                     </Thead>
                     <Tbody sx={styles.ShowOn850px}>
-                      {!isProjectLoading ? (
+                      {!isPersonsLoading ? (
                         persons?.map((data, key) => (
                           <Tr key={key} textAlign="center">
                             <Td
@@ -304,7 +298,7 @@ export default function PersonListDialog({
                       )}
                     </Tbody>
                     <Tbody sx={styles.HideOn850px}>
-                      {!isProjectLoading ? (
+                      {!isPersonsLoading ? (
                         persons?.map((data, key) => (
                           <Tr key={key} textAlign="center">
                             <Td

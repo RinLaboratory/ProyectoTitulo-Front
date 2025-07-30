@@ -24,6 +24,7 @@ import Link from "next/link";
 import { regular18 } from "~/styles/fonts";
 import { styles } from "./resting-dialog.module";
 import type { TIndexData, TPerson, TPersonState } from "~/utils/validators";
+import { areasOptionsParser } from "~/utils/areas-options-parser";
 
 interface RestingDialogProps {
   isOpen: boolean;
@@ -67,13 +68,7 @@ export default function RestingDialog({
   }, [isOpen, indexData]);
 
   const areasOptions: Record<string, string> | undefined = useMemo(() => {
-    if (!indexData) return;
-    const obj: Record<string, string> = {};
-
-    for (const item of indexData.areas) {
-      obj[item._id] = item.label;
-    }
-    return obj;
+    return areasOptionsParser(indexData?.areas);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isOpen, indexData]);
 
@@ -146,7 +141,7 @@ export default function RestingDialog({
                               sx={styles.TableText}
                               color="#000000"
                             >
-                              {areasOptions ? areasOptions[data.areaId] : ""}
+                              {areasOptions[data.areaId]}
                             </Td>
                           </Tr>
                         ))
@@ -170,7 +165,7 @@ export default function RestingDialog({
                               sx={styles.TableText}
                               color="#000000"
                             >
-                              {areasOptions ? areasOptions[data.areaId] : ""}
+                              {areasOptions[data.areaId]}
                             </Td>
                             <Td
                               textAlign="center"

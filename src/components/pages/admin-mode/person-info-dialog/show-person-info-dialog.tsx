@@ -39,6 +39,7 @@ import CustomSelect from "~/components/ui/select/select";
 import { mutate as personMutate } from "swr";
 import { InsertPersonSchema } from "~/utils/validators";
 import type { TArea, TPerson, TInsertPerson } from "~/utils/validators";
+import { areasOptionsParser } from "~/utils/areas-options-parser";
 
 interface ShowPersonInfoDialogProps {
   isOpen: boolean;
@@ -88,14 +89,7 @@ export default function ShowPersonInfoDialog({
   );
 
   const areasOptions: Record<string, string> = useMemo(() => {
-    if (!areas) return {};
-    const obj: Record<string, string> = {};
-
-    for (const item of areas) {
-      obj[item._id] = item.label;
-    }
-
-    return obj;
+    return areasOptionsParser(areas);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [areas, isAreasLoading]);
 

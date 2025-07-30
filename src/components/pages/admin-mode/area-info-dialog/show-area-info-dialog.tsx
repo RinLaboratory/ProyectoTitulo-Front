@@ -37,6 +37,7 @@ import CustomSelect from "~/components/ui/select/select";
 import { regular12 } from "~/styles/fonts";
 import type { TInsertArea, TArea } from "~/utils/validators";
 import { InsertAreaSchema } from "~/utils/validators";
+import { areasOptionsParser } from "~/utils/areas-options-parser";
 
 interface ShowAreaInfoDialogProps {
   isOpen: boolean;
@@ -79,14 +80,7 @@ export default function ShowAreaInfoDialog({
   } = useSWR<TArea[]>(`${URL}/getAreas?name=${""}`, fetcher);
 
   const areasOptions: Record<string, string> = useMemo(() => {
-    if (!areas) return {};
-    const obj: Record<string, string> = {};
-
-    for (const item of areas) {
-      obj[item._id] = item.label;
-    }
-
-    return obj;
+    return areasOptionsParser(areas);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [areas, isAreasLoading]);
 
