@@ -10,7 +10,6 @@ import { IoPersonSharp, IoDocumentTextOutline } from "react-icons/io5";
 import { HiDocumentAdd } from "react-icons/hi";
 import { styles } from "./show-person-info.module";
 import ShowPersonHistoryDialog from "../person-history-dialog/show-person-history-dialog";
-import { URL } from "~/utils/consts";
 import { fetcher } from "~/utils/fetcher";
 import useSWR from "swr";
 import ShowPersonVisitDialog from "../person-visit-dialog/show-person-visit-dialog";
@@ -27,13 +26,13 @@ export default function ShowPersonInfo() {
   const [activeDialog, setActiveDialog] = useState<TActiveDialog>("none");
 
   const { data: areas, isLoading: isAreasLoading } = useSWR<TArea[]>(
-    `${URL}/getAreas?name=${""}`,
-    fetcher,
+    `/getAreas?name=`,
+    fetcher
   );
 
   const { data: persons, isLoading: isPersonsLoading } = useSWR<TPerson>(
-    `${URL}/getPersonInfo?person=${person}`,
-    fetcher,
+    `/getPersonInfo?person=${person}`,
+    fetcher
   );
 
   const areasOptions: Record<string, string> | undefined = useMemo(() => {

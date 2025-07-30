@@ -19,7 +19,6 @@ import React from "react";
 import { styles } from "./change-password-dialog.module";
 import CustomInput from "../../ui/input/input";
 import { white } from "~/utils/colors";
-import { URL } from "~/utils/consts";
 import post from "~/utils/post";
 import type { TUpdatePassword } from "~/utils/validators";
 import { UpdatePasswordSchema } from "~/utils/validators";
@@ -66,7 +65,7 @@ export default function ChangePasswordDialog({
         ...values,
         passwordId: user?.password_id,
       };
-      const response = await post(`${URL}/changePassword`, constructedData);
+      const response = await post(`/changePassword`, constructedData);
       if (response.status === "success") {
         toast({
           title: "Contraseña actualizada.",

@@ -23,7 +23,6 @@ import { styles } from "./import-person-dialog.module";
 import { HiOutlineDocumentAdd, HiOutlineDownload } from "react-icons/hi";
 import Swal from "sweetalert2";
 import { white } from "~/utils/colors";
-import { URL } from "~/utils/consts";
 import postFile from "~/utils/post-file";
 import Link from "next/link";
 
@@ -85,12 +84,12 @@ export default function ImportPersonDialog({
             cancelButtonText: "Cancelar",
           }).then(async (result) => {
             if (result.isConfirmed) {
-              const response = await postFile(`${URL}/addImportPersons`, file);
+              const response = await postFile(`/addImportPersons`, file);
               if (response.status === "success") {
                 await Swal.fire(
                   "Personas Importadas",
                   `Se han importado ${response.linea} personas al sistema.`,
-                  "success",
+                  "success"
                 );
                 onClose();
               } else {
@@ -124,12 +123,12 @@ export default function ImportPersonDialog({
             cancelButtonText: "Cancelar",
           }).then(async (result) => {
             if (result.isConfirmed) {
-              const response = await postFile(`${URL}/editImportPersons`, file);
+              const response = await postFile(`/editImportPersons`, file);
               if (response.status === "success") {
                 await Swal.fire(
                   "Personas Editadas",
                   `Se han editado ${response.linea} personas en el sistema.`,
-                  "success",
+                  "success"
                 );
                 onClose();
               } else {

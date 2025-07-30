@@ -1,11 +1,13 @@
+import { env } from "~/env/shared";
+
 /**
  *
- * @param {string} url
- * @param {Object} data
- * @returns {Object}
+ * @param url string
+ * @param data object
+ * @returns object
  */
 export default async function post<T>(url: string, data: object = {}) {
-  const response = await fetch(url, {
+  const response = await fetch(`${env.NEXT_PUBLIC_API_URL}${url}`, {
     method: "POST",
     mode: "cors",
     cache: "no-cache",

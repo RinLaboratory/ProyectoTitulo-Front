@@ -31,7 +31,6 @@ import CustomInput from "../../../ui/input/input";
 import Swal from "sweetalert2";
 import ShowAreaInfoDialog from "../area-info-dialog/show-area-info-dialog";
 import { white } from "~/utils/colors";
-import { URL } from "~/utils/consts";
 import post from "~/utils/post";
 import { fetcher } from "~/utils/fetcher";
 import useSWR from "swr";
@@ -50,7 +49,7 @@ export default function AreaListDialog({
 }: AreaListDialogProps) {
   const [query, setQuery] = useState<string>("");
   const [selectedArea, setSelectedArea] = useState<TArea | undefined>(
-    undefined,
+    undefined
   );
   const [activeDialog, setActiveDialog] = useState<TActiveDialog>("none");
   const [listMode, setListMode] = useState<"view" | "add" | "edit">("add");
@@ -59,7 +58,7 @@ export default function AreaListDialog({
     data: areas,
     isLoading: isAreasLoading,
     mutate,
-  } = useSWR<TArea[]>(`${URL}/getAreas?name=${query}`, fetcher);
+  } = useSWR<TArea[]>(`/getAreas?name=${query}`, fetcher);
 
   const handleEditButton = (area: TArea) => {
     setListMode("edit");
@@ -79,12 +78,12 @@ export default function AreaListDialog({
       cancelButtonText: "Cancelar",
     }).then(async (result) => {
       if (result.isConfirmed) {
-        const response = await post<TArea>(`${URL}/deleteArea`, area);
+        const response = await post<TArea>(`/deleteArea`, area);
         if (response.status === "success") {
           await Swal.fire(
             "¡Eliminado!",
             "El area / curso se ha eliminado correctamente.",
-            "success",
+            "success"
           );
           const backup = areas?.filter((element) => element._id !== area._id);
           await mutate(backup, false);

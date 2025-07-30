@@ -20,7 +20,6 @@ import { HiOutlineDocumentAdd } from "react-icons/hi";
 import { styles } from "./show-user-info-dialog.module";
 import CustomInput from "../../../ui/input/input";
 import { white } from "~/utils/colors";
-import { URL } from "~/utils/consts";
 import post from "~/utils/post";
 import type { KeyedMutator } from "swr";
 import { mutate as userMutate } from "swr";
@@ -76,7 +75,7 @@ export default function ShowUserInfoDialog({
   const handleSubmit = async (values: TInsertUser) => {
     if (values.password === values.confirmPassword) {
       if (modalMode === "add") {
-        const response = await post(`${URL}/register`, values);
+        const response = await post(`/register`, values);
         if (response.status === "success") {
           toast({
             title: "Usuario agregado.",
@@ -85,7 +84,7 @@ export default function ShowUserInfoDialog({
             duration: 9000,
             isClosable: true,
           });
-          await userMutate(`${URL}/getusers?username=${""}`);
+          await userMutate(`/getusers?username=${""}`);
           onClose();
         } else {
           toast({
@@ -103,10 +102,7 @@ export default function ShowUserInfoDialog({
           ...values,
         };
 
-        const response = await post<TSafeUser>(
-          `${URL}/editUser`,
-          constructedData,
-        );
+        const response = await post<TSafeUser>(`/editUser`, constructedData);
         if (response.status === "success") {
           toast({
             title: "Usuario editado.",

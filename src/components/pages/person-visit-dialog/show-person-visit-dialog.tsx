@@ -32,7 +32,6 @@ import React, { useEffect, useState } from "react";
 import { styles } from "./show-person-visit-dialog.module";
 import { softBlue, white } from "~/utils/colors";
 import Swal from "sweetalert2";
-import { URL } from "~/utils/consts";
 import post from "~/utils/post";
 import type { KeyedMutator } from "swr";
 import { mutate as historyMutate } from "swr";
@@ -97,7 +96,7 @@ export default function ShowPersonVisitDialog({
       personId: history.personId,
       timestamp: new Date(),
     };
-    await post(`${URL}/editPersonHistoryInfo`, constructedData);
+    await post(`/editPersonHistoryInfo`, constructedData);
     const backup: THistory[] = [];
     historiesData?.forEach((element) => {
       if (element._id === constructedData._id) {
@@ -124,8 +123,8 @@ export default function ShowPersonVisitDialog({
       personId: person?._id,
       timestamp: new Date(),
     };
-    await post(`${URL}/setPersonHistoryInfo`, constructedData);
-    await historyMutate(`${URL}/getPersonHistoryInfo?personId=${person?._id}`);
+    await post(`/setPersonHistoryInfo`, constructedData);
+    await historyMutate(`/getPersonHistoryInfo?personId=${person?._id}`);
     toast({
       title: "Visita agregada.",
       description: "La visita se ha añadido exitosamente en el sistema.",
@@ -150,17 +149,17 @@ export default function ShowPersonVisitDialog({
       cancelButtonText: "Cancelar",
     }).then(async (result) => {
       if (result.isConfirmed) {
-        const response = await post(`${URL}/deletePersonHistoryInfo`, {
+        const response = await post(`/deletePersonHistoryInfo`, {
           _id: history._id,
         });
         if (response.status === "success") {
           await Swal.fire(
             "¡Eliminado!",
             "La visita ha sido eliminada correctamente.",
-            "success",
+            "success"
           );
           const backup = historiesData?.filter(
-            (element) => element._id !== history._id,
+            (element) => element._id !== history._id
           );
           await mutate(backup, false);
           onClose();

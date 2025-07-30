@@ -2,7 +2,6 @@
 
 import ShowUserInfo from "~/components/pages/user-info/show-user-info";
 import React from "react";
-import { URL } from "~/utils/consts";
 import { fetcher } from "~/utils/fetcher";
 import useSWR from "swr";
 import ShowAdminInfo from "~/components/pages/admin-info/show-admin-info";
@@ -10,8 +9,8 @@ import type { TSafeUser } from "~/utils/validators";
 
 export default function UserInfo() {
   const { data: user, isLoading: isUserLoading } = useSWR<TSafeUser>(
-    `${URL}/getCurrentUser`,
-    fetcher,
+    `/getCurrentUser`,
+    fetcher
   );
 
   return (

@@ -1,12 +1,13 @@
 "use server";
 
 import { cookies } from "next/headers";
+import { env } from "~/env/shared";
 
 export async function fetcher<T>(url: string) {
   const cookieStore = await cookies();
   const token = cookieStore.get("jwt")?.value;
 
-  const response = await fetch(url, {
+  const response = await fetch(`${env.NEXT_PUBLIC_API_URL}${url}`, {
     method: "GET",
     mode: "cors",
     cache: "no-cache",

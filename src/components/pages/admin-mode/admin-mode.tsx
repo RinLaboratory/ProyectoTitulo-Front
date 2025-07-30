@@ -12,7 +12,6 @@ import ShowUserInfoDialog from "./user-info-dialog/show-user-info-dialog";
 import UserListDialog from "./user-list-dialog/user-list-dialog";
 import Swal from "sweetalert2";
 import AreaListDialog from "./area-list-dialog/area-list-dialog";
-import { URL } from "~/utils/consts";
 import post from "~/utils/post";
 
 export type TActiveDialog =
@@ -70,12 +69,12 @@ export default function AdminMode() {
           cancelButtonText: "Cancelar",
         }).then(async (result) => {
           if (result.isConfirmed) {
-            const response = await post(`${URL}/initNewYear`);
+            const response = await post(`/initNewYear`);
             if (response.status === "success") {
               await Swal.fire(
                 "¡Se ha iniciado un nuevo año en el sistema!",
                 "Los estudiantes se han movido al siguiente año en la escala de enseñanza exitosamente.",
-                "success",
+                "success"
               );
             } else {
               await Swal.fire("Error", `${response.msg}`, "error");

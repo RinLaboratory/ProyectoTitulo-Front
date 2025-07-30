@@ -10,7 +10,6 @@ import { styles } from "./index.module";
 import RestingDialog from "./resting-dialog/resting-dialog";
 import { fetcher } from "~/utils/fetcher";
 import useSWR from "swr";
-import { URL } from "~/utils/consts";
 import type { TIndexData, TPersonState } from "~/utils/validators";
 
 export default function Index() {
@@ -18,8 +17,8 @@ export default function Index() {
   const [listMode, setListMode] = useState<TPersonState>("retirado");
 
   const { data: indexData, isLoading: isIndexDataLoading } = useSWR<TIndexData>(
-    `${URL}/getIndexData`,
-    fetcher,
+    `/getIndexData`,
+    fetcher
   );
 
   const handleDialog = (mode: TPersonState) => {

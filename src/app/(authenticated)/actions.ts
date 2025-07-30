@@ -1,7 +1,6 @@
 "use server";
 
 import { cookies } from "next/headers";
-import { env } from "~/env/env";
 import { fetcher } from "~/utils/fetcher";
 import type { TSafeUser } from "~/utils/validators";
 
@@ -12,9 +11,7 @@ export async function getAccountInfo(): Promise<TSafeUser | undefined> {
 
   if (!isTokenAvailable) return;
 
-  const userData = await fetcher<TSafeUser | undefined>(
-    `${env.NEXT_PUBLIC_API_URL}/getCurrentUser`,
-  );
+  const userData = await fetcher<TSafeUser | undefined>(`/getCurrentUser`);
 
   return userData;
 }

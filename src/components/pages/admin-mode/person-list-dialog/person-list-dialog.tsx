@@ -30,7 +30,6 @@ import CustomInput from "../../../ui/input/input";
 import CustomSelect from "../../../ui/select/select";
 import ShowPersonInfoDialog from "../person-info-dialog/show-person-info-dialog";
 import Swal from "sweetalert2";
-import { URL } from "~/utils/consts";
 import post from "~/utils/post";
 import { fetcher } from "~/utils/fetcher";
 import useSWR from "swr";
@@ -81,14 +80,14 @@ export default function PersonListDialog({
   });
   const formValues = form.watch();
   const [selectedPerson, setSelectedPerson] = useState<TPerson | undefined>(
-    undefined,
+    undefined
   );
   const [listModeImport, setListModeImport] = useState<"edit" | "add">("add");
   const [activeDialog, setActiveDialog] = useState<TActiveDialog>("none");
 
   const { data: areas, isLoading: isAreasLoading } = useSWR<TArea[]>(
-    `${URL}/getAreas?name=${""}`,
-    fetcher,
+    `/getAreas?name=`,
+    fetcher
   );
 
   const {
@@ -96,8 +95,8 @@ export default function PersonListDialog({
     isLoading: isPersonsLoading,
     mutate,
   } = useSWR<TPerson[]>(
-    `${URL}/getPersons?name=${formValues.name}&area=${formValues.area}`,
-    fetcher,
+    `/getPersons?name=${formValues.name}&area=${formValues.area}`,
+    fetcher
   );
 
   const areasOptions: Record<string, string> = useMemo(() => {
@@ -127,12 +126,12 @@ export default function PersonListDialog({
       cancelButtonText: "Cancelar",
     }).then(async (result) => {
       if (result.isConfirmed) {
-        const response = await post(`${URL}/deletePersons`, e);
+        const response = await post(`/deletePersons`, e);
         if (response.status === "success") {
           await Swal.fire(
             "¡Eliminado!",
             "La persona ha sido eliminada correctamente.",
-            "success",
+            "success"
           );
           const backup = persons?.filter((element) => element._id !== e._id);
           await mutate(backup, false);
@@ -141,7 +140,7 @@ export default function PersonListDialog({
           await Swal.fire(
             "Error",
             `No puedes eliminar a esta persona. ${response.msg}`,
-            "error",
+            "error"
           );
         }
       }

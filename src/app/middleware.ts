@@ -1,7 +1,7 @@
 import type { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
 import { verify } from "jsonwebtoken";
-import { env } from "~/env/env";
+import { env } from "~/env/shared";
 
 const PUBLIC_ROUTES = [
   "/login",

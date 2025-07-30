@@ -1,7 +1,7 @@
 "use server";
 
 import { cookies } from "next/headers";
-import { env } from "~/env/env";
+import { env } from "~/env/shared";
 import post from "~/utils/post";
 
 export default async function login({
@@ -11,9 +11,8 @@ export default async function login({
   email: string;
   password: string;
 }) {
-  const BACKEND_URL = env.NEXT_PUBLIC_API_URL;
   const DOMAIN = env.DOMAIN;
-  const response = await post(`${BACKEND_URL}/login`, {
+  const response = await post(`/login`, {
     email,
     password,
   });

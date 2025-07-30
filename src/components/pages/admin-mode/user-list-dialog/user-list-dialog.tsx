@@ -28,7 +28,6 @@ import { styles } from "./user-list-dialog.module";
 import CustomInput from "../../../ui/input/input";
 import Swal from "sweetalert2";
 import ShowUserInfoDialog from "../user-info-dialog/show-user-info-dialog";
-import { URL } from "~/utils/consts";
 import { fetcher } from "~/utils/fetcher";
 import useSWR from "swr";
 import post from "~/utils/post";
@@ -61,7 +60,7 @@ export default function UserListDialog({
 }: UserListDialogProps) {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedUser, setSelectedUser] = useState<TSafeUser | undefined>(
-    undefined,
+    undefined
   );
   const [activeDialog, setActiveDialog] = useState<TActiveDialog>("none");
 
@@ -69,7 +68,7 @@ export default function UserListDialog({
     data: users,
     isLoading: isUsersLoading,
     mutate,
-  } = useSWR<TSafeUser[]>(`${URL}/getusers?username=${searchQuery}`, fetcher);
+  } = useSWR<TSafeUser[]>(`/getusers?username=${searchQuery}`, fetcher);
 
   const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
     setSearchQuery(e.target.value);
@@ -92,12 +91,12 @@ export default function UserListDialog({
       cancelButtonText: "Cancelar",
     }).then(async (result) => {
       if (result.isConfirmed) {
-        const response = await post<TSafeUser>(`${URL}/deleteUser`, value);
+        const response = await post<TSafeUser>(`/deleteUser`, value);
         if (response.status === "success") {
           await Swal.fire(
             "¡Eliminado!",
             "El usuario ha sido eliminado correctamente.",
-            "success",
+            "success"
           );
           const backup = users?.filter((element) => element._id !== value._id);
           await mutate(backup, false);

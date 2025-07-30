@@ -30,7 +30,6 @@ import { styles } from "./show-person-info-dialog.module";
 import CustomInput from "../../../ui/input/input";
 import { white } from "~/utils/colors";
 import ImportPersonDialog from "../import-person-dialog/import-person-dialog";
-import { URL } from "~/utils/consts";
 import post from "~/utils/post";
 import { fetcher } from "~/utils/fetcher";
 import type { KeyedMutator } from "swr";
@@ -84,8 +83,8 @@ export default function ShowPersonInfoDialog({
   });
 
   const { data: areas, isLoading: isAreasLoading } = useSWR<TArea[]>(
-    `${URL}/getAreas?name=${""}`,
-    fetcher,
+    `/getAreas?name=`,
+    fetcher
   );
 
   const areasOptions: Record<string, string> = useMemo(() => {
@@ -95,7 +94,7 @@ export default function ShowPersonInfoDialog({
 
   const handleSubmit = async (value: TInsertPerson) => {
     if (modalMode === "add") {
-      const response = await post(`${URL}/addPersons`, value);
+      const response = await post(`/addPersons`, value);
       if (response.status === "success") {
         toast({
           title: "Persona agregada.",
@@ -104,7 +103,7 @@ export default function ShowPersonInfoDialog({
           duration: 9000,
           isClosable: true,
         });
-        await personMutate(`${URL}/getPersons?name=${""}&area=${""}`);
+        await personMutate(`/getPersons?name=${""}&area=${""}`);
         onClose();
       } else {
         toast({
@@ -124,7 +123,7 @@ export default function ShowPersonInfoDialog({
         lastnameE: person?.lastnameE ?? "",
       };
 
-      const response = await post(`${URL}/editPersons`, constructedData);
+      const response = await post(`/editPersons`, constructedData);
       if (response.status === "success") {
         toast({
           title: "Persona editada.",

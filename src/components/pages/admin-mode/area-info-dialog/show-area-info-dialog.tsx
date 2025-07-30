@@ -29,7 +29,6 @@ import { HiOutlineDocumentAdd } from "react-icons/hi";
 import { styles } from "./show-area-info-dialog.module";
 import CustomInput from "../../../ui/input/input";
 import { softBlue, white } from "~/utils/colors";
-import { URL } from "~/utils/consts";
 import post from "~/utils/post";
 import { fetcher } from "~/utils/fetcher";
 import useSWR from "swr";
@@ -77,7 +76,7 @@ export default function ShowAreaInfoDialog({
     data: areas,
     isLoading: isAreasLoading,
     mutate,
-  } = useSWR<TArea[]>(`${URL}/getAreas?name=${""}`, fetcher);
+  } = useSWR<TArea[]>(`/getAreas?name=`, fetcher);
 
   const areasOptions: Record<string, string> = useMemo(() => {
     return areasOptionsParser(areas);
@@ -86,7 +85,7 @@ export default function ShowAreaInfoDialog({
 
   const handleSubmit = async (values: TInsertArea) => {
     if (modalMode === "add") {
-      const response = await post<TArea>(`${URL}/addArea`, values);
+      const response = await post<TArea>(`/addArea`, values);
       if (response.status === "success") {
         toast({
           title: "Curso / Area agregado.",
@@ -117,7 +116,7 @@ export default function ShowAreaInfoDialog({
         _id: area?._id ?? "",
       };
 
-      const response = await post<TArea>(`${URL}/editArea`, values);
+      const response = await post<TArea>(`/editArea`, values);
       if (response.status === "success") {
         toast({
           title: "Curso / Area editado.",
