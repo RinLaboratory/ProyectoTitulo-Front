@@ -42,28 +42,29 @@ interface AreaListDialogProps {
   onClose: () => void;
 }
 
+type TActiveDialog = "none" | "show-area-info";
+
 export default function AreaListDialog({
   isOpen,
   onClose,
 }: AreaListDialogProps) {
-  const [data, setData] = useState<TArea | undefined>(undefined);
+  const [query, setQuery] = useState<string>("");
+  const [selectedArea, setSelectedArea] = useState<TArea | undefined>(
+    undefined
+  );
+  const [activeDialog, setActiveDialog] = useState<TActiveDialog>("none");
+  const [listMode, setListMode] = useState<"view" | "add" | "edit">("add");
 
   const {
     data: areas,
     isLoading: isProjectLoading,
     mutate,
-  } = useSWR<TArea[]>(`${URL}/getAreas?name=${data?.value}`, fetcher);
+  } = useSWR<TArea[]>(`${URL}/getAreas?name=${query}`, fetcher);
 
-  const [showPersonInfo, setShowPersonInfo] = useState(false);
-  const handleShowPersonInfo = () => setShowPersonInfo(!showPersonInfo);
-
-  const Tabs = ["NOMBRE AREA / CURSO", "", ""];
-
-  const [listMode, setListMode] = useState<"view" | "add" | "edit">("add");
-
-  const handleEditButton = () => {
+  const handleEditButton = (area: TArea) => {
     setListMode("edit");
-    handleShowPersonInfo();
+    setSelectedArea(area);
+    setActiveDialog("show-area-info");
   };
 
   const handleDeleteButton = async (area: TArea) => {
@@ -97,17 +98,14 @@ export default function AreaListDialog({
 
   const handleAddButton = () => {
     setListMode("add");
-    handleShowPersonInfo();
+    setActiveDialog("show-area-info");
   };
 
   const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
-    if (data) {
-      setData({
-        ...data,
-        [e.target.name]: e.target.value,
-      });
-    }
+    setQuery(e.target.value);
   };
+
+  const Tabs = ["NOMBRE AREA / CURSO", "", ""];
 
   return (
     <Modal isOpen={isOpen} onClose={onClose} size="6xl">
@@ -124,7 +122,7 @@ export default function AreaListDialog({
                     label="NOMBRE DE AREA / CURSO"
                     height="47"
                     name="value"
-                    value={data?.value}
+                    value={query}
                     onChange={handleInputChange}
                   />
                 </Flex>
@@ -177,7 +175,7 @@ export default function AreaListDialog({
                               sx={regular18}
                               color="#000000"
                             >
-                              <Box onClick={handleEditButton}>
+                              <Box onClick={() => handleEditButton(data)}>
                                 <Icon
                                   sx={styles.LogoutIcon}
                                   viewBox="3 3 17 17"
@@ -212,10 +210,19 @@ export default function AreaListDialog({
             </Flex>
           </Flex>
           <ShowAreaInfoDialog
-            area={data}
-            isOpen={showPersonInfo}
-            onClose={handleShowPersonInfo}
+            area={selectedArea}
+            isOpen={activeDialog === "show-area-info"}
+            onClose={() => {
+              setActiveDialog("none");
+              setSelectedArea(undefined);
+            }}
             modalMode={listMode}
+            defaultValues={{
+              isClass: selectedArea?.isClass ?? false,
+              label: selectedArea?.label ?? "",
+              nextId: selectedArea?.nextId ?? "",
+              value: selectedArea?.value ?? "",
+            }}
           />
         </ModalBody>
         <ModalFooter></ModalFooter>
