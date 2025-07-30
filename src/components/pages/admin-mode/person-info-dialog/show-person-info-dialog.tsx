@@ -20,10 +20,10 @@ import type { ChangeEvent, FormEvent } from "react";
 import React, { useEffect, useState } from "react";
 import { IoPersonSharp } from "react-icons/io5";
 import { HiOutlineDocumentAdd } from "react-icons/hi";
-import { styles } from "./show-person-info.module";
+import { styles } from "./show-person-info-dialog.module";
 import CustomInput from "../../../ui/input/input";
 import { white } from "~/utils/colors";
-import ImportPerson from "../import-person/import-person";
+import ImportPersonDialog from "../import-person-dialog/import-person-dialog";
 import { URL } from "~/utils/consts";
 import post from "~/utils/post";
 import { fetcher } from "~/utils/fetcher";
@@ -33,7 +33,7 @@ import CustomSelect from "~/components/ui/select/select";
 import { mutate as personMutate } from "swr";
 import type { TArea, TPerson } from "~/utils/validators";
 
-interface ShowPersonInfoProps {
+interface ShowPersonInfoDialogProps {
   isOpen: boolean;
   onClose: () => void;
   modalMode?: "add" | "view" | "edit";
@@ -42,14 +42,14 @@ interface ShowPersonInfoProps {
   person?: TPerson | undefined;
 }
 
-export default function ShowPersonInfo({
+export default function ShowPersonInfoDialog({
   isOpen,
   onClose,
   modalMode = "add",
   mutate,
   persons,
   person,
-}: ShowPersonInfoProps) {
+}: ShowPersonInfoDialogProps) {
   const toast = useToast();
 
   const viewMode = {
@@ -411,7 +411,7 @@ export default function ShowPersonInfo({
             )}
           </ModalFooter>
         </form>
-        <ImportPerson
+        <ImportPersonDialog
           isOpen={showImportPerson}
           onClose={handleShowImportPerson}
           listMode={listMode}

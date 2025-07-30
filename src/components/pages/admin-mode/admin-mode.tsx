@@ -8,12 +8,12 @@ import React, { useState } from "react";
 import { IoSearch } from "react-icons/io5";
 import { styles } from "./admin-mode.module";
 import { white } from "~/utils/colors";
-import ShowPersonInfo from "./person-info/show-person-info";
-import PersonList from "./person-list/person-list";
-import ShowUserInfo from "./user-info/show-user-info";
-import UserList from "./user-list/user-list";
+import ShowPersonInfoDialog from "./person-info-dialog/show-person-info-dialog";
+import PersonListDialog from "./person-list-dialog/person-list-dialog";
+import ShowUserInfoDialog from "./user-info-dialog/show-user-info-dialog";
+import UserListDialog from "./user-list-dialog/user-list-dialog";
 import Swal from "sweetalert2";
-import AreaList from "./area-list/area-list";
+import AreaListDialog from "./area-list-dialog/area-list-dialog";
 import { URL } from "~/utils/consts";
 import post from "~/utils/post";
 
@@ -191,19 +191,19 @@ export default function AdminMode() {
           </Flex>
         </Flex>
       ))}
-      <ShowPersonInfo isOpen={showPersonInfo} onClose={handleShowPersonInfo} />
-      <PersonList
+      <ShowPersonInfoDialog isOpen={showPersonInfo} onClose={handleShowPersonInfo} />
+      <PersonListDialog
         isOpen={showPersonList}
         onClose={handleShowPersonList}
         listMode={listMode}
       />
-      <ShowUserInfo isOpen={showUserInfo} onClose={handleShowUserInfo} />
-      <UserList
+      <ShowUserInfoDialog isOpen={showUserInfo} onClose={handleShowUserInfo} />
+      <UserListDialog
         isOpen={showUserList}
         onClose={handleShowUserList}
         userListMode={userListMode}
       />
-      <AreaList isOpen={showAreaList} onClose={handleShowAreaList} />
+      <AreaListDialog isOpen={showAreaList} onClose={handleShowAreaList} />
     </Flex>
   );
 }

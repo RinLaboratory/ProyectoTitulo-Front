@@ -20,7 +20,7 @@ import {
 import type { ChangeEvent, FormEvent } from "react";
 import React, { useEffect, useState } from "react";
 import { HiOutlineDocumentAdd } from "react-icons/hi";
-import { styles } from "./show-area-info.module";
+import { styles } from "./show-area-info-dialog.module";
 import CustomInput from "../../../ui/input/input";
 import { softBlue, white } from "~/utils/colors";
 import { URL } from "~/utils/consts";
@@ -31,19 +31,19 @@ import CustomSelect from "~/components/ui/select/select";
 import { regular12 } from "~/styles/fonts";
 import type { TArea } from "~/utils/validators";
 
-interface ShowAreaInfoProps {
+interface ShowAreaInfoDialogProps {
   isOpen: boolean;
   onClose: () => void;
   modalMode: "add" | "edit" | "view";
   area: TArea | undefined;
 }
 
-export default function ShowAreaInfo({
+export default function ShowAreaInfoDialog({
   isOpen,
   onClose,
   modalMode,
   area,
-}: ShowAreaInfoProps) {
+}: ShowAreaInfoDialogProps) {
   const toast = useToast();
 
   const {

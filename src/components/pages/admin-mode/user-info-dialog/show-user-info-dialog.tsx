@@ -19,10 +19,10 @@ import type { ChangeEvent, FormEvent } from "react";
 import React, { useEffect, useState } from "react";
 import { IoPersonSharp } from "react-icons/io5";
 import { HiOutlineDocumentAdd } from "react-icons/hi";
-import { styles } from "./show-user-info.module";
+import { styles } from "./show-user-info-dialog.module";
 import CustomInput from "../../../ui/input/input";
 import { white } from "~/utils/colors";
-import ImportPerson from "../import-person/import-person";
+import ImportPersonDialog from "../import-person-dialog/import-person-dialog";
 import { URL } from "~/utils/consts";
 import post from "~/utils/post";
 import { EmailRegex } from "~/utils/regex";
@@ -30,7 +30,7 @@ import type { KeyedMutator } from "swr";
 import { mutate as userMutate } from "swr";
 import type { TSafeUser } from "~/utils/validators";
 
-interface ShowUserInfoProps {
+interface ShowUserInfoDialogProps {
   isOpen: boolean;
   onClose: () => void;
   modalMode?: "add" | "view" | "edit";
@@ -39,14 +39,14 @@ interface ShowUserInfoProps {
   mutate?: KeyedMutator<TSafeUser[]>;
 }
 
-export default function ShowUserInfo({
+export default function ShowUserInfoDialog({
   isOpen,
   onClose,
   modalMode = "add",
   user,
   users,
   mutate,
-}: ShowUserInfoProps) {
+}: ShowUserInfoDialogProps) {
   const toast = useToast();
 
   const viewMode = {
@@ -261,7 +261,7 @@ export default function ShowUserInfo({
             )}
           </ModalFooter>
         </form>
-        <ImportPerson
+        <ImportPersonDialog
           isOpen={showImportPerson}
           onClose={handleShowImportPerson}
           listMode={"add"}

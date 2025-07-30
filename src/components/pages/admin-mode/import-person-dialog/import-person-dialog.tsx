@@ -19,7 +19,7 @@ import {
   Spacer,
 } from "@chakra-ui/react";
 import React, { useState } from "react";
-import { styles } from "./import-person.module";
+import { styles } from "./import-person-dialog.module";
 import { HiOutlineDocumentAdd, HiOutlineDownload } from "react-icons/hi";
 import Swal from "sweetalert2";
 import { white } from "~/utils/colors";
@@ -27,17 +27,17 @@ import { URL } from "~/utils/consts";
 import postFile from "~/utils/post-file";
 import Link from "next/link";
 
-interface ImportPersonProps {
+interface ImportPersonDialogProps {
   isOpen: boolean;
   onClose: () => void;
   listMode: "add" | "edit";
 }
 
-export default function ImportPerson({
+export default function ImportPersonDialog({
   isOpen,
   onClose,
   listMode,
-}: ImportPersonProps) {
+}: ImportPersonDialogProps) {
   const [file, setFile] = useState<File | null>(null);
   const toast = useToast();
 

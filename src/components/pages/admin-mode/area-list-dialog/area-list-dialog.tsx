@@ -26,10 +26,10 @@ import type { ChangeEvent } from "react";
 import React, { useState } from "react";
 import { IoEyeSharp, IoTrash } from "react-icons/io5";
 import { HiOutlineDocumentAdd } from "react-icons/hi";
-import { styles } from "./area-list.module";
+import { styles } from "./area-list.module-dialog";
 import CustomInput from "../../../ui/input/input";
 import Swal from "sweetalert2";
-import ShowAreaInfo from "../area-info/show-area-info";
+import ShowAreaInfoDialog from "../area-info-dialog/show-area-info-dialog";
 import { white } from "~/utils/colors";
 import { URL } from "~/utils/consts";
 import post from "~/utils/post";
@@ -37,12 +37,15 @@ import { fetcher } from "~/utils/fetcher";
 import useSWR from "swr";
 import type { TArea } from "~/utils/validators";
 
-interface AreaListProps {
+interface AreaListDialogProps {
   isOpen: boolean;
   onClose: () => void;
 }
 
-export default function AreaList({ isOpen, onClose }: AreaListProps) {
+export default function AreaListDialog({
+  isOpen,
+  onClose,
+}: AreaListDialogProps) {
   const [data, setData] = useState<TArea | undefined>(undefined);
 
   const {
@@ -208,7 +211,7 @@ export default function AreaList({ isOpen, onClose }: AreaListProps) {
               </Flex>
             </Flex>
           </Flex>
-          <ShowAreaInfo
+          <ShowAreaInfoDialog
             area={data}
             isOpen={showPersonInfo}
             onClose={handleShowPersonInfo}

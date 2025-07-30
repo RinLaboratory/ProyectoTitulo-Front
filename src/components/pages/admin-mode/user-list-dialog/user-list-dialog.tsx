@@ -5,7 +5,6 @@ import {
   Flex,
   Icon,
   Text,
-  Button,
   Table,
   TableContainer,
   Tbody,
@@ -25,32 +24,41 @@ import {
 import type { ChangeEvent } from "react";
 import React, { useEffect, useState } from "react";
 import { IoEyeSharp, IoTrash } from "react-icons/io5";
-import { HiOutlineDocumentAdd } from "react-icons/hi";
-import { styles } from "./person-list.module";
+import { styles } from "./user-list-dialog.module";
 import CustomInput from "../../../ui/input/input";
-import CustomSelect from "../../../ui/select/select";
-import ShowPersonInfo from "../person-info/show-person-info";
 import Swal from "sweetalert2";
+import ShowUserInfoDialog from "../user-info-dialog/show-user-info-dialog";
 import { URL } from "~/utils/consts";
-import post from "~/utils/post";
 import { fetcher } from "~/utils/fetcher";
 import useSWR from "swr";
-import ImportPerson from "../import-person/import-person";
-import { white } from "~/utils/colors";
-import type { TArea, TPerson } from "~/utils/validators";
+import post from "~/utils/post";
+import type { TSafeUser } from "~/utils/validators";
 
-interface PersonListProps {
+interface UserListDialogProps {
   isOpen: boolean;
   onClose: () => void;
-  listMode: "delete" | "edit";
+  userListMode: "delete" | "edit";
 }
 
-export default function PersonList({
+export default function UserListDialog({
   isOpen,
   onClose,
-  listMode,
-}: PersonListProps) {
+  userListMode,
+}: UserListDialogProps) {
+  const [data, setData] = useState({
+    username: "",
+  });
+
+  const {
+    data: users,
+    isLoading: isProjectLoading,
+    mutate,
+  } = useSWR<TSafeUser[]>(`${URL}/getusers?username=${data.username}`, fetcher);
+
   const viewMode = {
+    "": {
+      header: "",
+    },
     delete: {
       header: "ELIMINAR",
     },
@@ -59,63 +67,22 @@ export default function PersonList({
     },
   };
 
-  const { data: areas, isLoading: isAreaLoading } = useSWR<TArea[]>(
-    `${URL}/getAreas?name=${""}`,
-    fetcher
-  );
-
-  const [areasOptions, setAreasOptions] = useState<Record<string, string>>({});
-
-  const updateAreasOptions = () => {
-    if (areas) {
-      const obj: Record<string, string> = {};
-
-      for (const item of areas) {
-        obj[item._id] = item.label;
-      }
-
-      setAreasOptions(obj);
-    }
-  };
-
   const [showPersonInfo, setShowPersonInfo] = useState(false);
   const handleShowPersonInfo = () => setShowPersonInfo(!showPersonInfo);
 
-  const [data, setData] = useState({
-    name: "",
-    area: "default",
-  });
+  const Tabs = ["NOMBRE DE USUARIO", "CORREO ELECTRÓNICO", ""];
+  const TabsOn850 = ["USUARIO", "CORREO"];
 
-  const {
-    data: persons,
-    isLoading: isProjectLoading,
-    mutate,
-  } = useSWR<TPerson[]>(
-    `${URL}/getPersons?name=${data.name}&area=${data.area}`,
-    fetcher
+  const [selectedUser, setSelectedUser] = useState<TSafeUser | undefined>(
+    undefined
   );
 
-  const Tabs = ["NOMBRES", "APELLIDO", "RUT", ""];
-  const TabsOn850 = ["NOMBRES", "RUT"];
-
-  const [person, setPerson] = useState<TPerson | undefined>(undefined);
-
-  const handleEditButton = (e: TPerson) => {
-    setPerson(e);
+  const handleEditButton = (e: TSafeUser) => {
+    setSelectedUser(e);
     handleShowPersonInfo();
   };
 
-  const [listModeImport, setListModeImport] = useState<"edit" | "add">("add");
-
-  const [showImportPerson, setShowImportPerson] = useState(false);
-  const handleShowImportPerson = () => setShowImportPerson(!showImportPerson);
-
-  const handleImportButton = () => {
-    setListModeImport("edit");
-    handleShowImportPerson();
-  };
-
-  const handleDeleteButton = async (e: TPerson) => {
+  const handleDeleteButton = async (e: TSafeUser) => {
     await Swal.fire({
       title: "¿Estás seguro que quieres hacer esto?",
       text: "Esta acción no se puede revertir",
@@ -127,32 +94,24 @@ export default function PersonList({
       cancelButtonText: "Cancelar",
     }).then(async (result) => {
       if (result.isConfirmed) {
-        const response = await post(`${URL}/deletePersons`, e);
+        const response = await post<TSafeUser>(`${URL}/deleteUser`, e);
         if (response.status === "success") {
           await Swal.fire(
             "¡Eliminado!",
-            "La persona ha sido eliminada correctamente.",
+            "El usuario ha sido eliminado correctamente.",
             "success"
           );
-          const backup = persons?.filter((element) => element._id !== e._id);
+          const backup = users?.filter((element) => element._id !== e._id);
           await mutate(backup, false);
           onClose();
         } else {
-          await Swal.fire(
-            "Error",
-            `No puedes eliminar a esta persona. ${response.msg}`,
-            "error"
-          );
+          await Swal.fire("Error", "No puedes eliminar este usuario.", "error");
         }
       }
     });
   };
 
-  const handleInputChange = (
-    e:
-      | ChangeEvent<HTMLInputElement>
-      | { target: { value: string; name: string } }
-  ) => {
+  const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
     setData({
       ...data,
       [e.target.name]: e.target.value,
@@ -161,25 +120,16 @@ export default function PersonList({
 
   useEffect(() => {
     if (!isOpen) {
-      setData({
-        name: "",
-        area: "default",
-      });
+      setSelectedUser(undefined);
+      setData({ username: "" });
     }
   }, [isOpen]);
-
-  useEffect(() => {
-    if (!isAreaLoading) {
-      updateAreasOptions();
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [areas]);
 
   return (
     <Modal isOpen={isOpen} onClose={onClose} size="6xl">
       <ModalOverlay />
       <ModalContent>
-        <ModalHeader>{viewMode[listMode].header} PERSONA</ModalHeader>
+        <ModalHeader>{viewMode[userListMode].header} USUARIO</ModalHeader>
         <ModalCloseButton />
         <ModalBody>
           <Flex sx={styles.MainContainer}>
@@ -187,46 +137,13 @@ export default function PersonList({
               <Flex flexDirection="row" mb="30">
                 <Flex flexDirection="column">
                   <CustomInput
-                    label="NOMBRE / APELLIDO"
+                    label="NOMBRE DE USUARIO / CORREO ELECTRÓNICO"
                     height="47"
-                    value={data.name}
-                    name="name"
+                    name="username"
+                    value={data.username}
                     onChange={handleInputChange}
                   />
                 </Flex>
-                <Flex flexDirection="column" ml="50">
-                  {!isAreaLoading && (
-                    <CustomSelect
-                      label="CURSO / AREA"
-                      name="area"
-                      value={areasOptions[data.area]}
-                      options={areas}
-                      onChange={(value, name) =>
-                        handleInputChange({
-                          target: {
-                            name: name,
-                            value: value,
-                          },
-                        })
-                      }
-                    />
-                  )}
-                </Flex>
-                {listMode === "edit" && (
-                  <Button
-                    sx={styles.Button}
-                    bg="#FF2B91"
-                    color={white}
-                    leftIcon={
-                      <Icon fontSize="24px" mb="1px" ml="1px">
-                        <HiOutlineDocumentAdd />
-                      </Icon>
-                    }
-                    onClick={handleImportButton}
-                  >
-                    <Text sx={styles.Import}>IMPORTAR</Text>
-                  </Button>
-                )}
               </Flex>
               <Text sx={regular18}>RESULTADOS</Text>
               <Flex bgColor="#D9D9D9" p="3" borderRadius="12px">
@@ -262,21 +179,21 @@ export default function PersonList({
                     </Thead>
                     <Tbody sx={styles.ShowOn850px}>
                       {!isProjectLoading ? (
-                        persons?.map((data, key) => (
+                        users?.map((data, key) => (
                           <Tr key={key} textAlign="center">
                             <Td
                               textAlign="center"
                               sx={styles.TableTextURL}
                               color="#000000"
                             >
-                              {listMode === "edit" && (
+                              {userListMode === "edit" && (
                                 <Box onClick={() => handleEditButton(data)}>
-                                  {data.name} {data.lastname}
+                                  {data.username}
                                 </Box>
                               )}
-                              {listMode === "delete" && (
+                              {userListMode === "delete" && (
                                 <Box onClick={() => handleDeleteButton(data)}>
-                                  {data.name} {data.lastname}
+                                  {data.username}
                                 </Box>
                               )}
                             </Td>
@@ -285,7 +202,7 @@ export default function PersonList({
                               sx={regular18}
                               color="#000000"
                             >
-                              {data.rut}
+                              {data.email}
                             </Td>
                           </Tr>
                         ))
@@ -295,35 +212,28 @@ export default function PersonList({
                     </Tbody>
                     <Tbody sx={styles.HideOn850px}>
                       {!isProjectLoading ? (
-                        persons?.map((data, key) => (
+                        users?.map((data, key) => (
                           <Tr key={key} textAlign="center">
                             <Td
                               textAlign="center"
                               sx={regular18}
                               color="#000000"
                             >
-                              {data.name}
+                              {data.username}
                             </Td>
                             <Td
                               textAlign="center"
                               sx={regular18}
                               color="#000000"
                             >
-                              {data.lastname}
+                              {data.email}
                             </Td>
                             <Td
                               textAlign="center"
                               sx={regular18}
                               color="#000000"
                             >
-                              {data.rut}
-                            </Td>
-                            <Td
-                              textAlign="center"
-                              sx={regular18}
-                              color="#000000"
-                            >
-                              {listMode === "edit" && (
+                              {userListMode === "edit" && (
                                 <Box onClick={() => handleEditButton(data)}>
                                   <Icon
                                     sx={styles.LogoutIcon}
@@ -333,7 +243,7 @@ export default function PersonList({
                                   </Icon>
                                 </Box>
                               )}
-                              {listMode === "delete" && (
+                              {userListMode === "delete" && (
                                 <Box onClick={() => handleDeleteButton(data)}>
                                   <Icon
                                     sx={styles.LogoutIcon}
@@ -355,18 +265,13 @@ export default function PersonList({
               </Flex>
             </Flex>
           </Flex>
-          <ShowPersonInfo
+          <ShowUserInfoDialog
             isOpen={showPersonInfo}
             onClose={handleShowPersonInfo}
-            person={person}
+            user={selectedUser}
             modalMode={"edit"}
-            persons={persons}
+            users={users}
             mutate={mutate}
-          />
-          <ImportPerson
-            isOpen={showImportPerson}
-            onClose={handleShowImportPerson}
-            listMode={listModeImport}
           />
         </ModalBody>
         <ModalFooter></ModalFooter>
