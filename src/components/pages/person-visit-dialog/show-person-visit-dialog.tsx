@@ -88,15 +88,7 @@ export default function ShowPersonVisitDialog({
 
   // Edit
   const handleApplyButton = async (values: TInsertHistory) => {
-    console.log("xd");
-    if (!history?._id || !history.personId || !mutate) {
-      console.error({
-        document_id: !!history?._id,
-        document_personId: !!history?.personId,
-        mutate: !!mutate,
-      });
-      return;
-    }
+    if (!history?._id || !history.personId || !mutate) return;
 
     setMode("view");
     const constructedData: THistory = {
