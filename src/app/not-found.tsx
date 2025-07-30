@@ -1,6 +1,6 @@
 import Link from "next/link";
 
-function Custom404() {
+export default function Custom404() {
   return (
     <div>
       <h1>404 - Página no encontrada</h1>
@@ -11,5 +11,3 @@ function Custom404() {
     </div>
   );
 }
-
-export default Custom404;
