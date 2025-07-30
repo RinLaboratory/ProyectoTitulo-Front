@@ -32,7 +32,7 @@ export const useAccountContext = () => {
   const ctx = useContext(AccountContext);
   if (!ctx)
     throw new Error(
-      "useAccountContext must be used within AccountContextProvider"
+      "useAccountContext must be used within AccountContextProvider",
     );
   return ctx;
 };

@@ -157,10 +157,10 @@ export default function ShowPersonVisitDialog({
           await Swal.fire(
             "¡Eliminado!",
             "La visita ha sido eliminada correctamente.",
-            "success"
+            "success",
           );
           const backup = historiesData?.filter(
-            (element) => element._id !== history._id
+            (element) => element._id !== history._id,
           );
           await mutate(backup, false);
           onClose();

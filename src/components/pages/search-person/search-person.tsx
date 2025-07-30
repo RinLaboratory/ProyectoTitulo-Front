@@ -45,12 +45,12 @@ export default function SearchPerson() {
 
   const { data: persons, isLoading: isPersonsLoading } = useSWR<TPerson[]>(
     `${URL}/getPersons?name=${searchQuery.name}&area=${searchQuery.area}`,
-    fetcher
+    fetcher,
   );
 
   const { data: areas, isLoading: isAreasLoading } = useSWR<TArea[]>(
     `${URL}/getAreas?name=${""}`,
-    fetcher
+    fetcher,
   );
 
   const areasOptions: Record<string, string> = useMemo(() => {

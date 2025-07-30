@@ -75,7 +75,7 @@ export default function AdminMode() {
               await Swal.fire(
                 "¡Se ha iniciado un nuevo año en el sistema!",
                 "Los estudiantes se han movido al siguiente año en la escala de enseñanza exitosamente.",
-                "success"
+                "success",
               );
             } else {
               await Swal.fire("Error", `${response.msg}`, "error");

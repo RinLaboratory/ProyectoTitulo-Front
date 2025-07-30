@@ -24,7 +24,7 @@ const useForm = <
 >(
   props: Omit<UseFormProps<TIn, unknown, TOut>, "resolver"> & {
     schema: ZodType<TOut, TDef, TIn>;
-  }
+  },
 ) => {
   const form = __useForm({
     ...props,
@@ -42,7 +42,7 @@ interface FormFieldContextValue<
 }
 
 const FormFieldContext = React.createContext<FormFieldContextValue | null>(
-  null
+  null,
 );
 
 const FormField = <
@@ -85,7 +85,7 @@ interface FormItemContextValue {
 }
 
 const FormItemContext = React.createContext<FormItemContextValue>(
-  {} as FormItemContextValue
+  {} as FormItemContextValue,
 );
 
 const FormItem = React.forwardRef<
@@ -164,7 +164,7 @@ const FormDescription = React.forwardRef<HTMLParagraphElement, TextProps>(
         {...props}
       />
     );
-  }
+  },
 );
 FormDescription.displayName = "FormDescription";
 
@@ -187,7 +187,7 @@ const FormFieldMessage = React.forwardRef<HTMLParagraphElement, TextProps>(
         {body}
       </Text>
     );
-  }
+  },
 );
 FormFieldMessage.displayName = "FormFieldMessage";
 
@@ -209,7 +209,7 @@ const FormMessage = React.forwardRef<HTMLParagraphElement, TextProps>(
         {body}
       </Text>
     );
-  }
+  },
 );
 FormMessage.displayName = "FormMessage";
 

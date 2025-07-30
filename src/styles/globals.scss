@@ -1,18 +1,18 @@
 @font-face {
-  font-family: 'Lato Regular';
-  src: url(fonts/Lato-Regular.ttf) format('truetype');
+  font-family: "Lato Regular";
+  src: url(fonts/Lato-Regular.ttf) format("truetype");
 }
 @font-face {
-  font-family: 'Lato Light';
-  src: url(fonts/Lato-Light.ttf) format('truetype');
+  font-family: "Lato Light";
+  src: url(fonts/Lato-Light.ttf) format("truetype");
 }
 @font-face {
-  font-family: 'Lato Bold';
-  src: url(fonts/Lato-Bold.ttf) format('truetype');
+  font-family: "Lato Bold";
+  src: url(fonts/Lato-Bold.ttf) format("truetype");
 }
 @font-face {
-  font-family: 'Lato Black';
-  src: url(fonts/Lato-Black.ttf) format('truetype');
+  font-family: "Lato Black";
+  src: url(fonts/Lato-Black.ttf) format("truetype");
 }
 
 html,
@@ -20,8 +20,18 @@ body {
   padding: 0;
   margin: 0;
   min-width: 650px;
-  font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen,
-    Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
+  font-family:
+    -apple-system,
+    BlinkMacSystemFont,
+    Segoe UI,
+    Roboto,
+    Oxygen,
+    Ubuntu,
+    Cantarell,
+    Fira Sans,
+    Droid Sans,
+    Helvetica Neue,
+    sans-serif;
 }
 
 .main {

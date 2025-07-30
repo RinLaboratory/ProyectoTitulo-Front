@@ -13,7 +13,7 @@ export async function getAccountInfo(): Promise<TSafeUser | undefined> {
   if (!isTokenAvailable) return;
 
   const userData = await fetcher<TSafeUser | undefined>(
-    `${env.NEXT_PUBLIC_API_URL}/getCurrentUser`
+    `${env.NEXT_PUBLIC_API_URL}/getCurrentUser`,
   );
 
   return userData;

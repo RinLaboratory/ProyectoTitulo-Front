@@ -105,7 +105,7 @@ export default function ShowUserInfoDialog({
 
         const response = await post<TSafeUser>(
           `${URL}/editUser`,
-          constructedData
+          constructedData,
         );
         if (response.status === "success") {
           toast({

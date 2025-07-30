@@ -90,7 +90,7 @@ export default function ImportPersonDialog({
                 await Swal.fire(
                   "Personas Importadas",
                   `Se han importado ${response.linea} personas al sistema.`,
-                  "success"
+                  "success",
                 );
                 onClose();
               } else {
@@ -129,7 +129,7 @@ export default function ImportPersonDialog({
                 await Swal.fire(
                   "Personas Editadas",
                   `Se han editado ${response.linea} personas en el sistema.`,
-                  "success"
+                  "success",
                 );
                 onClose();
               } else {
