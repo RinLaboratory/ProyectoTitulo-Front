@@ -40,49 +40,47 @@ interface UserListDialogProps {
   userListMode: "delete" | "edit";
 }
 
+const viewMode = {
+  "": {
+    header: "",
+  },
+  delete: {
+    header: "ELIMINAR",
+  },
+  edit: {
+    header: "EDITAR",
+  },
+};
+
+type TActiveDialog = "none" | "view-user-data";
+
 export default function UserListDialog({
   isOpen,
   onClose,
   userListMode,
 }: UserListDialogProps) {
-  const [data, setData] = useState({
-    username: "",
-  });
+  const [searchQuery, setSearchQuery] = useState("");
+  const [selectedUser, setSelectedUser] = useState<TSafeUser | undefined>(
+    undefined
+  );
+  const [activeDialog, setActiveDialog] = useState<TActiveDialog>("none");
 
   const {
     data: users,
     isLoading: isProjectLoading,
     mutate,
-  } = useSWR<TSafeUser[]>(`${URL}/getusers?username=${data.username}`, fetcher);
+  } = useSWR<TSafeUser[]>(`${URL}/getusers?username=${searchQuery}`, fetcher);
 
-  const viewMode = {
-    "": {
-      header: "",
-    },
-    delete: {
-      header: "ELIMINAR",
-    },
-    edit: {
-      header: "EDITAR",
-    },
+  const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
+    setSearchQuery(e.target.value);
   };
 
-  const [showPersonInfo, setShowPersonInfo] = useState(false);
-  const handleShowPersonInfo = () => setShowPersonInfo(!showPersonInfo);
-
-  const Tabs = ["NOMBRE DE USUARIO", "CORREO ELECTRÓNICO", ""];
-  const TabsOn850 = ["USUARIO", "CORREO"];
-
-  const [selectedUser, setSelectedUser] = useState<TSafeUser | undefined>(
-    undefined
-  );
-
-  const handleEditButton = (e: TSafeUser) => {
-    setSelectedUser(e);
-    handleShowPersonInfo();
+  const handleEditButton = (value: TSafeUser) => {
+    setSelectedUser(value);
+    setActiveDialog("view-user-data");
   };
 
-  const handleDeleteButton = async (e: TSafeUser) => {
+  const handleDeleteButton = async (value: TSafeUser) => {
     await Swal.fire({
       title: "¿Estás seguro que quieres hacer esto?",
       text: "Esta acción no se puede revertir",
@@ -94,14 +92,14 @@ export default function UserListDialog({
       cancelButtonText: "Cancelar",
     }).then(async (result) => {
       if (result.isConfirmed) {
-        const response = await post<TSafeUser>(`${URL}/deleteUser`, e);
+        const response = await post<TSafeUser>(`${URL}/deleteUser`, value);
         if (response.status === "success") {
           await Swal.fire(
             "¡Eliminado!",
             "El usuario ha sido eliminado correctamente.",
             "success"
           );
-          const backup = users?.filter((element) => element._id !== e._id);
+          const backup = users?.filter((element) => element._id !== value._id);
           await mutate(backup, false);
           onClose();
         } else {
@@ -111,19 +109,15 @@ export default function UserListDialog({
     });
   };
 
-  const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
-    setData({
-      ...data,
-      [e.target.name]: e.target.value,
-    });
-  };
-
   useEffect(() => {
     if (!isOpen) {
       setSelectedUser(undefined);
-      setData({ username: "" });
+      setSearchQuery("");
     }
   }, [isOpen]);
+
+  const Tabs = ["NOMBRE DE USUARIO", "CORREO ELECTRÓNICO", ""];
+  const TabsOn850 = ["USUARIO", "CORREO"];
 
   return (
     <Modal isOpen={isOpen} onClose={onClose} size="6xl">
@@ -140,7 +134,7 @@ export default function UserListDialog({
                     label="NOMBRE DE USUARIO / CORREO ELECTRÓNICO"
                     height="47"
                     name="username"
-                    value={data.username}
+                    value={searchQuery}
                     onChange={handleInputChange}
                   />
                 </Flex>
@@ -266,12 +260,16 @@ export default function UserListDialog({
             </Flex>
           </Flex>
           <ShowUserInfoDialog
-            isOpen={showPersonInfo}
-            onClose={handleShowPersonInfo}
+            isOpen={activeDialog === "view-user-data"}
+            onClose={() => setActiveDialog("none")}
             user={selectedUser}
             modalMode={"edit"}
             users={users}
             mutate={mutate}
+            defaultValues={{
+              email: selectedUser?.email ?? "",
+              username: selectedUser?.username ?? "",
+            }}
           />
         </ModalBody>
         <ModalFooter></ModalFooter>

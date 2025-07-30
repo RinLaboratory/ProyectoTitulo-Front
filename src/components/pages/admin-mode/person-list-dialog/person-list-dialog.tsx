@@ -22,8 +22,7 @@ import {
   Modal,
   Box,
 } from "@chakra-ui/react";
-import type { ChangeEvent } from "react";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { IoEyeSharp, IoTrash } from "react-icons/io5";
 import { HiOutlineDocumentAdd } from "react-icons/hi";
 import { styles } from "./person-list-dialog.module";
@@ -37,7 +36,16 @@ import { fetcher } from "~/utils/fetcher";
 import useSWR from "swr";
 import ImportPersonDialog from "../import-person-dialog/import-person-dialog";
 import { white } from "~/utils/colors";
+import { SearchPersonSchema } from "~/utils/validators";
 import type { TArea, TPerson } from "~/utils/validators";
+import {
+  FormControl,
+  FormField,
+  FormFieldMessage,
+  FormItem,
+  FormProvider,
+  useForm,
+} from "~/components/ui/form/form";
 
 interface PersonListDialogProps {
   isOpen: boolean;
@@ -45,74 +53,72 @@ interface PersonListDialogProps {
   listMode: "delete" | "edit";
 }
 
+const viewMode = {
+  delete: {
+    header: "ELIMINAR",
+  },
+  edit: {
+    header: "EDITAR",
+  },
+};
+
+const defaultValues = {
+  name: "",
+  area: "default",
+};
+
+type TActiveDialog = "none" | "show-person-info" | "import-excel";
+
 export default function PersonListDialog({
   isOpen,
   onClose,
   listMode,
 }: PersonListDialogProps) {
-  const viewMode = {
-    delete: {
-      header: "ELIMINAR",
-    },
-    edit: {
-      header: "EDITAR",
-    },
-  };
+  const form = useForm({
+    schema: SearchPersonSchema,
+    defaultValues,
+  });
+  const formValues = form.watch();
+  const [selectedPerson, setSelectedPerson] = useState<TPerson | undefined>(
+    undefined
+  );
+  const [listModeImport, setListModeImport] = useState<"edit" | "add">("add");
+  const [activeDialog, setActiveDialog] = useState<TActiveDialog>("none");
 
   const { data: areas, isLoading: isAreaLoading } = useSWR<TArea[]>(
     `${URL}/getAreas?name=${""}`,
     fetcher
   );
 
-  const [areasOptions, setAreasOptions] = useState<Record<string, string>>({});
-
-  const updateAreasOptions = () => {
-    if (areas) {
-      const obj: Record<string, string> = {};
-
-      for (const item of areas) {
-        obj[item._id] = item.label;
-      }
-
-      setAreasOptions(obj);
-    }
-  };
-
-  const [showPersonInfo, setShowPersonInfo] = useState(false);
-  const handleShowPersonInfo = () => setShowPersonInfo(!showPersonInfo);
-
-  const [data, setData] = useState({
-    name: "",
-    area: "default",
-  });
-
   const {
     data: persons,
     isLoading: isProjectLoading,
     mutate,
   } = useSWR<TPerson[]>(
-    `${URL}/getPersons?name=${data.name}&area=${data.area}`,
+    `${URL}/getPersons?name=${formValues.name}&area=${formValues.area}`,
     fetcher
   );
 
-  const Tabs = ["NOMBRES", "APELLIDO", "RUT", ""];
-  const TabsOn850 = ["NOMBRES", "RUT"];
+  const areasOptions: Record<string, string> = useMemo(() => {
+    if (!areas) return {};
+    const obj: Record<string, string> = {};
 
-  const [person, setPerson] = useState<TPerson | undefined>(undefined);
+    for (const item of areas) {
+      obj[item._id] = item.label;
+    }
+
+    return obj;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [areas, isAreaLoading]);
 
   const handleEditButton = (e: TPerson) => {
-    setPerson(e);
-    handleShowPersonInfo();
+    setSelectedPerson(e);
+    setActiveDialog("show-person-info");
   };
-
-  const [listModeImport, setListModeImport] = useState<"edit" | "add">("add");
-
-  const [showImportPerson, setShowImportPerson] = useState(false);
-  const handleShowImportPerson = () => setShowImportPerson(!showImportPerson);
 
   const handleImportButton = () => {
     setListModeImport("edit");
-    handleShowImportPerson();
+    setActiveDialog("import-excel");
   };
 
   const handleDeleteButton = async (e: TPerson) => {
@@ -148,32 +154,14 @@ export default function PersonListDialog({
     });
   };
 
-  const handleInputChange = (
-    e:
-      | ChangeEvent<HTMLInputElement>
-      | { target: { value: string; name: string } }
-  ) => {
-    setData({
-      ...data,
-      [e.target.name]: e.target.value,
-    });
-  };
-
   useEffect(() => {
-    if (!isOpen) {
-      setData({
-        name: "",
-        area: "default",
-      });
-    }
+    // Reset the form when modal closes or opens
+    form.reset(defaultValues);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isOpen]);
 
-  useEffect(() => {
-    if (!isAreaLoading) {
-      updateAreasOptions();
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [areas]);
+  const Tabs = ["NOMBRES", "APELLIDO", "RUT", ""];
+  const TabsOn850 = ["NOMBRES", "RUT"];
 
   return (
     <Modal isOpen={isOpen} onClose={onClose} size="6xl">
@@ -185,33 +173,55 @@ export default function PersonListDialog({
           <Flex sx={styles.MainContainer}>
             <Flex w="100%" flexDirection="column" ml="5" mr="5">
               <Flex flexDirection="row" mb="30">
-                <Flex flexDirection="column">
-                  <CustomInput
-                    label="NOMBRE / APELLIDO"
-                    height="47"
-                    value={data.name}
-                    name="name"
-                    onChange={handleInputChange}
-                  />
-                </Flex>
-                <Flex flexDirection="column" ml="50">
-                  {!isAreaLoading && (
-                    <CustomSelect
-                      label="CURSO / AREA"
-                      name="area"
-                      value={areasOptions[data.area]}
-                      options={areas}
-                      onChange={(value, name) =>
-                        handleInputChange({
-                          target: {
-                            name: name,
-                            value: value,
-                          },
-                        })
-                      }
+                <FormProvider {...form}>
+                  <Flex flexDirection="column">
+                    <FormField
+                      control={form.control}
+                      name="name"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormControl>
+                            <CustomInput
+                              label="NOMBRE / APELLIDO"
+                              height="47"
+                              {...field}
+                            />
+                          </FormControl>
+                          <FormFieldMessage />
+                        </FormItem>
+                      )}
                     />
-                  )}
-                </Flex>
+                  </Flex>
+                  <Flex flexDirection="column" ml="50">
+                    <FormField
+                      control={form.control}
+                      name="area"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormControl>
+                            <CustomSelect
+                              {...field}
+                              label="CURSO / AREA"
+                              options={
+                                isAreaLoading
+                                  ? [
+                                      {
+                                        label: "default",
+                                        value: "Ninguno",
+                                        _id: "",
+                                      },
+                                    ]
+                                  : areas
+                              }
+                              value={areasOptions[field.value]}
+                            />
+                          </FormControl>
+                          <FormFieldMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </Flex>
+                </FormProvider>
                 {listMode === "edit" && (
                   <Button
                     sx={styles.Button}
@@ -356,30 +366,30 @@ export default function PersonListDialog({
             </Flex>
           </Flex>
           <ShowPersonInfoDialog
-            isOpen={showPersonInfo}
-            onClose={handleShowPersonInfo}
-            person={person}
+            isOpen={activeDialog === "show-person-info"}
+            onClose={() => setActiveDialog("none")}
+            person={selectedPerson}
             modalMode={"edit"}
             persons={persons}
             mutate={mutate}
             defaultValues={{
-              rut: person?.rut ?? "",
-              areaId: person?.areaId ?? "",
-              bloodType: person?.bloodType ?? "",
-              EmergencyContact: person?.EmergencyContact ?? "",
-              insurance: person?.insurance ?? "",
-              lastname: person?.lastname ?? "",
-              name: person?.name ?? "",
-              phone: person?.phone ?? "",
-              address: person?.address ?? "",
-              Rlastname: person?.Rlastname ?? "",
-              Rname: person?.Rname ?? "",
-              Rphone: person?.Rphone ?? "",
+              rut: selectedPerson?.rut ?? "",
+              areaId: selectedPerson?.areaId ?? "",
+              bloodType: selectedPerson?.bloodType ?? "",
+              EmergencyContact: selectedPerson?.EmergencyContact ?? "",
+              insurance: selectedPerson?.insurance ?? "",
+              lastname: selectedPerson?.lastname ?? "",
+              name: selectedPerson?.name ?? "",
+              phone: selectedPerson?.phone ?? "",
+              address: selectedPerson?.address ?? "",
+              Rlastname: selectedPerson?.Rlastname ?? "",
+              Rname: selectedPerson?.Rname ?? "",
+              Rphone: selectedPerson?.Rphone ?? "",
             }}
           />
           <ImportPersonDialog
-            isOpen={showImportPerson}
-            onClose={handleShowImportPerson}
+            isOpen={activeDialog === "import-excel"}
+            onClose={() => setActiveDialog("none")}
             listMode={listModeImport}
           />
         </ModalBody>
