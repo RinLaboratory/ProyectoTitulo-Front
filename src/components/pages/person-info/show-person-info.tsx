@@ -27,12 +27,12 @@ export default function ShowPersonInfo() {
 
   const { data: areas, isLoading: isAreasLoading } = useSWR<TArea[]>(
     `/getAreas?name=`,
-    fetcher
+    fetcher,
   );
 
   const { data: persons, isLoading: isPersonsLoading } = useSWR<TPerson>(
     `/getPersonInfo?person=${person}`,
-    fetcher
+    fetcher,
   );
 
   const areasOptions: Record<string, string> | undefined = useMemo(() => {

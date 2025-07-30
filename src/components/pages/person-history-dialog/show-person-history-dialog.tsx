@@ -40,7 +40,7 @@ export default function ShowPersonHistoryDialog({
 }: ShowPersonHistoryDialogProps) {
   const [activeDialog, setActiveDialog] = useState(false);
   const [historyDocument, setHistoryDocument] = useState<THistory | undefined>(
-    undefined
+    undefined,
   );
 
   const {
@@ -49,7 +49,7 @@ export default function ShowPersonHistoryDialog({
     mutate,
   } = useSWR<THistory[]>(
     `/getPersonHistoryInfo?personId=${person?._id}`,
-    fetcher
+    fetcher,
   );
 
   const handleViewClick = (e: THistory) => {

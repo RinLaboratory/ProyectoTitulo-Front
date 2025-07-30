@@ -33,7 +33,7 @@ export default function NavBar() {
 
   const { data: user, isLoading: isUserLoading } = useSWR<TSafeUser>(
     `/getCurrentUser`,
-    fetcher
+    fetcher,
   );
 
   return (

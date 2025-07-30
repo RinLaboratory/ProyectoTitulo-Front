@@ -18,7 +18,7 @@ export default function Index() {
 
   const { data: indexData, isLoading: isIndexDataLoading } = useSWR<TIndexData>(
     `/getIndexData`,
-    fetcher
+    fetcher,
   );
 
   const handleDialog = (mode: TPersonState) => {

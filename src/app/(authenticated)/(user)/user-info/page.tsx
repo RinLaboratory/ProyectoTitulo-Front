@@ -10,7 +10,7 @@ import type { TSafeUser } from "~/utils/validators";
 export default function UserInfo() {
   const { data: user, isLoading: isUserLoading } = useSWR<TSafeUser>(
     `/getCurrentUser`,
-    fetcher
+    fetcher,
   );
 
   return (

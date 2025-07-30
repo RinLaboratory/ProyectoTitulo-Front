@@ -80,14 +80,14 @@ export default function PersonListDialog({
   });
   const formValues = form.watch();
   const [selectedPerson, setSelectedPerson] = useState<TPerson | undefined>(
-    undefined
+    undefined,
   );
   const [listModeImport, setListModeImport] = useState<"edit" | "add">("add");
   const [activeDialog, setActiveDialog] = useState<TActiveDialog>("none");
 
   const { data: areas, isLoading: isAreasLoading } = useSWR<TArea[]>(
     `/getAreas?name=`,
-    fetcher
+    fetcher,
   );
 
   const {
@@ -96,7 +96,7 @@ export default function PersonListDialog({
     mutate,
   } = useSWR<TPerson[]>(
     `/getPersons?name=${formValues.name}&area=${formValues.area}`,
-    fetcher
+    fetcher,
   );
 
   const areasOptions: Record<string, string> = useMemo(() => {
@@ -131,7 +131,7 @@ export default function PersonListDialog({
           await Swal.fire(
             "¡Eliminado!",
             "La persona ha sido eliminada correctamente.",
-            "success"
+            "success",
           );
           const backup = persons?.filter((element) => element._id !== e._id);
           await mutate(backup, false);
@@ -140,7 +140,7 @@ export default function PersonListDialog({
           await Swal.fire(
             "Error",
             `No puedes eliminar a esta persona. ${response.msg}`,
-            "error"
+            "error",
           );
         }
       }
