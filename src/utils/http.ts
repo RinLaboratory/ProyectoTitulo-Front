@@ -1,36 +1,10 @@
+"use server";
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import { cookies } from "next/headers";
 import { env } from "~/env/shared";
-
-interface HttpError extends Error {
-  status: number;
-  statusText: string;
-  data?: unknown;
-}
-
-export class FetchError extends Error implements HttpError {
-  constructor(
-    public status: number,
-    public statusText: string,
-    public data?: unknown,
-    message?: string
-  ) {
-    super(
-      message ??
-        `Request failed (${status}): ${statusText}; ${typeof data === "string" ? data : ""}`
-    );
-    this.name = "FetchError";
-  }
-}
-
-export class NetworkError extends Error {
-  constructor(message: string) {
-    super(message);
-    this.name = "NetworkError";
-  }
-}
+import { FetchError } from "./http-classes";
 
 type RequestMethod = "GET" | "POST" | "PUT" | "PATCH" | "DELETE" | "OPTIONS";
 
@@ -66,23 +40,16 @@ async function handleResponse(response: Response): Promise<unknown> {
 async function request<T>(
   url: string,
   method: RequestMethod,
-  body?: any,
-  file?: FormData
+  body?: any
 ): Promise<T> {
   const cookieStore = await cookies();
   const token = cookieStore.get("jwt")?.value;
 
   const headers = {
-    Accept: "application/json",
     "Content-Type": "application/json",
-    Cookie: `jwt=${token}`,
-    ...(file ? { "content-length": `${body.size}` } : {}),
+    Accept: "application/json",
+    ...(token ? { Cookie: `jwt=${token}` } : {}),
   };
-
-  let bodyValue: any = JSON.stringify(body);
-  if (file) {
-    bodyValue = file;
-  }
 
   const response = await fetch(`${env.NEXT_PUBLIC_API_URL}${url}`, {
     method,
@@ -92,7 +59,7 @@ async function request<T>(
     headers,
     redirect: "follow",
     referrerPolicy: "no-referrer",
-    body: bodyValue,
+    body: JSON.stringify(body),
   });
 
   const data = handleResponse(response);
@@ -108,24 +75,12 @@ export const post = async <T>(url: string, body: any) => {
   return request<T>(url, "POST", body);
 };
 
-export const postFile = async <T>(url: string, body: File) => {
-  const formData = new FormData();
-  formData.append("archivo", body);
-  return request<T>(url, "POST", body, formData);
-};
-
 export const patch = async <T>(url: string, body: any) => {
   return request<T>(url, "PATCH", body);
 };
 
 export const put = async <T>(url: string, body: any) => {
   return request<T>(url, "PUT", body);
-};
-
-export const putFile = async <T>(url: string, body: File) => {
-  const formData = new FormData();
-  formData.append("archivo", body);
-  return request<T>(url, "PUT", body, formData);
 };
 
 export const del = async <T>(url: string, body?: any) => {
