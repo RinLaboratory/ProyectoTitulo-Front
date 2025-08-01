@@ -44,6 +44,7 @@ Keep in mind that everytime you update a file here, you must re-compile the prod
 
 ## .env.example
 
+- `NODE_ENV` is the type of environment that will be used, can be `development` or `production`
 - `JWT_SECRET` is the JWT seed that is used to generate the user token. Must be the same as the Backend.
 - `URL` is the URL this app is going to be located.
 - `BACKEND_URL` is the URL where the Backend is located.
