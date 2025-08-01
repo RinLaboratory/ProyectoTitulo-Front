@@ -63,7 +63,7 @@ const viewMode = {
 
 const defaultValues = {
   name: "",
-  area: "default",
+  area: "",
 };
 
 type TActiveDialog = "none" | "show-person-info" | "import-excel";
@@ -94,7 +94,7 @@ export default function PersonListDialog({
     isLoading: isPersonsLoading,
     mutate,
   } = useSWR<TPerson[]>(
-    `/persons?name=${formValues.name}&area=${formValues.area}`,
+    `/persons?name=${formValues.name}&areaId=${formValues.area}`,
     http.get
   );
 

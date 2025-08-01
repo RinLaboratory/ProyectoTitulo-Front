@@ -37,13 +37,13 @@ export default function SearchPerson() {
     schema: SearchPersonSchema,
     defaultValues: {
       name: "",
-      area: "default",
+      area: "",
     },
   });
   const searchQuery = form.watch();
 
   const { data: persons, isLoading: isPersonsLoading } = useSWR<TPerson[]>(
-    `/persons?name=${searchQuery.name}&area=${searchQuery.area}`,
+    `/persons?name=${searchQuery.name}&areaId=${searchQuery.area}`,
     http.get
   );
 

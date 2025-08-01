@@ -102,7 +102,7 @@ export default function ShowPersonInfoDialog({
           duration: 9000,
           isClosable: true,
         });
-        await personMutate(`/persons?name=&area=`);
+        await personMutate(`/persons?name=&areaId=`);
         onClose();
       } catch {
         toast({

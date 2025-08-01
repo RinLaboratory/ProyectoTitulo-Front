@@ -17,7 +17,7 @@ export default function Index() {
   const [listMode, setListMode] = useState<TPersonState>("retirado");
 
   const { data: indexData, isLoading: isIndexDataLoading } = useSWR<TIndexData>(
-    `/dashboard`,
+    "/dashboard",
     http.get
   );
 
