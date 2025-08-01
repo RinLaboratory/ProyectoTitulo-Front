@@ -31,10 +31,9 @@ import CustomInput from "../../../ui/input/input";
 import Swal from "sweetalert2";
 import ShowAreaInfoDialog from "../area-info-dialog/show-area-info-dialog";
 import { white } from "~/utils/colors";
-import post from "~/utils/post";
-import { fetcher } from "~/utils/fetcher";
 import useSWR from "swr";
 import type { TArea } from "~/utils/validators";
+import * as http from "~/utils/http";
 
 interface AreaListDialogProps {
   isOpen: boolean;
@@ -58,7 +57,7 @@ export default function AreaListDialog({
     data: areas,
     isLoading: isAreasLoading,
     mutate,
-  } = useSWR<TArea[]>(`/getAreas?name=${query}`, fetcher);
+  } = useSWR<TArea[]>(`/areas?name=${query}`, http.get);
 
   const handleEditButton = (area: TArea) => {
     setListMode("edit");
@@ -78,8 +77,8 @@ export default function AreaListDialog({
       cancelButtonText: "Cancelar",
     }).then(async (result) => {
       if (result.isConfirmed) {
-        const response = await post<TArea>(`/deleteArea`, area);
-        if (response.status === "success") {
+        try {
+          await http.del<TArea>(`/areas`, area);
           await Swal.fire(
             "¡Eliminado!",
             "El area / curso se ha eliminado correctamente.",
@@ -88,8 +87,8 @@ export default function AreaListDialog({
           const backup = areas?.filter((element) => element._id !== area._id);
           await mutate(backup, false);
           onClose();
-        } else {
-          await Swal.fire("Error", `${response.msg}`, "error");
+        } catch {
+          await Swal.fire("Error", "Error al eliminar el curso/area", "error");
         }
       }
     });

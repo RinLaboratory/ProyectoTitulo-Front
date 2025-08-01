@@ -30,8 +30,6 @@ import CustomInput from "../../../ui/input/input";
 import CustomSelect from "../../../ui/select/select";
 import ShowPersonInfoDialog from "../person-info-dialog/show-person-info-dialog";
 import Swal from "sweetalert2";
-import post from "~/utils/post";
-import { fetcher } from "~/utils/fetcher";
 import useSWR from "swr";
 import ImportPersonDialog from "../import-person-dialog/import-person-dialog";
 import { white } from "~/utils/colors";
@@ -46,6 +44,7 @@ import {
   useForm,
 } from "~/components/ui/form/form";
 import { areasOptionsParser } from "~/utils/areas-options-parser";
+import * as http from "~/utils/http";
 
 interface PersonListDialogProps {
   isOpen: boolean;
@@ -64,7 +63,7 @@ const viewMode = {
 
 const defaultValues = {
   name: "",
-  area: "default",
+  area: "",
 };
 
 type TActiveDialog = "none" | "show-person-info" | "import-excel";
@@ -86,8 +85,8 @@ export default function PersonListDialog({
   const [activeDialog, setActiveDialog] = useState<TActiveDialog>("none");
 
   const { data: areas, isLoading: isAreasLoading } = useSWR<TArea[]>(
-    `/getAreas?name=`,
-    fetcher,
+    `/areas?name=`,
+    http.get,
   );
 
   const {
@@ -95,8 +94,8 @@ export default function PersonListDialog({
     isLoading: isPersonsLoading,
     mutate,
   } = useSWR<TPerson[]>(
-    `/getPersons?name=${formValues.name}&area=${formValues.area}`,
-    fetcher,
+    `/persons?name=${formValues.name}&areaId=${formValues.area}`,
+    http.get,
   );
 
   const areasOptions: Record<string, string> = useMemo(() => {
@@ -126,8 +125,8 @@ export default function PersonListDialog({
       cancelButtonText: "Cancelar",
     }).then(async (result) => {
       if (result.isConfirmed) {
-        const response = await post(`/deletePersons`, e);
-        if (response.status === "success") {
+        try {
+          await http.del(`/persons`, e);
           await Swal.fire(
             "¡Eliminado!",
             "La persona ha sido eliminada correctamente.",
@@ -136,10 +135,10 @@ export default function PersonListDialog({
           const backup = persons?.filter((element) => element._id !== e._id);
           await mutate(backup, false);
           onClose();
-        } else {
+        } catch {
           await Swal.fire(
             "Error",
-            `No puedes eliminar a esta persona. ${response.msg}`,
+            "No puedes eliminar a esta persona.",
             "error",
           );
         }

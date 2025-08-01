@@ -8,17 +8,17 @@ import { IoBed, IoSearch, IoMedical } from "react-icons/io5";
 import { FaPersonCircleCheck } from "react-icons/fa6";
 import { styles } from "./index.module";
 import RestingDialog from "./resting-dialog/resting-dialog";
-import { fetcher } from "~/utils/fetcher";
 import useSWR from "swr";
 import type { TIndexData, TPersonState } from "~/utils/validators";
+import * as http from "~/utils/http";
 
 export default function Index() {
   const [activeDialog, setActiveDialog] = useState(false);
   const [listMode, setListMode] = useState<TPersonState>("retirado");
 
   const { data: indexData, isLoading: isIndexDataLoading } = useSWR<TIndexData>(
-    `/getIndexData`,
-    fetcher,
+    "/dashboard",
+    http.get,
   );
 
   const handleDialog = (mode: TPersonState) => {

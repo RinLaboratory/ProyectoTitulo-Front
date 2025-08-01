@@ -19,7 +19,6 @@ import React from "react";
 import { styles } from "./change-password-dialog.module";
 import CustomInput from "../../ui/input/input";
 import { white } from "~/utils/colors";
-import post from "~/utils/post";
 import type { TUpdatePassword } from "~/utils/validators";
 import { UpdatePasswordSchema } from "~/utils/validators";
 import type { TSafeUser } from "~/utils/validators";
@@ -30,6 +29,7 @@ import {
   FormProvider,
   useForm,
 } from "~/components/ui/form/form";
+import * as http from "~/utils/http";
 
 interface ChangePasswordDialogProps {
   isOpen: boolean;
@@ -65,8 +65,8 @@ export default function ChangePasswordDialog({
         ...values,
         passwordId: user?.password_id,
       };
-      const response = await post(`/changePassword`, constructedData);
-      if (response.status === "success") {
+      try {
+        await http.post(`/auth/change-password`, constructedData);
         toast({
           title: "Contraseña actualizada.",
           description: "Has actualizado tu contraseña correctamente.",
@@ -75,7 +75,7 @@ export default function ChangePasswordDialog({
           isClosable: true,
         });
         onClose();
-      } else {
+      } catch {
         toast({
           title: "Error.",
           description: "Algo salió mal.",

@@ -23,8 +23,9 @@ import { styles } from "./import-person-dialog.module";
 import { HiOutlineDocumentAdd, HiOutlineDownload } from "react-icons/hi";
 import Swal from "sweetalert2";
 import { white } from "~/utils/colors";
-import postFile from "~/utils/post-file";
 import Link from "next/link";
+import * as http from "~/utils/http";
+import { toBase64 } from "~/utils/to-base64";
 
 interface ImportPersonDialogProps {
   isOpen: boolean;
@@ -84,16 +85,21 @@ export default function ImportPersonDialog({
             cancelButtonText: "Cancelar",
           }).then(async (result) => {
             if (result.isConfirmed) {
-              const response = await postFile(`/addImportPersons`, file);
-              if (response.status === "success") {
+              try {
+                const encodedFile = await toBase64(file);
+                if (!encodedFile) throw new Error("Unable to encode file");
+                const response = await http.post<{ rows: number }>(
+                  "/persons/import",
+                  { file: encodedFile },
+                );
                 await Swal.fire(
                   "Personas Importadas",
-                  `Se han importado ${response.linea} personas al sistema.`,
+                  `Se han importado ${response.rows} personas al sistema.`,
                   "success",
                 );
                 onClose();
-              } else {
-                await Swal.fire("Error", `${response.msg}`, "error");
+              } catch {
+                await Swal.fire("Error", "Error al importar excel", "error");
               }
             }
           });
@@ -123,16 +129,21 @@ export default function ImportPersonDialog({
             cancelButtonText: "Cancelar",
           }).then(async (result) => {
             if (result.isConfirmed) {
-              const response = await postFile(`/editImportPersons`, file);
-              if (response.status === "success") {
+              try {
+                const encodedFile = await toBase64(file);
+                if (!encodedFile) throw new Error("Unable to encode file");
+                const response = await http.put<{ rows: number }>(
+                  `/persons/import`,
+                  { file: encodedFile },
+                );
                 await Swal.fire(
                   "Personas Editadas",
-                  `Se han editado ${response.linea} personas en el sistema.`,
+                  `Se han editado ${response.rows} personas en el sistema.`,
                   "success",
                 );
                 onClose();
-              } else {
-                await Swal.fire("Error", `${response.msg}`, "error");
+              } catch {
+                await Swal.fire("Error", "Error al importar excel", "error");
               }
             }
           });
@@ -188,7 +199,7 @@ export default function ImportPersonDialog({
           </Flex>
         </ModalBody>
         <ModalFooter>
-          <Link href={"Hoja de excel de ejemplo.xlsx"} passHref>
+          <Link href={"Hoja de excel de ejemplo.xlsx"} download>
             <Button
               sx={styles.Button}
               bg="#FF2B91"

@@ -20,7 +20,6 @@ import { HiOutlineDocumentAdd } from "react-icons/hi";
 import { styles } from "./show-user-info-dialog.module";
 import CustomInput from "../../../ui/input/input";
 import { white } from "~/utils/colors";
-import post from "~/utils/post";
 import type { KeyedMutator } from "swr";
 import { mutate as userMutate } from "swr";
 import type { TInsertUser, TSafeUser } from "~/utils/validators";
@@ -33,6 +32,7 @@ import {
   FormProvider,
   useForm,
 } from "~/components/ui/form/form";
+import * as http from "~/utils/http";
 
 interface ShowUserInfoDialogProps {
   isOpen: boolean;
@@ -75,8 +75,8 @@ export default function ShowUserInfoDialog({
   const handleSubmit = async (values: TInsertUser) => {
     if (values.password === values.confirmPassword) {
       if (modalMode === "add") {
-        const response = await post(`/register`, values);
-        if (response.status === "success") {
+        try {
+          await http.post(`/auth/register`, values);
           toast({
             title: "Usuario agregado.",
             description: "El usuario se ha agregado exitosamente al sistema.",
@@ -84,13 +84,13 @@ export default function ShowUserInfoDialog({
             duration: 9000,
             isClosable: true,
           });
-          await userMutate(`/getusers?username=${""}`);
+          await userMutate(`/users?username=`);
           onClose();
-        } else {
+        } catch {
           toast({
             title: "Error.",
-            description: response.msg || "algo salió mal.",
-            status: response.msg ? "error" : "warning",
+            description: "Error al registrar al usuario",
+            status: "error",
             duration: 9000,
             isClosable: true,
           });
@@ -102,8 +102,8 @@ export default function ShowUserInfoDialog({
           ...values,
         };
 
-        const response = await post<TSafeUser>(`/editUser`, constructedData);
-        if (response.status === "success") {
+        try {
+          const response = await http.put<TSafeUser>(`/users`, constructedData);
           toast({
             title: "Usuario editado.",
             description: "El usuario se ha editado exitosamente en el sistema.",
@@ -114,7 +114,7 @@ export default function ShowUserInfoDialog({
           const backup: TSafeUser[] = [];
           users?.forEach((element) => {
             if (element._id === constructedData._id) {
-              backup.push(response.data);
+              backup.push(response);
             } else {
               backup.push(element);
             }
@@ -123,11 +123,11 @@ export default function ShowUserInfoDialog({
             await mutate(backup, false);
           }
           onClose();
-        } else {
+        } catch {
           toast({
             title: "Error.",
-            description: response.msg || "algo salió mal.",
-            status: response.msg ? "error" : "warning",
+            description: "Error al actualizar el usuario",
+            status: "error",
             duration: 9000,
             isClosable: true,
           });

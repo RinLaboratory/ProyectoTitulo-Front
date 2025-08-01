@@ -28,10 +28,9 @@ import { styles } from "./user-list-dialog.module";
 import CustomInput from "../../../ui/input/input";
 import Swal from "sweetalert2";
 import ShowUserInfoDialog from "../user-info-dialog/show-user-info-dialog";
-import { fetcher } from "~/utils/fetcher";
 import useSWR from "swr";
-import post from "~/utils/post";
 import type { TSafeUser } from "~/utils/validators";
+import * as http from "~/utils/http";
 
 interface UserListDialogProps {
   isOpen: boolean;
@@ -68,7 +67,7 @@ export default function UserListDialog({
     data: users,
     isLoading: isUsersLoading,
     mutate,
-  } = useSWR<TSafeUser[]>(`/getusers?username=${searchQuery}`, fetcher);
+  } = useSWR<TSafeUser[]>(`/users?username=${searchQuery}`, http.get);
 
   const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
     setSearchQuery(e.target.value);
@@ -91,17 +90,19 @@ export default function UserListDialog({
       cancelButtonText: "Cancelar",
     }).then(async (result) => {
       if (result.isConfirmed) {
-        const response = await post<TSafeUser>(`/deleteUser`, value);
-        if (response.status === "success") {
+        try {
+          const response = await http.del<TSafeUser>(`/users`, value);
           await Swal.fire(
             "¡Eliminado!",
             "El usuario ha sido eliminado correctamente.",
             "success",
           );
-          const backup = users?.filter((element) => element._id !== value._id);
+          const backup = users?.filter(
+            (element) => element._id !== response._id,
+          );
           await mutate(backup, false);
           onClose();
-        } else {
+        } catch {
           await Swal.fire("Error", "No puedes eliminar este usuario.", "error");
         }
       }
