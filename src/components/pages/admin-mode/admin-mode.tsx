@@ -74,13 +74,13 @@ export default function AdminMode() {
               await Swal.fire(
                 "¡Se ha iniciado un nuevo año en el sistema!",
                 "Los estudiantes se han movido al siguiente año en la escala de enseñanza exitosamente.",
-                "success"
+                "success",
               );
             } catch {
               await Swal.fire(
                 "Error",
                 "Error al tratar de iniciar año nuevo",
-                "error"
+                "error",
               );
             }
           }

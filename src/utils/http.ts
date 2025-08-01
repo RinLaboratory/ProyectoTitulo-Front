@@ -31,7 +31,7 @@ async function handleResponse(response: Response): Promise<unknown> {
     throw new FetchError(
       400, // In the future this should come from the backend with response.status
       "API returned error",
-      _response.error
+      _response.error,
     );
   }
   return Promise.resolve(_response);
@@ -40,7 +40,7 @@ async function handleResponse(response: Response): Promise<unknown> {
 async function request<T>(
   url: string,
   method: RequestMethod,
-  body?: any
+  body?: any,
 ): Promise<T> {
   const cookieStore = await cookies();
   const token = cookieStore.get("jwt")?.value;

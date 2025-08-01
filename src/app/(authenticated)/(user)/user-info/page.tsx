@@ -10,7 +10,7 @@ import * as http from "~/utils/http";
 export default function UserInfo() {
   const { data: user, isLoading: isUserLoading } = useSWR<TSafeUser>(
     "/users/current",
-    http.get
+    http.get,
   );
 
   return (

@@ -59,7 +59,7 @@ export default function UserListDialog({
 }: UserListDialogProps) {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedUser, setSelectedUser] = useState<TSafeUser | undefined>(
-    undefined
+    undefined,
   );
   const [activeDialog, setActiveDialog] = useState<TActiveDialog>("none");
 
@@ -95,10 +95,10 @@ export default function UserListDialog({
           await Swal.fire(
             "¡Eliminado!",
             "El usuario ha sido eliminado correctamente.",
-            "success"
+            "success",
           );
           const backup = users?.filter(
-            (element) => element._id !== response._id
+            (element) => element._id !== response._id,
           );
           await mutate(backup, false);
           onClose();

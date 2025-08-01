@@ -48,7 +48,7 @@ export default function AreaListDialog({
 }: AreaListDialogProps) {
   const [query, setQuery] = useState<string>("");
   const [selectedArea, setSelectedArea] = useState<TArea | undefined>(
-    undefined
+    undefined,
   );
   const [activeDialog, setActiveDialog] = useState<TActiveDialog>("none");
   const [listMode, setListMode] = useState<"view" | "add" | "edit">("add");
@@ -82,7 +82,7 @@ export default function AreaListDialog({
           await Swal.fire(
             "¡Eliminado!",
             "El area / curso se ha eliminado correctamente.",
-            "success"
+            "success",
           );
           const backup = areas?.filter((element) => element._id !== area._id);
           await mutate(backup, false);

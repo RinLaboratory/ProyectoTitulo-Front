@@ -40,7 +40,7 @@ export default function ShowPersonHistoryDialog({
 }: ShowPersonHistoryDialogProps) {
   const [activeDialog, setActiveDialog] = useState(false);
   const [historyDocument, setHistoryDocument] = useState<THistory | undefined>(
-    undefined
+    undefined,
   );
 
   const {

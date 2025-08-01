@@ -90,12 +90,12 @@ export default function ImportPersonDialog({
                 if (!encodedFile) throw new Error("Unable to encode file");
                 const response = await http.post<{ rows: number }>(
                   "/persons/import",
-                  { file: encodedFile }
+                  { file: encodedFile },
                 );
                 await Swal.fire(
                   "Personas Importadas",
                   `Se han importado ${response.rows} personas al sistema.`,
-                  "success"
+                  "success",
                 );
                 onClose();
               } catch {
@@ -134,12 +134,12 @@ export default function ImportPersonDialog({
                 if (!encodedFile) throw new Error("Unable to encode file");
                 const response = await http.put<{ rows: number }>(
                   `/persons/import`,
-                  { file: encodedFile }
+                  { file: encodedFile },
                 );
                 await Swal.fire(
                   "Personas Editadas",
                   `Se han editado ${response.rows} personas en el sistema.`,
-                  "success"
+                  "success",
                 );
                 onClose();
               } catch {

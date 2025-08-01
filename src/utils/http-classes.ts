@@ -9,11 +9,11 @@ export class FetchError extends Error implements HttpError {
     public status: number,
     public statusText: string,
     public data?: unknown,
-    message?: string
+    message?: string,
   ) {
     super(
       message ??
-        `Request failed (${status}): ${statusText}; ${typeof data === "string" ? data : ""}`
+        `Request failed (${status}): ${statusText}; ${typeof data === "string" ? data : ""}`,
     );
     this.name = "FetchError";
   }

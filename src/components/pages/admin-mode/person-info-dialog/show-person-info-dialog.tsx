@@ -83,7 +83,7 @@ export default function ShowPersonInfoDialog({
 
   const { data: areas, isLoading: isAreasLoading } = useSWR<TArea[]>(
     `/areas?name=`,
-    http.get
+    http.get,
   );
 
   const areasOptions: Record<string, string> = useMemo(() => {
