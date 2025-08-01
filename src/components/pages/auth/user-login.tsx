@@ -44,8 +44,7 @@ export default function UserLogin() {
     } else {
       try {
         const response = await login(values);
-        if (response.status === "success") {
-          localStorage.setItem("userdata", JSON.stringify(response.data));
+        if (response) {
           router.push("/");
         } else {
           await Swal.fire({
