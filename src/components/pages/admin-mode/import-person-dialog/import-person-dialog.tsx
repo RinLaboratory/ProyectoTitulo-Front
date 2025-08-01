@@ -25,6 +25,7 @@ import Swal from "sweetalert2";
 import { white } from "~/utils/colors";
 import Link from "next/link";
 import * as http from "~/utils/http";
+import { toBase64 } from "~/utils/to-base64";
 
 interface ImportPersonDialogProps {
   isOpen: boolean;
@@ -85,9 +86,11 @@ export default function ImportPersonDialog({
           }).then(async (result) => {
             if (result.isConfirmed) {
               try {
-                const response = await http.postFile<{ rows: number }>(
-                  `/persons/import`,
-                  file
+                const encodedFile = await toBase64(file);
+                if (!encodedFile) throw new Error("Unable to encode file");
+                const response = await http.post<{ rows: number }>(
+                  "/persons/import",
+                  { file: encodedFile }
                 );
                 await Swal.fire(
                   "Personas Importadas",
@@ -127,9 +130,11 @@ export default function ImportPersonDialog({
           }).then(async (result) => {
             if (result.isConfirmed) {
               try {
-                const response = await http.putFile<{ rows: number }>(
+                const encodedFile = await toBase64(file);
+                if (!encodedFile) throw new Error("Unable to encode file");
+                const response = await http.put<{ rows: number }>(
                   `/persons/import`,
-                  file
+                  { file: encodedFile }
                 );
                 await Swal.fire(
                   "Personas Editadas",
@@ -194,7 +199,7 @@ export default function ImportPersonDialog({
           </Flex>
         </ModalBody>
         <ModalFooter>
-          <Link href={"Hoja de excel de ejemplo.xlsx"} passHref>
+          <Link href={"Hoja de excel de ejemplo.xlsx"} download>
             <Button
               sx={styles.Button}
               bg="#FF2B91"
