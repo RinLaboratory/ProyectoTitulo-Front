@@ -30,8 +30,6 @@ import { styles } from "./show-person-info-dialog.module";
 import CustomInput from "../../../ui/input/input";
 import { white } from "~/utils/colors";
 import ImportPersonDialog from "../import-person-dialog/import-person-dialog";
-import post from "~/utils/post";
-import { fetcher } from "~/utils/fetcher";
 import type { KeyedMutator } from "swr";
 import useSWR from "swr";
 import CustomSelect from "~/components/ui/select/select";
@@ -39,6 +37,7 @@ import { mutate as personMutate } from "swr";
 import { InsertPersonSchema } from "~/utils/validators";
 import type { TArea, TPerson, TInsertPerson } from "~/utils/validators";
 import { areasOptionsParser } from "~/utils/areas-options-parser";
+import * as http from "~/utils/http";
 
 interface ShowPersonInfoDialogProps {
   isOpen: boolean;
@@ -83,8 +82,8 @@ export default function ShowPersonInfoDialog({
   });
 
   const { data: areas, isLoading: isAreasLoading } = useSWR<TArea[]>(
-    `/getAreas?name=`,
-    fetcher,
+    `/areas?name=`,
+    http.get
   );
 
   const areasOptions: Record<string, string> = useMemo(() => {
@@ -94,8 +93,8 @@ export default function ShowPersonInfoDialog({
 
   const handleSubmit = async (value: TInsertPerson) => {
     if (modalMode === "add") {
-      const response = await post(`/addPersons`, value);
-      if (response.status === "success") {
+      try {
+        await http.post<TPerson>(`/persons`, value);
         toast({
           title: "Persona agregada.",
           description: "Se ha agregado exitosamente la persona al sistema.",
@@ -103,13 +102,13 @@ export default function ShowPersonInfoDialog({
           duration: 9000,
           isClosable: true,
         });
-        await personMutate(`/getPersons?name=${""}&area=${""}`);
+        await personMutate(`/persons?name=&area=`);
         onClose();
-      } else {
+      } catch {
         toast({
           title: "Error.",
-          description: response.msg || "algo salió mal.",
-          status: response.msg ? "error" : "warning",
+          description: "Error al agregar la persona.",
+          status: "error",
           duration: 9000,
           isClosable: true,
         });
@@ -123,8 +122,8 @@ export default function ShowPersonInfoDialog({
         lastnameE: person?.lastnameE ?? "",
       };
 
-      const response = await post(`/editPersons`, constructedData);
-      if (response.status === "success") {
+      try {
+        const response = await http.put<TPerson>(`/persons`, constructedData);
         toast({
           title: "Persona editada.",
           description: "Se ha editado exitosamente la persona en el sistema.",
@@ -135,7 +134,7 @@ export default function ShowPersonInfoDialog({
         const backup: TPerson[] = [];
         persons?.forEach((element) => {
           if (element._id === constructedData._id) {
-            backup.push(constructedData);
+            backup.push(response);
           } else {
             backup.push(element);
           }
@@ -144,11 +143,11 @@ export default function ShowPersonInfoDialog({
           await mutate(backup, false);
         }
         onClose();
-      } else {
+      } catch {
         toast({
           title: "Error.",
-          description: response.msg || "algo salió mal.",
-          status: response.msg ? "error" : "warning",
+          description: "Error al actualizar la persona.",
+          status: "error",
           duration: 9000,
           isClosable: true,
         });

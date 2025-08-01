@@ -16,7 +16,6 @@ import React, { useMemo } from "react";
 import Link from "next/link";
 import { IoEyeSharp } from "react-icons/io5";
 import { styles } from "./search-person.module";
-import { fetcher } from "~/utils/fetcher";
 import useSWR from "swr";
 import { SearchPersonSchema } from "~/utils/validators";
 import type { TArea, TPerson } from "~/utils/validators";
@@ -31,6 +30,7 @@ import {
   useForm,
 } from "~/components/ui/form/form";
 import { areasOptionsParser } from "~/utils/areas-options-parser";
+import * as http from "~/utils/http";
 
 export default function SearchPerson() {
   const form = useForm({
@@ -43,13 +43,13 @@ export default function SearchPerson() {
   const searchQuery = form.watch();
 
   const { data: persons, isLoading: isPersonsLoading } = useSWR<TPerson[]>(
-    `/getPersons?name=${searchQuery.name}&area=${searchQuery.area}`,
-    fetcher,
+    `/persons?name=${searchQuery.name}&area=${searchQuery.area}`,
+    http.get
   );
 
   const { data: areas, isLoading: isAreasLoading } = useSWR<TArea[]>(
-    `/getAreas?name=${""}`,
-    fetcher,
+    `/areas?name=`,
+    http.get
   );
 
   const areasOptions: Record<string, string> = useMemo(() => {

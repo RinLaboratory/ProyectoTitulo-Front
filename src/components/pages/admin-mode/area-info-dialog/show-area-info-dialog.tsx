@@ -29,14 +29,13 @@ import { HiOutlineDocumentAdd } from "react-icons/hi";
 import { styles } from "./show-area-info-dialog.module";
 import CustomInput from "../../../ui/input/input";
 import { softBlue, white } from "~/utils/colors";
-import post from "~/utils/post";
-import { fetcher } from "~/utils/fetcher";
 import useSWR from "swr";
 import CustomSelect from "~/components/ui/select/select";
 import { regular12 } from "~/styles/fonts";
 import type { TInsertArea, TArea } from "~/utils/validators";
 import { InsertAreaSchema } from "~/utils/validators";
 import { areasOptionsParser } from "~/utils/areas-options-parser";
+import * as http from "~/utils/http";
 
 interface ShowAreaInfoDialogProps {
   isOpen: boolean;
@@ -76,7 +75,7 @@ export default function ShowAreaInfoDialog({
     data: areas,
     isLoading: isAreasLoading,
     mutate,
-  } = useSWR<TArea[]>(`/getAreas?name=`, fetcher);
+  } = useSWR<TArea[]>(`/areas?name=`, http.get);
 
   const areasOptions: Record<string, string> = useMemo(() => {
     return areasOptionsParser(areas);
@@ -85,8 +84,8 @@ export default function ShowAreaInfoDialog({
 
   const handleSubmit = async (values: TInsertArea) => {
     if (modalMode === "add") {
-      const response = await post<TArea>(`/addArea`, values);
-      if (response.status === "success") {
+      try {
+        const response = await http.post<TArea>(`/areas`, values);
         toast({
           title: "Curso / Area agregado.",
           description: `El Curso / Area "${values.label}" se ha agregado exitosamente al sistema.`,
@@ -96,14 +95,14 @@ export default function ShowAreaInfoDialog({
         });
         if (areas) {
           const backup: TArea[] = [...areas];
-          backup.unshift(response.data);
+          backup.unshift(response);
           await mutate(backup, false);
         }
         onClose();
-      } else {
+      } catch {
         toast({
           title: "Error",
-          description: `${response.msg}`,
+          description: `Error al insertar area`,
           status: "error",
           duration: 9000,
           isClosable: true,
@@ -115,9 +114,8 @@ export default function ShowAreaInfoDialog({
         ...values,
         _id: area?._id ?? "",
       };
-
-      const response = await post<TArea>(`/editArea`, values);
-      if (response.status === "success") {
+      try {
+        const response = await http.put<TArea>(`/area`, values);
         toast({
           title: "Curso / Area editado.",
           description: `El Curso / Area "${values.label}" se ha editado exitosamente en el sistema.`,
@@ -128,17 +126,17 @@ export default function ShowAreaInfoDialog({
         const backup: TArea[] = [];
         areas?.forEach((element) => {
           if (element._id === constructedData._id) {
-            backup.push(response.data);
+            backup.push(response);
           } else {
             backup.push(element);
           }
         });
         await mutate(backup, false);
         onClose();
-      } else {
+      } catch {
         toast({
           title: "Error",
-          description: `${response.msg}`,
+          description: `Error al actualizar area`,
           status: "error",
           duration: 9000,
           isClosable: true,

@@ -23,9 +23,9 @@ import { IoEyeSharp } from "react-icons/io5";
 import React, { useState } from "react";
 import { styles } from "./show-person-history-dialog.module";
 import ShowPersonVisitDialog from "../person-visit-dialog/show-person-visit-dialog";
-import { fetcher } from "~/utils/fetcher";
 import useSWR from "swr";
 import type { THistory, TPerson } from "~/utils/validators";
+import * as http from "~/utils/http";
 
 interface ShowPersonHistoryDialogProps {
   isOpen: boolean;
@@ -40,17 +40,14 @@ export default function ShowPersonHistoryDialog({
 }: ShowPersonHistoryDialogProps) {
   const [activeDialog, setActiveDialog] = useState(false);
   const [historyDocument, setHistoryDocument] = useState<THistory | undefined>(
-    undefined,
+    undefined
   );
 
   const {
     data: historyDocuments,
     isLoading: isHistoryDocumentsLoading,
     mutate,
-  } = useSWR<THistory[]>(
-    `/getPersonHistoryInfo?personId=${person?._id}`,
-    fetcher,
-  );
+  } = useSWR<THistory[]>(`/histories?personId=${person?._id}`, http.get);
 
   const handleViewClick = (e: THistory) => {
     setHistoryDocument(e);

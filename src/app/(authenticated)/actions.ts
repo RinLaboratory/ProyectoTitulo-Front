@@ -1,8 +1,8 @@
 "use server";
 
 import { cookies } from "next/headers";
-import { fetcher } from "~/utils/fetcher";
 import type { TSafeUser } from "~/utils/validators";
+import * as http from "~/utils/http";
 
 export async function getAccountInfo(): Promise<TSafeUser | undefined> {
   const cookieStore = await cookies();
@@ -11,7 +11,10 @@ export async function getAccountInfo(): Promise<TSafeUser | undefined> {
 
   if (!isTokenAvailable) return;
 
-  const userData = await fetcher<TSafeUser | undefined>(`/getCurrentUser`);
-
-  return userData;
+  try {
+    const userData = await http.get<TSafeUser | undefined>(`/users/current`);
+    return userData;
+  } catch {
+    return undefined;
+  }
 }

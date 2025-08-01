@@ -32,12 +32,12 @@ import React, { useEffect, useState } from "react";
 import { styles } from "./show-person-visit-dialog.module";
 import { softBlue, white } from "~/utils/colors";
 import Swal from "sweetalert2";
-import post from "~/utils/post";
 import type { KeyedMutator } from "swr";
 import { mutate as historyMutate } from "swr";
 import { InsertHistorySchema } from "~/utils/validators";
 import type { THistory, TInsertHistory, TPerson } from "~/utils/validators";
 import CustomTextArea from "~/components/ui/text-area/text-area";
+import * as http from "~/utils/http";
 
 interface ShowPersonVisitDialogProps {
   isOpen: boolean;
@@ -96,23 +96,33 @@ export default function ShowPersonVisitDialog({
       personId: history.personId,
       timestamp: new Date(),
     };
-    await post(`/editPersonHistoryInfo`, constructedData);
-    const backup: THistory[] = [];
-    historiesData?.forEach((element) => {
-      if (element._id === constructedData._id) {
-        backup.push(constructedData);
-      } else {
-        backup.push(element);
-      }
-    });
-    await mutate(backup, false);
-    toast({
-      title: "Visita editada.",
-      description: "La visita se ha editado exitosamente en el sistema.",
-      status: "success",
-      duration: 9000,
-      isClosable: true,
-    });
+    try {
+      await http.put<THistory>("/histories", constructedData);
+      const backup: THistory[] = [];
+      historiesData?.forEach((element) => {
+        if (element._id === constructedData._id) {
+          backup.push(constructedData);
+        } else {
+          backup.push(element);
+        }
+      });
+      await mutate(backup, false);
+      toast({
+        title: "Visita editada.",
+        description: "La visita se ha editado exitosamente en el sistema.",
+        status: "success",
+        duration: 9000,
+        isClosable: true,
+      });
+    } catch {
+      toast({
+        title: "Error.",
+        description: "Algo salió mal.",
+        status: "warning",
+        duration: 9000,
+        isClosable: true,
+      });
+    }
   };
 
   // Add
@@ -123,15 +133,25 @@ export default function ShowPersonVisitDialog({
       personId: person?._id,
       timestamp: new Date(),
     };
-    await post(`/setPersonHistoryInfo`, constructedData);
-    await historyMutate(`/getPersonHistoryInfo?personId=${person?._id}`);
-    toast({
-      title: "Visita agregada.",
-      description: "La visita se ha añadido exitosamente en el sistema.",
-      status: "success",
-      duration: 9000,
-      isClosable: true,
-    });
+    try {
+      await http.post(`/histories`, constructedData);
+      await historyMutate(`/histories?personId=${person?._id}`);
+      toast({
+        title: "Visita agregada.",
+        description: "La visita se ha añadido exitosamente en el sistema.",
+        status: "success",
+        duration: 9000,
+        isClosable: true,
+      });
+    } catch {
+      toast({
+        title: "Error.",
+        description: "Algo salió mal.",
+        status: "warning",
+        duration: 9000,
+        isClosable: true,
+      });
+    }
   };
 
   // delete
@@ -149,21 +169,21 @@ export default function ShowPersonVisitDialog({
       cancelButtonText: "Cancelar",
     }).then(async (result) => {
       if (result.isConfirmed) {
-        const response = await post(`/deletePersonHistoryInfo`, {
-          _id: history._id,
-        });
-        if (response.status === "success") {
+        try {
+          await http.del<THistory>(`/histories`, {
+            _id: history._id,
+          });
           await Swal.fire(
             "¡Eliminado!",
             "La visita ha sido eliminada correctamente.",
-            "success",
+            "success"
           );
           const backup = historiesData?.filter(
-            (element) => element._id !== history._id,
+            (element) => element._id !== history._id
           );
           await mutate(backup, false);
           onClose();
-        } else {
+        } catch {
           await Swal.fire("Error", "Algo salió mal.", "error");
         }
       }
