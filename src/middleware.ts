@@ -1,7 +1,5 @@
 import type { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
-import { verify } from "jsonwebtoken";
-import { env } from "~/env/shared";
 
 const PUBLIC_ROUTES = [
   "/login",
@@ -34,12 +32,7 @@ export function middleware(req: NextRequest) {
     return NextResponse.redirect(new URL("/login", req.url));
   }
 
-  try {
-    verify(token, env.JWT_SECRET);
-    return res;
-  } catch {
-    return NextResponse.redirect(new URL("/login", req.url));
-  }
+  return res;
 }
 
 export const config = {
