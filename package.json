@@ -23,7 +23,7 @@
     "@hookform/resolvers": "^5.0.1",
     "@t3-oss/env-nextjs": "^0.13.8",
     "framer-motion": "^12.23.9",
-    "jsonwebtoken": "^9.0.2",
+    "jsonwebtoken": "^9.0.3",
     "next": "15.4.8",
     "react": "19.1.2",
     "react-dom": "19.1.2",
