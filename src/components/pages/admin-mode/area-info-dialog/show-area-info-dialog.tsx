@@ -204,9 +204,7 @@ export default function ShowAreaInfoDialog({
                                 ]
                               : areas
                           }
-                          value={
-                            field.value ? areasOptions[field.value] : undefined
-                          }
+                          value={field.value ? areasOptions[field.value] : ""}
                         />
                       </FormControl>
                       <FormFieldMessage />

@@ -156,7 +156,7 @@ export default function ShowPersonInfo() {
                 <CustomSelect
                   label="CURSO / AREA"
                   name="areaId"
-                  value={persons ? areasOptions[persons.areaId] : undefined}
+                  value={persons ? areasOptions[persons.areaId] : ""}
                   options={areas}
                   isReadOnly
                 />

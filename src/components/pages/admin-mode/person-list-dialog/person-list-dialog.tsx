@@ -205,7 +205,7 @@ export default function PersonListDialog({
                                     ]
                                   : areas
                               }
-                              value={areasOptions[field.value]}
+                              value={areasOptions[field.value] ?? ""}
                             />
                           </FormControl>
                           <FormFieldMessage />

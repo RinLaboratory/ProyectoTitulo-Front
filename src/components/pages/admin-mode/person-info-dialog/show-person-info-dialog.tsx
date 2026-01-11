@@ -339,7 +339,7 @@ export default function ShowPersonInfoDialog({
                                         ]
                                       : areas
                                   }
-                                  value={areasOptions[field.value]}
+                                  value={areasOptions[field.value] ?? ""}
                                 />
                               </FormControl>
                               <FormFieldMessage />

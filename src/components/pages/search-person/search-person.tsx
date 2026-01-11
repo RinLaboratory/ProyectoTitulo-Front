@@ -98,7 +98,7 @@ export default function SearchPerson() {
                           ? [{ label: "Ninguno", value: "default", _id: "" }]
                           : areas
                       }
-                      value={areasOptions[searchQuery.area]}
+                      value={areasOptions[searchQuery.area] ?? ""}
                     />
                   </FormControl>
                   <FormFieldMessage />
