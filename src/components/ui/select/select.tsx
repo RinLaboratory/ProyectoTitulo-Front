@@ -11,8 +11,10 @@ import {
 
 import { styles } from "./select.module";
 
-interface CustomSelectProps
-  extends Omit<AutoCompleteProps, "onChange" | "children" | "ref"> {
+interface CustomSelectProps extends Omit<
+  AutoCompleteProps,
+  "onChange" | "children" | "ref"
+> {
   name: string;
   label: string;
   placeholder?: string;
