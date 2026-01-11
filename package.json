@@ -9,8 +9,8 @@
     "start": "next start",
     "lint": "eslint",
     "lint:fix": "eslint --fix",
-    "format": "prettier --check . --ignore-path ../../.gitignore --ignore-path ../../.prettierignore",
-    "format:fix": "prettier --check --write . --ignore-path ../../.gitignore --ignore-path ../../.prettierignore",
+    "format": "prettier --check . --ignore-path .gitignore --ignore-path .prettierignore",
+    "format:fix": "prettier --check --write . --ignore-path .gitignore --ignore-path .prettierignore",
     "typecheck": "tsc --noEmit",
     "precommit": "yarn format:fix && yarn lint:fix && yarn typecheck"
   },
