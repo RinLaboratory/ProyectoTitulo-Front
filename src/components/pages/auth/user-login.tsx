@@ -46,26 +46,28 @@ export default function UserLogin() {
         const response = await login(values);
         if (response) {
           router.push("/");
-        } else {
-          await Swal.fire({
-            title: "Credenciales Incorrectas",
-            text: "Correo y/o contraseñas incorrectos.",
-            icon: "error",
-            showCancelButton: false,
-            confirmButtonColor: "#3085d6",
-            confirmButtonText: "Aceptar",
-          });
         }
       } catch (err) {
         if (err instanceof Error) {
-          await Swal.fire({
-            title: "Error 500",
-            text: `Algo salió mal. \n${err}`,
-            icon: "warning",
-            showCancelButton: false,
-            confirmButtonColor: "#3085d6",
-            confirmButtonText: "Aceptar",
-          });
+          if (err.message.includes("invalid credentials")) {
+            await Swal.fire({
+              title: "Credenciales Incorrectas",
+              text: "Correo y/o contraseñas incorrectos.",
+              icon: "error",
+              showCancelButton: false,
+              confirmButtonColor: "#3085d6",
+              confirmButtonText: "Aceptar",
+            });
+          } else {
+            await Swal.fire({
+              title: "Error 500",
+              text: `Algo salió mal. \n${err}`,
+              icon: "warning",
+              showCancelButton: false,
+              confirmButtonColor: "#3085d6",
+              confirmButtonText: "Aceptar",
+            });
+          }
         }
       }
     }
