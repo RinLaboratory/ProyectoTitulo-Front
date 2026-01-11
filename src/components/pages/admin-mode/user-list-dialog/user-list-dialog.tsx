@@ -22,7 +22,7 @@ import {
   Box,
 } from "@chakra-ui/react";
 import type { ChangeEvent } from "react";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { IoEyeSharp, IoTrash } from "react-icons/io5";
 import { styles } from "./user-list-dialog.module";
 import CustomInput from "../../../ui/input/input";
@@ -101,7 +101,7 @@ export default function UserListDialog({
             (element) => element._id !== response._id,
           );
           await mutate(backup, false);
-          onClose();
+          handleClose();
         } catch {
           await Swal.fire("Error", "No puedes eliminar este usuario.", "error");
         }
@@ -109,18 +109,17 @@ export default function UserListDialog({
     });
   };
 
-  useEffect(() => {
-    if (!isOpen) {
-      setSelectedUser(undefined);
-      setSearchQuery("");
-    }
-  }, [isOpen]);
+  const handleClose = () => {
+    setSelectedUser(undefined);
+    setSearchQuery("");
+    onClose();
+  };
 
   const Tabs = ["NOMBRE DE USUARIO", "CORREO ELECTRÓNICO", ""];
   const TabsOn850 = ["USUARIO", "CORREO"];
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose} size="6xl">
+    <Modal isOpen={isOpen} onClose={handleClose} size="6xl">
       <ModalOverlay />
       <ModalContent>
         <ModalHeader>{viewMode[userListMode].header} USUARIO</ModalHeader>
