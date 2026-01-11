@@ -198,8 +198,8 @@ export default function PersonListDialog({
                                 isAreasLoading
                                   ? [
                                       {
-                                        label: "default",
-                                        value: "Ninguno",
+                                        label: "Ninguno",
+                                        value: "default",
                                         _id: "",
                                       },
                                     ]

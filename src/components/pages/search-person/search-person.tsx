@@ -95,7 +95,7 @@ export default function SearchPerson() {
                       label="CURSO / AREA"
                       options={
                         isAreasLoading
-                          ? [{ label: "default", value: "Ninguno", _id: "" }]
+                          ? [{ label: "Ninguno", value: "default", _id: "" }]
                           : areas
                       }
                       value={areasOptions[searchQuery.area]}

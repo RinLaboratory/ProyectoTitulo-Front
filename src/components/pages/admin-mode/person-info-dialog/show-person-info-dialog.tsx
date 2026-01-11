@@ -332,8 +332,8 @@ export default function ShowPersonInfoDialog({
                                     isAreasLoading
                                       ? [
                                           {
-                                            label: "default",
-                                            value: "Ninguno",
+                                            label: "Ninguno",
+                                            value: "default",
                                             _id: "",
                                           },
                                         ]

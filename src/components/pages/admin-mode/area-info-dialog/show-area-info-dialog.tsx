@@ -197,8 +197,8 @@ export default function ShowAreaInfoDialog({
                             isAreasLoading
                               ? [
                                   {
-                                    label: "default",
-                                    value: "Ninguno",
+                                    label: "Ninguno",
+                                    value: "default",
                                     _id: "",
                                   },
                                 ]
