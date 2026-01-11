@@ -117,8 +117,8 @@ export default function RestingDialog({
                     </Thead>
                     <Tbody sx={styles.ShowOn850px}>
                       {!isLoading ? (
-                        displayData?.map((data, key) => (
-                          <Tr key={key} textAlign="center">
+                        displayData?.map((data) => (
+                          <Tr key={data._id} textAlign="center">
                             <Td
                               textAlign="center"
                               sx={styles.TableTextURL}
@@ -151,8 +151,8 @@ export default function RestingDialog({
                     </Tbody>
                     <Tbody sx={styles.HideOn850px}>
                       {!isLoading ? (
-                        displayData?.map((data, key) => (
-                          <Tr key={key} textAlign="center">
+                        displayData?.map((data) => (
+                          <Tr key={data._id} textAlign="center">
                             <Td
                               textAlign="center"
                               sx={styles.TableText}

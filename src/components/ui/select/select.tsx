@@ -66,7 +66,7 @@ export default function CustomSelect({
             <AutoCompleteList>
               {options?.map((opt) => (
                 <AutoCompleteItem
-                  key={`option-${opt.value}`}
+                  key={opt._id}
                   value={opt._id}
                   textTransform="capitalize"
                 >

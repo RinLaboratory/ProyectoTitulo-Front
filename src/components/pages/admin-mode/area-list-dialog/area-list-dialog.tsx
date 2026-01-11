@@ -159,8 +159,8 @@ export default function AreaListDialog({
                     </Thead>
                     <Tbody>
                       {!isAreasLoading ? (
-                        areas?.map((data, key) => (
-                          <Tr key={key} textAlign="center">
+                        areas?.map((data) => (
+                          <Tr key={data._id} textAlign="center">
                             <Td
                               textAlign="center"
                               sx={regular18}

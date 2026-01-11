@@ -264,8 +264,8 @@ export default function PersonListDialog({
                     </Thead>
                     <Tbody sx={styles.ShowOn850px}>
                       {!isPersonsLoading ? (
-                        persons?.map((data, key) => (
-                          <Tr key={key} textAlign="center">
+                        persons?.map((data) => (
+                          <Tr key={data._id} textAlign="center">
                             <Td
                               textAlign="center"
                               sx={styles.TableTextURL}
@@ -297,8 +297,8 @@ export default function PersonListDialog({
                     </Tbody>
                     <Tbody sx={styles.HideOn850px}>
                       {!isPersonsLoading ? (
-                        persons?.map((data, key) => (
-                          <Tr key={key} textAlign="center">
+                        persons?.map((data) => (
+                          <Tr key={data._id} textAlign="center">
                             <Td
                               textAlign="center"
                               sx={regular18}

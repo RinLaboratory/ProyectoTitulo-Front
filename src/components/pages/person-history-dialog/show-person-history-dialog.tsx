@@ -100,8 +100,8 @@ export default function ShowPersonHistoryDialog({
               </Thead>
               <Tbody>
                 {!isHistoryDocumentsLoading ? (
-                  historyDocuments?.map((data, key) => (
-                    <Tr key={key} textAlign="center">
+                  historyDocuments?.map((data) => (
+                    <Tr key={data._id} textAlign="center">
                       <Td
                         textAlign="center"
                         sx={regular18}

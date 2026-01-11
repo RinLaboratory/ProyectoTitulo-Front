@@ -173,8 +173,8 @@ export default function UserListDialog({
                     </Thead>
                     <Tbody sx={styles.ShowOn850px}>
                       {!isUsersLoading ? (
-                        users?.map((data, key) => (
-                          <Tr key={key} textAlign="center">
+                        users?.map((data) => (
+                          <Tr key={data._id} textAlign="center">
                             <Td
                               textAlign="center"
                               sx={styles.TableTextURL}
@@ -206,8 +206,8 @@ export default function UserListDialog({
                     </Tbody>
                     <Tbody sx={styles.HideOn850px}>
                       {!isUsersLoading ? (
-                        users?.map((data, key) => (
-                          <Tr key={key} textAlign="center">
+                        users?.map((data) => (
+                          <Tr key={data._id} textAlign="center">
                             <Td
                               textAlign="center"
                               sx={regular18}
