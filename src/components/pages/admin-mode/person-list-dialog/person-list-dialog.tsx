@@ -217,6 +217,7 @@ export default function PersonListDialog({
                 {listMode === "edit" && (
                   <Button
                     sx={styles.Button}
+                    placeSelf="center"
                     bg="#FF2B91"
                     color={white}
                     leftIcon={
