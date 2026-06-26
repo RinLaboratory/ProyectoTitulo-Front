@@ -56,7 +56,13 @@ docker build -t proyecto-titulo .
 
 #### Run server
 
-To run production server you will use the following command:
+To pass the environment variables to the docker command, you must insert them using the following pattern:
+```bash
+-e ENV_VAR_KEY=value
+-e ANOTHER_ENV_VAR_KEY=value
+```
+
+To run production server you will use the following command, replacing the environment variables values with your config:
 
 ```bash
 docker run --rm -p 3000:3000 -e NODE_ENV=production -e JWT_SECRET=super-long-and-secret-jwt-shared-with-backend -e NEXT_PUBLIC_API_URL=http://localhost:3000 -e NEXT_PUBLIC_API_URL=http://localhost:8000 -e DOMAIN=localhost proyecto-titulo:latest
