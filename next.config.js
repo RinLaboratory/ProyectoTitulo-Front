@@ -1,5 +1,5 @@
 import path from "node:path";
-import { fileURLToPath } from "url";
+import { fileURLToPath } from "node:url";
 import createJiti from "jiti";
 
 // Import env files to validate at build time. Use jiti so we can load .ts files in here.
@@ -8,6 +8,7 @@ jiti("./src/env/shared");
 
 /** @type {import("next").NextConfig} */
 const config = {
+  output: "standalone",
   reactStrictMode: true,
   sassOptions: {
     includePaths: [path.join(import.meta.dirname, "styles")],

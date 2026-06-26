@@ -27,6 +27,8 @@ Then, open [http://localhost:3000](http://localhost:3000) with your browser to s
 
 ## Getting the production server running
 
+### Next server (bash)
+
 To compile the development server, you will use the following command:
 
 ```bash
@@ -41,6 +43,24 @@ yarn start
 
 Then, open [http://localhost:3000](http://localhost:3000) with your browser to see the production server.
 Keep in mind that everytime you update a file here, you must re-compile the production server to apply changes.
+
+### Next server (Docker)
+
+#### Local build
+
+To locally compile the development server, you will use the following command:
+
+```bash
+docker build -t proyecto-titulo .
+```
+
+#### Run server
+
+To run production server you will use the following command:
+
+```bash
+docker run --rm -p 3000:3000 -e NODE_ENV=production -e JWT_SECRET=super-long-and-secret-jwt-shared-with-backend -e NEXT_PUBLIC_API_URL=http://localhost:3000 -e NEXT_PUBLIC_API_URL=http://localhost:8000 -e DOMAIN=localhost proyecto-titulo:latest
+```
 
 ## .env.example
 
