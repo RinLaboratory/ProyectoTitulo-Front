@@ -4,6 +4,28 @@ import { cookies } from "next/headers";
 import { env } from "~/env/shared";
 import * as http from "~/utils/http";
 
+function shouldUseSecureCookie() {
+  try {
+    return new URL(env.NEXT_PUBLIC_URL).protocol === "https:";
+  } catch {
+    return env.NODE_ENV === "production";
+  }
+}
+
+function getCookieDomain() {
+  const domain = env.DOMAIN?.trim();
+  if (!domain) return undefined;
+
+  const normalizedDomain = domain.startsWith(".") ? domain.slice(1) : domain;
+  const isLocalDomain =
+    normalizedDomain === "localhost" ||
+    normalizedDomain.endsWith(".localhost") ||
+    normalizedDomain.includes(":") ||
+    /^\d{1,3}(\.\d{1,3}){3}$/.test(normalizedDomain);
+
+  return isLocalDomain ? undefined : domain;
+}
+
 export default async function login({
   email,
   password,

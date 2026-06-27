@@ -57,6 +57,7 @@ docker build -t proyecto-titulo .
 #### Run server
 
 To pass the environment variables to the docker command, you must insert them using the following pattern:
+
 ```bash
 -e ENV_VAR_KEY=value
 -e ANOTHER_ENV_VAR_KEY=value
@@ -65,8 +66,12 @@ To pass the environment variables to the docker command, you must insert them us
 To run production server you will use the following command, replacing the environment variables values with your config:
 
 ```bash
-docker run --rm -p 3000:3000 -e NODE_ENV=production -e JWT_SECRET=super-long-and-secret-jwt-shared-with-backend -e NEXT_PUBLIC_API_URL=http://localhost:3000 -e NEXT_PUBLIC_API_URL=http://localhost:8000 -e DOMAIN=localhost proyecto-titulo:latest
+docker run --rm -p 3000:3000 -e NODE_ENV=production -e JWT_SECRET=super-long-and-secret-jwt-shared-with-backend -e NEXT_PUBLIC_URL=http://localhost:3000 -e NEXT_PUBLIC_API_URL=http://host.docker.internal:8000 -e DOMAIN=localhost proyecto-titulo:latest
 ```
+
+If the backend is running on your host machine while the frontend runs inside Docker, use `http://host.docker.internal:8000` as `NEXT_PUBLIC_API_URL` instead of `http://localhost:8000`. Inside a container, `localhost` points to the container itself.
+
+For a local HTTP Docker run, keep `NEXT_PUBLIC_URL=http://localhost:3000`. In HTTPS deployments, set it to the public HTTPS URL so auth cookies are marked as secure.
 
 ## .env.example
 

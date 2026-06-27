@@ -5,7 +5,7 @@ export const env = createEnv({
   shared: {
     NODE_ENV: z.enum(["development", "production"]).default("development"),
     JWT_SECRET: z.string(),
-    DOMAIN: z.string(),
+    DOMAIN: z.string().optional(),
     NEXT_PUBLIC_API_URL: z
       .string()
       .min(1)
@@ -20,7 +20,7 @@ export const env = createEnv({
     NEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL,
     NEXT_PUBLIC_URL: process.env.NEXT_PUBLIC_URL,
     JWT_SECRET: process.env.JWT_SECRET,
-    DOMAIN: process.env.DOMAIN,
+    DOMAIN: process.env.DOMAIN ?? undefined,
   },
   skipValidation: true,
 });
